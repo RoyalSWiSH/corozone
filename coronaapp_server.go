@@ -1,15 +1,8 @@
 package main
 
-// Tutorial https://www.youtube.com/watch?v=9VEJyPFz7WY&list=PLFmONUGpIk0YwlJMZOo21a9Q1juVrk4YY&index=3
-// https://www.sohamkamani.com/blog/golang/sql-transactions/
-// https://www.restapiexample.com/golang-tutorial/creating-golang-api-echo-framework-postgresql/
-
 // Authors: Sebastian Roy,...
 // Date: 19. March 2020
 
-// TODO: Reafactor code, separate files...
-// TODO: CI
-// TODO: Docker
 
 import (
 	"database/sql"
@@ -46,9 +39,6 @@ type user struct {
 // TODO: Hospital struct
 
 // TODO: Groceriy struct
-// TODO Have a readonly backup SQL server available and one source of truth
-// TODO: Have a test system with test data  and one live system
-// TODO: Migrate to a mangaged PostreSQL server from digitalocean
 const (
 	host     = "kandula.db.elephantsql.com"
 	port     = 5432
