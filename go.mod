@@ -1,4 +1,4 @@
-module test.com/test1
+module test.com/coronaapp_server
 
 go 1.14
 
