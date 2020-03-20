@@ -1,3 +1,5 @@
+#supermarktstatus #krankenhausstatus #hotlinestatus #nachbarschaftshilfe #mini-diagnose 
+
 ### Was ist die Herausforderung / das Problem? Was ist das Bedürfnis dahinter?
 Beispiel: Problem: Häufung von Anrufen, Dringlichkeit | Bedürfnis: Effiziente Informationsvermittlung an Bürger:innen
 
