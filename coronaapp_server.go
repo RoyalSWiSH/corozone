@@ -154,8 +154,26 @@ func DBCreateUser(u *user) {
 
 func getUser(c echo.Context) error {
 	// User ID from path `users/:id`
-	id := c.Param("id")
-	return c.String(http.StatusOK, id)
+    queryid := c.QueryParam("id")
+	sqlStatement := `SELECT user_id, first_name, last_name FROM user_profile WHERE user_id=$1;`
+	var firstname string
+    var lastname string
+	var user_id int
+	// Replace 3 with an ID from your database or another random
+	// value to test the no rows use case.
+	row := db.QueryRow(sqlStatement, queryid)
+	switch err := row.Scan(&user_id, &firstname, &lastname); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+        return c.String(http.StatusOK, fmt.Sprintf("No user found"))
+	case nil:
+		fmt.Println(user_id,firstname)
+        return c.String(http.StatusOK,
+        fmt.Sprintf("ID: %d \n User: %s \n Last Name: %s", user_id, firstname, lastname))
+	default:
+		panic(err)
+        return c.String(http.StatusOK, fmt.Sprintf("Error!"))
+	}
 }
 
 
