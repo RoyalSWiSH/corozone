@@ -18,7 +18,7 @@ are available and when they do not need to visit a doctor or facility
 - contacts to international organisation (RKI, WHO...). Apple does not allow any third party corona related apps, needs to be vetted. 
 ## Protoype
 
-Screenshot: https://pasteboard.co/IZZZraO.png
+Screenshot: https://postimg.cc/zVYnLRT8
 
 https://pr.to/W864FN/
 
