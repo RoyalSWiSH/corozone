@@ -1,4 +1,4 @@
-#supermarktstatus #krankenhausstatus #hotlinestatus #nachbarschaftshilfe #mini-diagnose 
+#supermarktstatus #krankenhausstatus #hotlinestatus #nachbarschaftshilfe #mini-diagnose #kontakt-tracking 
 
 ### Was ist die Herausforderung / das Problem? Was ist das Bedürfnis dahinter?
 Beispiel: Problem: Häufung von Anrufen, Dringlichkeit | Bedürfnis: Effiziente Informationsvermittlung an Bürger:innen
