@@ -65,3 +65,8 @@ vue native, flutter, swiftui...
   - https://www.sohamkamani.com/blog/golang/sql-transactions/
   - https://www.restapiexample.com/golang-tutorial/creating-golang-api-echo-framework-postgresql/
   - https://www.youtube.com/watch?v=9VEJyPFz7WY&list=PLFmONUGpIk0YwlJMZOo21a9Q1juVrk4YY&index=3
+
+## Kooperationen
+- Bluetooth Low Energy id tracking #wirvsvirus https://github.com/InfectionChain
+- Bluetooth tracking Singapore https://tracetogether.de.uptodown.com/android
+- Links zu allen Telegram Gruppen für Nachbarschaftshilfe (evtl mit einem Bot Gesuche posten https://listling.org/lists/pwfjfkpjmesjjinm/solidarische-nachbarschaftshilfe)

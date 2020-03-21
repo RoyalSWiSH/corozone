@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1045221326924",
+    "firebase_url": "https://corozone-12b77.firebaseio.com",
+    "project_id": "corozone-12b77",
+    "storage_bucket": "corozone-12b77.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045221326924:android:0748d2a1a7bb8bd9a234e9",
+        "android_client_info": {
+          "package_name": "org.nativescript.Corozone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1045221326924-97a4dok27one2qe0fm8fkn314bb55gvj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ3SqF_ckg3DjYobatWUif7TQTvms-nB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1045221326924-97a4dok27one2qe0fm8fkn314bb55gvj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1045221326924-g631ea88cafqlnlo0slsohn8vloriunf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.nativescript.Corozone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

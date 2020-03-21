@@ -100,7 +100,7 @@ e := echo.New()
 
     userGroup := e.Group("/users")
     userGroup.POST("/create", createUser)
-    userGroup.GET("/get", getUser)
+    userGroup.GET("/:id", getUser)
     userGroup.GET("/login", loginUser)
 	e.Logger.Fatal(e.Start(":1323"))
 }
