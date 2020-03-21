@@ -1,7 +1,14 @@
 import Vue from "nativescript-vue";
+import VueDevtools from 'nativescript-vue-devtools'
 
+import LoginPage from './components/LoginPage'
 import App from "./components/App";
-Vue.config.silent = false;
+if(TNS_ENV !== 'production') {
+  Vue.use(VueDevtools)
+}
+// Prints Vue logs when --env.production is *NOT* set while building
+Vue.config.silent = (TNS_ENV === 'production')
+
 var firebase = require("nativescript-plugin-firebase");
 firebase
   .init({
@@ -18,5 +25,5 @@ firebase
   );
 
 new Vue({
-    render: h => h(App)
+    render: h => h('frame', [h(LoginPage)])
 }).$start();

@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import firebase from "nativescript-plugin-firebase";
 // A stub for a service that authenticates users.
 const userService = {
   async register(user) {
@@ -102,9 +103,11 @@ export default {
       userService
         .login(this.user)
         .then(() => {
-          this.$navigateTo(HomePage);
+          alert("Login")
+         // this.$navigateTo(App);
         })
         .catch(() => {
+          console.error(err);
           this.alert("Unfortunately we could not find your account.");
         });
     },
@@ -120,7 +123,8 @@ export default {
           this.isLoggingIn = true;
         })
         .catch(() => {
-          this.alert("Unfortunately we were unable to create your account.");
+          console.error(err);
+          this.alert(err);
         });
     },
     forgotPassword() {
