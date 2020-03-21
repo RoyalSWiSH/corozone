@@ -106,6 +106,7 @@ export default {
         .then(() => {
           alert("Login")
           this.$navigateTo(App);
+          //this.$navigateTo(HomePage) works fine, but not to TabView App.vue :(
         })
         .catch(() => {
           console.error(err);
