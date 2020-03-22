@@ -23,7 +23,32 @@ firebase
       console.log("firebase.init error: " + error);
     }
   );
-
+// Used for loading indicator
+  global.loaderOptions = {
+    android: {
+        margin: 100,
+        dimBackground: true,
+        color: "#4B9ED6", 
+        hideBezel: true, 
+        mode: 3 
+    },
+    ios: {
+        dimBackground: true,
+        color: "#FFFFFF", 
+        hideBezel: true, 
+        mode: 3 
+    }
+};
+//  new Vue({ 
+//    render: h => h('frame', [h(LoginPage)])
+// }).$start();
 new Vue({
-    render: h => h('frame', [h(LoginPage)])
+    template: `
+    <Frame>
+      <LoginPage />
+    </Frame>`,
+    components: {
+      LoginPage,
+      App
+    }
 }).$start();

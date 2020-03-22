@@ -1,4 +1,4 @@
-<template lang="html">
+<!-- <template lang="html">
     <BottomNavigation>
         <TabStrip>
             <TabStripItem class="navigation__item">
@@ -34,6 +34,12 @@
         </TabContentItem>
 
     </BottomNavigation>
+</template> -->
+
+<template lang="html">
+<Page>
+        <Label class="m-20" textWrap="true" text="You have successfully authenticated. This is where you build your core application functionality."></Label>
+</Page>
 </template>
 
 <script>

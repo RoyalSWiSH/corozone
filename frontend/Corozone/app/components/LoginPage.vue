@@ -43,6 +43,9 @@
 <script>
 import firebase from "nativescript-plugin-firebase";
 import App from "./App"
+var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
+    .LoadingIndicator;
+var loader = new LoadingIndicator();
 // A stub for a service that authenticates users.
 const userService = {
   async register(user) {
@@ -101,14 +104,18 @@ export default {
       }
     },
     login() {
+      let that = this
+      loader.show(global.loaderOptions)
       userService
         .login(this.user)
         .then(() => {
-          alert("Login")
-          this.$navigateTo(App);
-          //this.$navigateTo(HomePage) works fine, but not to TabView App.vue :(
+         // alert("Login")
+          //this.$navigateTo(App);
+          loader.hide()
+          this.$navigateTo(App, {clearHistory: true}); //works fine, but not to TabView App.vue :(
         })
         .catch(() => {
+          loader.hide()
           console.error(err);
           this.alert("Unfortunately we could not find your account.");
         });
@@ -118,18 +125,27 @@ export default {
         this.alert("Your passwords do not match.");
         return;
       }
-      userService
+      if(this.user.password.length < 6) {
+        this.alert("Your password must be at least 6 characters.")
+        return
+      }
+
+      loader.show(global.loaderOptions)
+      this.userService
         .register(this.user)
         .then(() => {
+          loader.hide()
           this.alert("Your account was successfully created.");
           this.isLoggingIn = true;
         })
         .catch(() => {
+          loader.hide()
           console.error(err);
           this.alert(err);
         });
     },
     forgotPassword() {
+      let that = this
       prompt({
         title: "Forgot Password",
         message:
@@ -140,14 +156,17 @@ export default {
         cancelButtonText: "Cancel"
       }).then(data => {
         if (data.result) {
+          loader.show(global.loaderOptions)
           userService
             .resetPassword(data.text.trim())
             .then(() => {
+              loader.hide()
               this.alert(
                 "Your password was successfully reset. Please check your email for instructions on choosing a new password."
               );
             })
             .catch(() => {
+              loader.hide()
               this.alert(
                 "Unfortunately, an error occurred resetting your password."
               );

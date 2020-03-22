@@ -30,12 +30,11 @@
 				<Label v-show="isLoggingIn" text="Forgot your password?" class="login-label" @tap="forgotPassword" />
 			</StackLayout>
 
-			<Label class="login-label sign-up-label" @tap="toggleForm">
-	          <FormattedString>
-	            <Span :text="isLoggingIn ? 'Don’t have an account? ' : 'Back to Login'" />
-	            <Span :text="isLoggingIn ? 'Sign up' : ''" class="bold" />
-	          </FormattedString>
-	        </Label>
+	      <StackLayout class="input-field">
+					<Label text="Einkäufe" />
+					<StackLayout class="hr-light" />
+				</StackLayout>
+			
 		</FlexboxLayout>
     </Page>
 </template>
