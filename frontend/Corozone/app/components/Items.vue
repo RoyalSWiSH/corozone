@@ -1,8 +1,12 @@
 <template>
  <Page>
-     <!-- <StackLayout> -->
-                 <Label text="Location: Frankfurt" />
-     <!-- </StackLayout> -->
+     <!-- <ScrollView>
+     <StackLayout> -->
+         <!-- <CardView class="card"> -->
+                 <Label text="Location: Frankfur" />
+         <!-- </CardView> -->
+     <!-- </StackLayout>
+     </ScrollView> -->
 </Page>
 </template>
 
@@ -105,5 +109,22 @@ export default {
 // End custom common variables
 
 // Custom styles
+.add-button {
+    height: 30;
+    background-color: rgb(51, 51, 206);
+    color: white;
+    border-radius: 5;
+    font-size: 20;
+    font-weight: 600;
+}
 
+.card {
+    background-color: #fff;
+    color: #4d4d4d;
+    margin: 15;
+}
+
+.card-layout {
+    padding: 20;
+}
 </style>
