@@ -1,4 +1,5 @@
-<!-- <template lang="html">
+ <template lang="html">
+ <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
     <BottomNavigation>
         <TabStrip>
             <TabStripItem class="navigation__item">
@@ -34,13 +35,14 @@
         </TabContentItem>
 
     </BottomNavigation>
-</template> -->
+    </Page>
+</template> 
 
-<template lang="html">
+<!--<template lang="html">
 <Page>
         <Label class="m-20" textWrap="true" text="You have successfully authenticated. This is where you build your core application functionality."></Label>
 </Page>
-</template>
+</template>-->
 
 <script>
 import Items from "./Items.vue";
@@ -48,6 +50,7 @@ import Browse from "./Browse.vue";
 import Search from "./Search.vue";
 
 export default {
+  name: "app",
   components: {
     Items,
     Browse,

@@ -1,8 +1,17 @@
 import Vue from "nativescript-vue";
 import VueDevtools from 'nativescript-vue-devtools'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+
+Vue.use(VueAxios, axios)
+
+Vue.registerElement(
+  "CardView", 
+  () => require("@nstudio/nativescript-cardview")
+)
 
 import LoginPage from './components/LoginPage'
-import App from "./components/App";
+//import App from "./components/App";
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
 }
@@ -49,6 +58,6 @@ new Vue({
     </Frame>`,
     components: {
       LoginPage,
-      App
+     // App
     }
 }).$start();

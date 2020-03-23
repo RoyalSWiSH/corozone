@@ -1,17 +1,9 @@
 <template>
-  <Page>
-    <ActionBar>
-      <Label text="Home"></Label>
-    </ActionBar>
-
-    <ListView for="item in items" @itemTap="onItemTap">
-      <v-template>
-        <StackLayout orientation="horizontal">
-          <Label :text="item.name" textWrap="true"></Label>
-        </StackLayout>
-      </v-template>
-    </ListView>
-  </Page>
+ <Page>
+     <!-- <StackLayout> -->
+                 <Label text="Location: Frankfurt" />
+     <!-- </StackLayout> -->
+</Page>
 </template>
 
 <script>

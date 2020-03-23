@@ -1,77 +1,41 @@
 <template lang="html">
     <Page>
         <ActionBar>
-            <Label text="Browse"></Label>
+            <Label text="Corozone"></Label>
         </ActionBar>
       <FlexboxLayout class="page">
 			<StackLayout class="form">
-				<Image class="logo" src="~/images/logo.png" />
-				<Label class="header" text="Corozone" />
+       <StackLayout class="input-field">
+					<Label text="Groceries" class="field-title" fontSize="19"/>
+					<StackLayout class="hr-light" />
+				</StackLayout>
 
-				<StackLayout class="input-field" marginBottom="25">
-					<TextField class="input" hint="Email" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.email"
+        <StackLayout class="input-field" marginBottom="25">
+					<Label text="Street" class="field-title" fontSize="19"/>
+					<TextField class="input" hint="street" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.street"
+					 returnKeyType="next" @returnPress="code" fontSize="18" />
+					<StackLayout class="hr-light" />
+					<Label text="Code" class="field-title" fontSize="19"/>
+					<TextField ref="code" class="input" hint="plzt" keyboardType="plz" autocorrect="false" autocapitalizationType="none" v-model="adress.plz"
+					 returnKeyType="next" @returnPress="street" fontSize="18" />
+					<Label text="City" class="field-title" fontSize="19"/>
+					<TextField ref="street" class="input" hint="city" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.city"
 					 returnKeyType="next" @returnPress="focusPassword" fontSize="18" />
-					<StackLayout class="hr-light" />
+				<Button text="Request Groceries" @tap="requestGroceries" class="btn" />
 				</StackLayout>
-
-				<StackLayout class="input-field" marginBottom="25">
-					<TextField ref="password" class="input" hint="Password" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'"
-					 @returnPress="focusConfirmPassword" fontSize="18" />
-					<StackLayout class="hr-light" />
-				</StackLayout>
-
-				<StackLayout v-show="!isLoggingIn" class="input-field">
-					<TextField ref="confirmPassword" class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done"
-					 fontSize="18" />
-					<StackLayout class="hr-light" />
-				</StackLayout>
-
-				<Button :text="isLoggingIn ? 'Log In' : 'Sign Up'" @tap="submit" class="btn btn-primary m-t-20" />
-				<Label v-show="isLoggingIn" text="Forgot your password?" class="login-label" @tap="forgotPassword" />
+		
 			</StackLayout>
 
-	      <StackLayout class="input-field">
-					<Label text="Einkäufe" />
-					<StackLayout class="hr-light" />
-				</StackLayout>
-			
-		</FlexboxLayout>
+	     		</FlexboxLayout>
     </Page>
 </template>
 
 <script>
 import firebase from "nativescript-plugin-firebase";
+import axios from "axios/dist/axios"
 // A stub for a service that authenticates users.
-const userService = {
-  async register(user) {
-    return await firebase.createUser({
-      email: user.email,
-      password: user.password
-    });
-  },
-  async login(user) {
-    return await firebase.login({
-        type: firebase.LoginType.PASSWORD,
-        passwordOptions: {
-          email: user.email,
-          password: user.password
-        }
-    });
-  },
-  async resetPassword(email) {
-    return await firebase.resetPassword({ 
-      email: email
-      });
-}
-}
-// A stub for the main page of your app. In a real app you’d put this page in its own .vue file.
-const HomePage = {
-  template: `
-	<Page>
-        <Label class="m-20" textWrap="true" text="You have successfully authenticated. This is where you build your core application functionality."></Label>
-	</Page>
-	`
-};
+
+
 export default {
   data() {
     return {
@@ -80,6 +44,11 @@ export default {
         email: "foo@foo.com",
         password: "barbar",
         confirmPassword: "barbar"
+      },
+      adress: {
+        street: "",
+        plz: "",
+        city: ""
       }
     };
   },
@@ -87,88 +56,25 @@ export default {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    submit() {
-      if (!this.user.email || !this.user.password) {
-        this.alert("Please provide both an email address and password.");
+    requestGroceries() {
+      if (!this.adress.street || !this.adress.plz || !this.adress.city) {
+        this.alert("Please provide city, street and adress.");
         return;
       }
-      if (this.isLoggingIn) {
-        this.login();
-      } else {
-        this.register();
-      }
-    },
-    login() {
-      userService
-        .login(this.user)
-        .then(() => {
-          alert("Login")
-         // this.$navigateTo(App);
-        })
-        .catch(() => {
-          console.error(err);
-          this.alert("Unfortunately we could not find your account.");
-        });
-    },
-    register() {
-      if (this.user.password != this.user.confirmPassword) {
-        this.alert("Your passwords do not match.");
-        return;
-      }
-      userService
-        .register(this.user)
-        .then(() => {
-          this.alert("Your account was successfully created.");
-          this.isLoggingIn = true;
-        })
-        .catch(() => {
-          console.error(err);
-          this.alert(err);
-        });
-    },
-    forgotPassword() {
-      prompt({
-        title: "Forgot Password",
-        message:
-          "Enter the email address you used to register for APP NAME to reset your password.",
-        inputType: "email",
-        defaultText: "",
-        okButtonText: "Ok",
-        cancelButtonText: "Cancel"
-      }).then(data => {
-        if (data.result) {
-          userService
-            .resetPassword(data.text.trim())
-            .then(() => {
-              this.alert(
-                "Your password was successfully reset. Please check your email for instructions on choosing a new password."
-              );
-            })
-            .catch(() => {
-              this.alert(
-                "Unfortunately, an error occurred resetting your password."
-              );
-            });
-        }
+      axios.get('http://webcode.me').then(resp => {
+        console.log(resp.data);
       });
-    },
-    focusPassword() {
-      this.$refs.password.nativeView.focus();
-    },
-    focusConfirmPassword() {
-      if (!this.isLoggingIn) {
-        this.$refs.confirmPassword.nativeView.focus();
-      }
-    },
+      },
     alert(message) {
       return alert({
-        title: "APP NAME",
+        title: "Corozone",
         okButtonText: "OK",
         message: message
       });
-    }
-  }
-};
+    },
+}
+}
+
 </script>
 
 <style scoped>
