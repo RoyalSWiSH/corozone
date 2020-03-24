@@ -7,7 +7,7 @@ Vue.use(VueAxios, axios)
 
 Vue.registerElement(
   "CardView", 
-  () => require("@nstudio/nativescript-cardview")
+  () => require("@nstudio/nativescript-cardview").CardView
 )
 
 import LoginPage from './components/LoginPage'

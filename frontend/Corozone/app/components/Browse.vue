@@ -21,6 +21,9 @@
 					<Label text="City" class="field-title" fontSize="19"/>
 					<TextField ref="street" class="input" hint="city" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.city"
 					 returnKeyType="next" @returnPress="focusPassword" fontSize="18" />
+					<Label text="Items" class="field-title" fontSize="19"/>
+					<TextField ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.items"
+					 returnKeyType="next" @returnPress="focusPassword" fontSize="18" />
 				<Button text="Request Groceries" @tap="requestGroceries" class="btn" />
 				</StackLayout>
 		
@@ -48,7 +51,8 @@ export default {
       adress: {
         street: "",
         plz: "",
-        city: ""
+		city: "",
+		items: ""
       }
     };
   },

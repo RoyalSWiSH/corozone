@@ -1,12 +1,24 @@
 <template>
  <Page>
-     <!-- <ScrollView>
-     <StackLayout> -->
-         <!-- <CardView class="card"> -->
-                 <Label text="Location: Frankfur" />
-         <!-- </CardView> -->
-     <!-- </StackLayout>
-     </ScrollView> -->
+     <ActionBar>
+            <Label text="Groceries"></Label>
+        </ActionBar>
+     <ScrollView>
+     <StackLayout>
+      <GridLayout rows="*" columns="*, *">
+      <card-view class="card" col="0" margin="10" elevation="20" radius="1">
+          <GridLayout rows="120, auto, auto, auto" columns="*, *, *"> 
+                 <Label text="Loc: Frankfurt - 1,2 km" row="0" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
+                 <Label text="Items: Beverages, Food" row="1" margin="5" fontSize="15" colSpan="3"/>
+                 <Button text="Accept" row="2" colSpan="3"/>
+          </GridLayout>
+      </card-view>
+         <card-view class="card" col="1" margin="10" elevation="20" radius="1"> 
+                 <Label text="Location: Mainz" />
+      </card-view>  
+      </GridLayout>
+     </StackLayout>
+     </ScrollView>
 </Page>
 </template>
 
