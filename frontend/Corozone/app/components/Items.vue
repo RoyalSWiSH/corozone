@@ -5,17 +5,60 @@
         </ActionBar>
      <ScrollView>
      <StackLayout>
-      <GridLayout rows="*" columns="*, *">
+      <GridLayout rows="*" columns="*, *" v-for="i in rowCount" :key="i">
       <card-view class="card" col="0" margin="10" elevation="20" radius="1">
-          <GridLayout rows="120, auto, auto, auto" columns="*, *, *"> 
-                 <Label text="Loc: Frankfurt - 1,2 km" row="0" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
-                 <Label text="Items: Beverages, Food" row="1" margin="5" fontSize="15" colSpan="3"/>
+          <GridLayout rows="240, auto, auto, auto" columns="*, *, *"> 
+                 <!-- <StackLayout colSpan="3" row="1"> -->
+          <!-- <GridLayout row="1"> -->
+                  <Mapbox
+                    #map
+                    accessToken="pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw"
+                    mapStyle="traffic_day"
+                    colSpan="3"
+                    latitude="50.15341"
+                    longitude="8.66237"
+                    hideCompass="true"
+                    zoomLevel="14"
+                    showUserLocation="true"
+                    disableZoom="false"
+                    disableRotation="false"
+                    disableScroll="false"
+                    disableTilt="false"
+                    (mapReady)="onMapReady($event)">
+                </Mapbox>
+                <!-- </GridLayout> -->
+                 <!-- </StackLayout> -->
+                 <!-- Check if a district for larger cities is present and if not display the city -->
+                 <Label v-if="items[(i-1)* itemsPerRow].location.district" :text="items[(i-1)* itemsPerRow].location.district" row="2" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
+                 <Label v-else :text="items[(i-1)* itemsPerRow].location.city" row="2" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
+                 <!-- Display the Type of request, Groceries, Petcare... -->
+                 <Label :text="items[(i-1)* itemsPerRow].item_categories" row="3" margin="5" fontSize="15" colSpan="3"/>
+                  <!-- <Button text="Accept" row="5" colSpan="3"/>  -->
+          </GridLayout>
+      </card-view>
+        <card-view class="card" col="1" margin="10" elevation="20" radius="1">
+          <GridLayout rows="240, auto, auto, auto" columns="*, *, *"> 
+                 <Label :text="items[(i-1)* itemsPerRow + 1].location.district" row="0" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
+                    <Mapbox
+                    #map
+                    accessToken="pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw"
+                    mapStyle="traffic_day"
+                    colSpan="3"
+                    :latitude="items[(i-1)* itemsPerRow + 1].location.lat"
+                    :longitude="items[(i-1)* itemsPerRow + 1].location.long"
+                    hideCompass="true"
+                    zoomLevel="14"
+                    showUserLocation="true"
+                    disableZoom="false"
+                    disableRotation="false"
+                    disableScroll="false"
+                    disableTilt="false"
+                    (mapReady)="onMapReady($event)">
+                </Mapbox>
+                 <Label :text="items[(i-1)* itemsPerRow + 1].item_categories" row="1" margin="5" fontSize="15" colSpan="3"/>
                  <Button text="Accept" row="2" colSpan="3"/>
           </GridLayout>
       </card-view>
-         <card-view class="card" col="1" margin="10" elevation="20" radius="1"> 
-                 <Label text="Location: Mainz" />
-      </card-view>  
       </GridLayout>
      </StackLayout>
      </ScrollView>
@@ -24,76 +67,85 @@
 
 <script>
 import ItemDetails from "./ItemDetails";
+import { Accuracy } from "ui/enums";
+import * as geolocation from "nativescript-geolocation";
 
 export default {
     data: () => {
         return {
+            itemsPerRow: 2,
             items: [
                 {
-                    name: "Item 1",
-                    description: "Description for Item 1"
+                    location: {
+                        "street": "Adickes-Alee 13",
+                        "district": "Heddernheim", 
+                        "city": "Frankfurt a.M",
+                        "distance": "2.0 km",
+                        "lat": "50.1584",
+                        "long": "8.6399"
+                        },
+                    item_categories: ["Food", "Beverages", "Medicine"],
+                    items: [
+                        "2x 1.5 l Wasser", 
+                        "2x Paprika", 
+                        "1x Knäckebrot", 
+                        "500g Mehl"]
                 },
                 {
-                    name: "Item 2",
-                    description: "Description for Item 2"
+                    location: {
+                        "street": "Adickes-Alee 13",
+                        "district": "",
+                        "city": "Volpertshausen",
+                        "distance": "2.0 km",
+                        "lat": "50.5021339",
+                        "long": "8.5434490"
+                        },
+                    item_categories: ["Medicine"]
                 },
                 {
-                    name: "Item 3",
-                    description: "Description for Item 3"
+                    location: {
+                        "street": "Adickes-Alee 13",
+                        "district": "",
+                        "city": "Volpertshausen",
+                        "distance": "2.0 km",
+                        "lat": "50.5021339",
+                        "long": "8.5434490"
+                        },
+                    item_categories: ["Childcare"]
                 },
                 {
-                    name: "Item 4",
-                    description: "Description for Item 4"
+                    location: {
+                        "street": "Adickes-Alee 13",
+                        "district": "Bornheim",
+                        "city": "Frankfurt a.M.",
+                        "distance": "2.0 km",
+                        "lat": "50.5021339",
+                        "long": "8.5434490"
+                        },
+                    item_categories: "Food"
+                },
+                 {
+                    location: "Heddernheim, 2.0 km",
+                    item_categories: "Food, Beverages"
                 },
                 {
-                    name: "Item 5",
-                    description: "Description for Item 5"
+                    location: "Niedereschbach, 3.1 km",
+                    item_categories: "Medicine"
                 },
                 {
-                    name: "Item 6",
-                    description: "Description for Item 6"
+                    location: "Eckenheim, 3.2 km",
+                    item_categories: "Childcare"
                 },
                 {
-                    name: "Item 7",
-                    description: "Description for Item 7"
-                },
-                {
-                    name: "Item 8",
-                    description: "Description for Item 8"
-                },
-                {
-                    name: "Item 9",
-                    description: "Description for Item 9"
-                },
-                {
-                    name: "Item 10",
-                    description: "Description for Item 10"
-                },
-                {
-                    name: "Item 11",
-                    description: "Description for Item 11"
-                },
-                {
-                    name: "Item 12",
-                    description: "Description for Item 12"
-                },
-                {
-                    name: "Item 13",
-                    description: "Description for Item 13"
-                },
-                {
-                    name: "Item 14",
-                    description: "Description for Item 14"
-                },
-                {
-                    name: "Item 15",
-                    description: "Description for Item 15"
-                },
-                {
-                    name: "Item 16",
-                    description: "Description for Item 16"
-                }
+                    location: "Bornheim, 1.6 km",
+                    item_categories: "Food"
+                }                
             ]};
+    },
+    computed: {
+        rowCount: function() {
+            return Math.ceil(this.items.length / this.itemsPerRow)
+        }
     },
     methods: {
         onItemTap (args) {
@@ -110,7 +162,20 @@ export default {
                         duration: 200,
                         curve: "ease"
                     }}});
-        }
+        },
+          onMapReady(args) {
+                args.map.addMarkers([
+                    {
+                        lat: 37.7397,
+                        lng: -121.4252,
+                        title: "Tracy, CA",
+                        subtitle: "Home of The Polyglot Developer!",
+                        onCalloutTap: () => {
+                            utils.openUrl("https://www.thepolyglotdeveloper.com");
+                        }
+                    }
+                ]);
+          }
     }
 };
 </script>

@@ -3,6 +3,7 @@ import VueDevtools from 'nativescript-vue-devtools'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
+import LoginPage from './components/LoginPage'
 Vue.use(VueAxios, axios)
 
 Vue.registerElement(
@@ -10,7 +11,8 @@ Vue.registerElement(
   () => require("@nstudio/nativescript-cardview").CardView
 )
 
-import LoginPage from './components/LoginPage'
+Vue.registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
+
 //import App from "./components/App";
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
