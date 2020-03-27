@@ -1,42 +1,49 @@
- <template lang="html">
- <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
+<template lang="html">
+  <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
     <BottomNavigation>
-        <TabStrip>
-            <TabStripItem class="navigation__item">
-                <Label text="Home"></Label>
-                <Image src.decode="font://&#xf015;" class="fas t-36"></Image>
-            </TabStripItem>
-            <TabStripItem class="navigation__item">
-                <Label text="Browse"></Label>
-                <Image src.decode="font://&#xf1ea;" class="far t-36"></Image>
-            </TabStripItem>
-            <TabStripItem class="navigation__item">
-                <Label text="Search"></Label>
-                <Image src.decode="font://&#xf002;" class="fas t-36"></Image>
-            </TabStripItem>
-        </TabStrip>
+      <TabStrip>
+        <TabStripItem class="navigation__item">
+          <Label text="Home"></Label>
+          <Image src.decode="font://&#xf015;" class="fas t-36"></Image>
+        </TabStripItem>
+        <TabStripItem class="navigation__item">
+          <Label text="Browse"></Label>
+          <Image src.decode="font://&#xf1ea;" class="far t-36"></Image>
+        </TabStripItem>
+        <TabStripItem class="navigation__item">
+          <Label text="Health"></Label>
+          <Image src.decode="font://&#xf0fe;" class="fas t-36"></Image>
+        </TabStripItem>
+        <TabStripItem class="navigation__item">
+          <Label text="Search"></Label>
+          <Image src.decode="font://&#xf002;" class="fas t-36"></Image>
+        </TabStripItem>
+      </TabStrip>
 
-        <TabContentItem>
-            <Frame>
-                <Items />
-            </Frame>
-        </TabContentItem>
+      <TabContentItem>
+        <Frame>
+          <Items />
+        </Frame>
+      </TabContentItem>
 
-        <TabContentItem>
-            <Frame>
-                <Browse />
-            </Frame>
-        </TabContentItem>
-
-        <TabContentItem>
-            <Frame>
-                <Search />
-            </Frame>
-        </TabContentItem>
-
+      <TabContentItem>
+        <Frame>
+          <Browse />
+        </Frame>
+      </TabContentItem>
+      <TabContentItem>
+        <Frame>
+          <Health />
+        </Frame>
+      </TabContentItem>
+      <TabContentItem>
+        <Frame>
+          <Search />
+        </Frame>
+      </TabContentItem>
     </BottomNavigation>
-    </Page>
-</template> 
+  </Page>
+</template>
 
 <!--<template lang="html">
 <Page>
@@ -48,12 +55,14 @@
 import Items from "./Items.vue";
 import Browse from "./Browse.vue";
 import Search from "./Search.vue";
+import Health from "./Health.vue";
 
 export default {
   name: "app",
   components: {
     Items,
     Browse,
+    Health,
     Search
   }
 };
@@ -65,5 +74,4 @@ export default {
 // End custom common variables
 
 // Custom styles
-
 </style>
