@@ -4,19 +4,19 @@
             <Label text="Groceries"></Label>
         </ActionBar>
      <ScrollView>
+     <!-- <Frame ~groceriesFrame id="groceriesFrame">     -->
      <StackLayout>
-      <GridLayout rows="*" columns="*, *" v-for="i in rowCount" :key="i">
-      <card-view class="card" col="0" margin="10" elevation="20" radius="1">
-          <GridLayout rows="240, auto, auto, auto" columns="*, *, *"> 
-                 <!-- <StackLayout colSpan="3" row="1"> -->
-          <!-- <GridLayout row="1"> -->
+      <GridLayout rows="*" columns="*, *"  v-for="i in rowCount" :key="i">
+      <card-view class="card" col="0" margin="10" elevation="20" radius="1" @tap="seeDetails()">
+          <GridLayout rows="280, 40, 40, 60" columns="*, *, *"> 
                   <Mapbox
                     #map
+                    v-if="$isIOS"
                     accessToken="pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw"
                     mapStyle="traffic_day"
                     colSpan="3"
-                    latitude="50.15341"
-                    longitude="8.66237"
+                    :latitude="items[(i-1)* itemsPerRow].location.lat"
+                    :longitude="items[(i-1)* itemsPerRow].location.long"
                     hideCompass="true"
                     zoomLevel="14"
                     showUserLocation="true"
@@ -26,21 +26,20 @@
                     disableTilt="false"
                     (mapReady)="onMapReady($event)">
                 </Mapbox>
-                <!-- </GridLayout> -->
-                 <!-- </StackLayout> -->
                  <!-- Check if a district for larger cities is present and if not display the city -->
-                 <Label v-if="items[(i-1)* itemsPerRow].location.district" :text="items[(i-1)* itemsPerRow].location.district" row="2" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
-                 <Label v-else :text="items[(i-1)* itemsPerRow].location.city" row="2" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
+                 <Label v-if="items[(i-1)* itemsPerRow].location.district" :text="items[(i-1)* itemsPerRow].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label v-else :text="items[(i-1)* itemsPerRow].location.city" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <!-- Display the Type of request, Groceries, Petcare... -->
-                 <Label :text="items[(i-1)* itemsPerRow].item_categories" row="3" margin="5" fontSize="15" colSpan="3"/>
-                  <!-- <Button text="Accept" row="5" colSpan="3"/>  -->
+                 <Label :text="items[(i-1)* itemsPerRow].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
+                  <Button text="Details" row="3" colSpan="3" @tap="seeDetails()"/> 
           </GridLayout>
       </card-view>
-        <card-view class="card" col="1" margin="10" elevation="20" radius="1">
-          <GridLayout rows="240, auto, auto, auto" columns="*, *, *"> 
+        <card-view class="card" col="1" margin="10" elevation="20" radius="1" @tap="seeDetails()">
+          <GridLayout rows="280, 40, 40, 60" columns="*, *, *"> 
                  <Label :text="items[(i-1)* itemsPerRow + 1].location.district" row="0" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
                     <Mapbox
                     #map
+                    v-if="$isIOS"
                     accessToken="pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw"
                     mapStyle="traffic_day"
                     colSpan="3"
@@ -55,12 +54,16 @@
                     disableTilt="false"
                     (mapReady)="onMapReady($event)">
                 </Mapbox>
-                 <Label :text="items[(i-1)* itemsPerRow + 1].item_categories" row="1" margin="5" fontSize="15" colSpan="3"/>
-                 <Button text="Accept" row="2" colSpan="3"/>
+                 <Label v-if="items[(i-1)* itemsPerRow + 1].location.district" :text="items[(i-1)* itemsPerRow].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label v-else :text="items[(i-1)* itemsPerRow + 1].location.city" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <!-- Display the Type of request, Groceries, Petcare... -->
+                 <Label :text="items[(i-1)* itemsPerRow + 1].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
+                 <Button text="Details" row="3" colSpan="3" @tap="seeDetails"/>
           </GridLayout>
       </card-view>
       </GridLayout>
      </StackLayout>
+     <!-- </Frame> -->
      </ScrollView>
 </Page>
 </template>
@@ -148,6 +151,11 @@ export default {
         }
     },
     methods: {
+        seeDetails (grocery_request) {
+            this.$navigateTo(ItemDetails, {
+                    frame: "itemsFrame"
+                });
+        },
         onItemTap (args) {
             const view = args.view;
             const page = view.page;
@@ -166,8 +174,8 @@ export default {
           onMapReady(args) {
                 args.map.addMarkers([
                     {
-                        lat: 37.7397,
-                        lng: -121.4252,
+                        lat: 50.1584,
+                        lng: 8.6399,
                         title: "Tracy, CA",
                         subtitle: "Home of The Polyglot Developer!",
                         onCalloutTap: () => {

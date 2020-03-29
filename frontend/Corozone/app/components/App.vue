@@ -17,7 +17,7 @@
         </TabStrip>
 
         <TabContentItem>
-            <Frame>
+            <Frame ~itemsFrame id="itemsFrame">
                 <Items />
             </Frame>
         </TabContentItem>

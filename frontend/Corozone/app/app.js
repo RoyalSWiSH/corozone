@@ -2,8 +2,16 @@ import Vue from "nativescript-vue";
 import VueDevtools from 'nativescript-vue-devtools'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-
+import App from './components/App'
 import LoginPage from './components/LoginPage'
+import Items from './components/Items'
+import ItemDetails from './components/ItemDetails'
+import { isAndroid, isIOS } from 'tns-core-modules/platform';
+
+// Enable global check if device is android or iOS to disable Maps on Android since mapbox crashes right now
+Vue.prototype.$isAndroid = isAndroid;
+Vue.prototype.$isIOS = isIOS;
+
 Vue.use(VueAxios, axios)
 
 Vue.registerElement(
@@ -50,16 +58,17 @@ firebase
         mode: 3 
     }
 };
-//  new Vue({ 
-//    render: h => h('frame', [h(LoginPage)])
-// }).$start();
+//   new Vue({ 
+//     render: h => h('frame', [h(LoginPage)])
+//  }).$start();
 new Vue({
     template: `
     <Frame>
       <LoginPage />
     </Frame>`,
     components: {
-      LoginPage,
+     LoginPage
      // App
+     //Items
     }
 }).$start();
