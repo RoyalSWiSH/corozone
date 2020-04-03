@@ -36,7 +36,7 @@
 <script>
 import firebase from "nativescript-plugin-firebase";
 import axios from "axios/dist/axios"
-// A stub for a service that authenticates users.
+// A stub for a service that authenticates users
 
 import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
@@ -138,7 +138,7 @@ export default {
         // Send a POST request
         this.axios({
             method: 'post',
-            url: 'http://192.168.1.108:1323/groceries/create',
+            url: 'http://192.168.1.103:1323/groceries/create',
             data: {
 				budget: 100.4,
 				forSomeoneElse: true,
