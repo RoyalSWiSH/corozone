@@ -13,7 +13,7 @@ Vue.prototype.$isAndroid = isAndroid;
 Vue.prototype.$isIOS = isIOS;
 
 Vue.use(VueAxios, axios)
-axios.defaults.baseURL = "http://10.0.2.2:1323";
+axios.defaults.baseURL = "http://192.168.1.108:1323";
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 Vue.registerElement(

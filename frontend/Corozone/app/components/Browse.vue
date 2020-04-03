@@ -22,7 +22,7 @@
 					<TextField ref="street" class="input" hint="city" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.city"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 					<Label text="Items" class="field-title" fontSize="19"/>
-					<TextField ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.items"
+					<TextField ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="requestedItems"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 				<Button text="Request Groceries" @tap="requestGroceries" class="btn" />
 				</StackLayout>
@@ -38,6 +38,9 @@ import firebase from "nativescript-plugin-firebase";
 import axios from "axios/dist/axios"
 // A stub for a service that authenticates users.
 
+import * as geolocation from "nativescript-geolocation";
+import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
+
 
 export default {
   data() {
@@ -52,8 +55,14 @@ export default {
         street: "",
         plz: "",
 		city: "",
-		items: ""
-      }
+		lat: 0.0,
+		long: 0.0
+	  },
+	  requestedItems: "",
+	  authHeader: {
+    	'Accept': 'application/json',
+    	'Content-Type': 'application/json'
+		},
     };
   },
   methods: {
@@ -61,13 +70,107 @@ export default {
       this.isLoggingIn = !this.isLoggingIn;
     },
     requestGroceries() {
-      if (!this.adress.street || !this.adress.plz || !this.adress.city) {
-        this.alert("Please provide city, street and adress.");
-        return;
-      }
-      axios.get('http://webcode.me').then(resp => {
-        console.log(resp.data);
-      });
+    //   if (!this.adress.street || !this.adress.plz || !this.adress.city) {
+    //     this.alert("Please provide city, street and adress.");
+    //     return;
+	//   }
+	
+    //   axios.get('http://webcode.me').then(resp => {
+    //     console.log(resp.data);
+	//   });
+	 
+
+//var geolocation = require("nativescript-geolocation");
+
+	 geolocation.isEnabled().then(function (isEnabled) {
+                    if (!isEnabled) {
+                        geolocation.enableLocationRequest(true, true).then(() => {
+                            console.log("User Enabled Location Service");
+                        }, (e) => {
+                            console.log("Error: " + (e.message || e));
+                        }).catch(ex => {
+                            console.log("Unable to Enable Location", ex);
+                        });
+                    }
+                }, function (e) {
+                    console.log("Error: " + (e.message || e));
+                });
+	//  let that = this;
+    //             geolocation.getCurrentLocation({
+    //                 desiredAccuracy: Accuracy.high,
+    //                 maximumAge: 5000,
+    //                 timeout: 10000
+    //             }).then(function (loc) {
+    //                 if (loc) {
+    //                     that.locations.push(loc);
+    //                 }
+    //             }, function (e) {
+    //                 console.log("Error: " + (e.message || e));
+	// 			});
+				
+	let that = this
+        geolocation.enableLocationRequest(true, true).then(() => {
+            geolocation.isEnabled().then(value => {
+                if (!value) {
+                    console.log("NO permissions!");
+                    return false;
+                } else {
+                    console.log("Have location permissions");
+                    geolocation
+                        .getCurrentLocation({
+                            timeout: 20000
+                        })
+                        .then(location => {
+                            if (!location) {
+                                console.log("Failed to get location!");
+                            } else {
+                               this.adress.lat = location.latitude
+                               this.adress.long = location.longitude
+                            }
+                        });
+   			return true;				
+			}
+			});
+        })
+		
+	//console.log(this.requestedItems.split(","))
+
+        // Send a POST request
+        this.axios({
+            method: 'post',
+            url: 'http://192.168.1.108:1323/groceries/create',
+            data: {
+				budget: 100.4,
+				forSomeoneElse: true,
+				inQuarantine: false,
+				minimumSupply: false,
+				elderly: false,
+				location: {
+					city: "Frankfurt",
+					lat: this.adress.lat,
+					long: this.adress.long
+				}
+				}
+        }).then(function (response) {
+            console.log(response.data);  //Outputs API response in CL to verify functionality.
+		})
+		.catch((error) => {   if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log(error.message);
+    }});
+
+
       },
     alert(message) {
       return alert({

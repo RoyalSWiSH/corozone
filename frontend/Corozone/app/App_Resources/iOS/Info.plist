@@ -47,5 +47,9 @@
 	<string>UIStatusBarStyleLightContent</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Find your current location to see places nearby.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Find your current location to see places nearby.</string>
 </dict>
 </plist>

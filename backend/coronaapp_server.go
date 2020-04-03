@@ -16,12 +16,12 @@ import (
 //    "crypto/sha1"
     "strings"
     "crypto/sha256"
+    "github.com/google/uuid"
 )
 
 
 //// Consts, Vars, Structs/////
 var db *sql.DB
-
 type JwtClaims struct {
     Name string `json:"name"`
     jwt.StandardClaims
@@ -35,17 +35,65 @@ type user struct {
         Mobile string `json:"mobile"`
     }
 
+type location struct {
+    Street    string  `json:"street"`
+    District  string  `json:"district"`
+    City      string  `json:"city"`
+    Country   string  `json:"country"`
+    Lat       float64   `json:"lat"`
+    Long      float64   `json:"long"`
+}
+
+type groceryRequest struct {
+    OrderID        string `json:"order_id"`
+    Location       location
+    Budget         float32   `json:"budget"`
+    ForSomeoneElse bool `json:"forSomeoneElse"`
+    InQuarantine   bool `json:"inQuarantine"`
+    MinimumSupply  bool `json:"minimumSupply"`
+    Elderly        bool `json:"elderly"`
+    RequestedItems string `json:"requestedItems"`
+}
 
 // TODO: Hospital struct
 
-// TODO: Groceriy struct
-const (
-	host     = "kandula.db.elephantsql.com"
-	port     = 5432
-	dbuser     = "lwnxzsyj"
-	dbpassword = "kST7gElVkHJA6IWrRuLx9wEDhmGnS0tF"
-	dbname   = "lwnxzsyj"
-)
+type dbconfig struct {
+    Host string
+    Port int
+    User string
+    Password string
+    DBName string
+    SSL string
+    SSLCert string
+}
+
+type apikeys struct {
+    GFirebase string
+    Mapbox string
+    GMmaps string
+}
+
+
+
+
+var dbconf = dbconfig{
+    Host: "db-postgresql-fra1-47535-do-user-1884949-0.a.db.ondigitalocean.com",
+    Port: 25060,
+    User: "doadmin",
+    Password: "y1m27iy7ahk9t0a4",
+    DBName: "defaultdb",
+    SSL: "require"}
+
+
+
+var dbconfelephant = dbconfig{
+    Host: "kandula.db.elephantsql.com",
+    Port: 5432,
+    User: "lwnxzsyj",
+    Password: "kST7gElVkHJA6IWrRuLx9wEDhmGnS0tF",
+    DBName: "lwnxzsyj",
+    SSL: "disable"}
+
 
 var seq = 1
 var users = map[int]*user{}
@@ -58,8 +106,8 @@ func main() {
 
     var err error
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		host, port, dbuser, dbpassword, dbname)
+		"password=%s dbname=%s sslmode=%s",
+		dbconf.Host, dbconf.Port, dbconf.User, dbconf.Password, dbconf.DBName, dbconf.SSL)
     db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
@@ -70,14 +118,8 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Successfully connected!")
-		sqlStatement2 := `UPDATE projects SET name = $2, date = $3 WHERE id = $1;`
-	res2, err := db.Exec(sqlStatement2, 2, "NewFirst", "01.01.2020")
-	if err != nil {
-		panic(err)
-	}
-	count, err := res2.RowsAffected()
-	fmt.Printf("%d rows.\n", count)
-e := echo.New()
+
+    e := echo.New()
 	e.GET("/", hello)
     pr := e.Group("/projects")
     pr.Use(ServerHeader)
@@ -102,7 +144,37 @@ e := echo.New()
     userGroup.POST("/create", createUser)
     userGroup.GET("/:id", getUser)
     userGroup.GET("/login", loginUser)
+
+    groceryGroup := e.Group("/groceries")
+    groceryGroup.POST("/create", createGroceryRequest)
+
 	e.Logger.Fatal(e.Start(":1323"))
+}
+
+func createGroceryRequest(c echo.Context) error {
+    g := &groceryRequest{
+    }
+    if err:= c.Bind(g); err != nil {
+        return err
+    }
+
+    DBCreateGroceryRequest(g)
+    return c.JSON(http.StatusCreated, g)
+}
+
+func DBCreateGroceryRequest(g *groceryRequest) {
+     sqlInsertStatement := fmt.Sprintf(`
+    INSERT INTO delivery_order (order_id, budget, for_someone_else, in_quarantine, elderly, requested_Items, geom, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, ST_GeomFromText('POINT(%v %v)', 4326), $7) returning order_id`, g.Location.Long, g.Location.Lat)
+    var order_id string
+
+    err := db.QueryRow(sqlInsertStatement,
+    uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, time.Now()).Scan(&order_id)
+    //_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func createUser(c echo.Context) error {

@@ -1,7 +1,7 @@
 <template lang="html">
     <Page>
         <ActionBar>
-            <Label text="Browse"></Label>
+            <Label text="Corozone"></Label>
         </ActionBar>
       <FlexboxLayout class="page">
 			<StackLayout class="form">

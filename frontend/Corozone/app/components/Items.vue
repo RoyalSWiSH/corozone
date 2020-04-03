@@ -31,7 +31,7 @@
                  <Label v-else :text="items[(i-1)* itemsPerRow].location.city" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <!-- Display the Type of request, Groceries, Petcare... -->
                  <Label :text="items[(i-1)* itemsPerRow].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
-                  <Button text="Details" row="3" colSpan="3" @tap="seeDetails()"/> 
+                  <Button text="Details" row="3" colSpan="3" @tap="seeDetails(items[(i-1)* itemsPerRow])"/> 
           </GridLayout>
       </card-view>
         <card-view class="card" col="1" margin="10" elevation="20" radius="1" @tap="seeDetails()">
@@ -92,7 +92,17 @@ export default {
                         "2x 1.5 l Wasser", 
                         "2x Paprika", 
                         "1x Knäckebrot", 
-                        "500g Mehl"]
+                        "500g Mehl",
+                        "Schampoo",
+                        "Müllbeutel 20l",
+                        "Ginger Ale",
+                        "Zewa"],
+                    budget: 100,
+                    forSomeoneElse: "false",
+                    minimumSupply: "false",
+                    inQuarantine: "true",
+                    elderly: "false",
+                    status: "open"
                 },
                 {
                     location: {
@@ -103,7 +113,12 @@ export default {
                         "lat": "50.5021339",
                         "long": "8.5434490"
                         },
-                    item_categories: ["Medicine"]
+                    item_categories: ["Medicine"],
+                    items: [
+                        "2x 1.5 l Wasser", 
+                        "2x Paprika", 
+                        "1x Knäckebrot", 
+                        "500g Mehl"]
                 },
                 {
                     location: {
@@ -151,9 +166,10 @@ export default {
         }
     },
     methods: {
-        seeDetails (grocery_request) {
+        seeDetails (groceryRequest) {
             this.$navigateTo(ItemDetails, {
-                    frame: "itemsFrame"
+                    frame: "itemsFrame",
+                    props: { groceryRequest: groceryRequest } 
                 });
         },
         onItemTap (args) {
