@@ -17,6 +17,8 @@ import (
     "strings"
     "crypto/sha256"
     "github.com/google/uuid"
+    gonfig "github.com/eduardbcom/gonfig"
+    "encoding/json"
 )
 
 
@@ -57,14 +59,14 @@ type groceryRequest struct {
 
 // TODO: Hospital struct
 
-type dbconfig struct {
-    Host string
-    Port int
-    User string
-    Password string
-    DBName string
-    SSL string
-    SSLCert string
+type DBConfig struct {
+    Name string `json:"name"`
+    Host string `json:"host"`
+    Port int `json:"port"`
+    User string`json:"user"`
+    Password string`json:"password"`
+    DBName string`json:"dbname"`
+    SSL string`json:"ssl"`
 }
 
 type apikeys struct {
@@ -73,20 +75,17 @@ type apikeys struct {
     GMmaps string
 }
 
+//var dbconfocean = DBConfig{
+//    Host: "db-postgresql-fra1-47535-do-user-1884949-0.a.db.ondigitalocean.com",
+//    Port: 25060,
+//    User: "doadmin",
+ //   Password: "y1m27iy7ahk9t0a4",
+//    DBName: "defaultdb",
+//    SSL: "require"}
 
 
 
-var dbconf = dbconfig{
-    Host: "db-postgresql-fra1-47535-do-user-1884949-0.a.db.ondigitalocean.com",
-    Port: 25060,
-    User: "doadmin",
-    Password: "y1m27iy7ahk9t0a4",
-    DBName: "defaultdb",
-    SSL: "require"}
-
-
-
-var dbconfelephant = dbconfig{
+var dbconfelephant = DBConfig{
     Host: "kandula.db.elephantsql.com",
     Port: 5432,
     User: "lwnxzsyj",
@@ -102,7 +101,24 @@ var users = map[int]*user{}
 func hello(c echo.Context) error {
 	return c.String(http.StatusOK, "Hello, Test!")
 }
+
+
 func main() {
+
+dbconf := &DBConfig{}
+if rawData, err := gonfig.Read(); err != nil {
+    panic(err)
+} else {
+    if err := json.Unmarshal(rawData, dbconf); err != nil {
+        panic(err)
+    } else {
+		fmt.Printf(
+            "{\"name\": \"%s\", \"dbConfig\": {\"host\": \"%s\", port: \"%d\"}}\n",
+            dbconf.Name,
+            dbconf.Host,
+            dbconf.Port ) // {"name": "new-awesome-name", "dbConfig": {"host": "prod-db-server", port: "1"}}
+    }
+}
 
     var err error
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
