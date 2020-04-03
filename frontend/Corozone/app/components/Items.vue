@@ -11,7 +11,6 @@
           <GridLayout rows="280, 40, 40, 60" columns="*, *, *"> 
                   <Mapbox
                     #map
-                    v-if="$isIOS"
                     accessToken="pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw"
                     mapStyle="traffic_day"
                     colSpan="3"
@@ -39,7 +38,6 @@
                  <Label :text="items[(i-1)* itemsPerRow + 1].location.district" row="0" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
                     <Mapbox
                     #map
-                    v-if="$isIOS"
                     accessToken="pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw"
                     mapStyle="traffic_day"
                     colSpan="3"
