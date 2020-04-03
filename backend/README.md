@@ -29,14 +29,14 @@ https://pr.to/W864FN/
 ## Backend
 
 ### TODO
-- salt passwords
 - API spec 
 
 Database Schema: https://dbdiagram.io/d/5e714fd54495b02c3b88612f
 Free PostgreSQL DB on ElephantSQL (20 MB limit) (credentials on request) -> Move to managed digitalocean DB (15 Euro/Month)
 
-
 Run Backend: go build && ./coronapp_server
+
+Backend requires a config file in a new folder config
 
 
 Example request to create a user. This will be the link between Frontend and Backend:

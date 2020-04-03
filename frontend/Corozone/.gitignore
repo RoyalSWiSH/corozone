@@ -32,3 +32,5 @@ typings/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+app/App_Resources/Android/google-services.json
