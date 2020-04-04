@@ -6,8 +6,10 @@ package main
 
 import (
 	"database/sql"
+    "database/sql/driver"
 	"fmt"
     "time"
+    "errors"
 	"github.com/labstack/echo/v4"
     "github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
@@ -19,6 +21,8 @@ import (
     "github.com/google/uuid"
     gonfig "github.com/eduardbcom/gonfig"
     "encoding/json"
+ //   "github.com/lib/pq"
+
 )
 
 
@@ -46,6 +50,31 @@ type location struct {
     Long      float64   `json:"long"`
 }
 
+type Items struct {
+    Name string `json:"name"`
+    // Add quantity and Unit maybe later
+}
+
+
+type ItemsSlice []Items
+
+func (i ItemsSlice) Value() (driver.Value, error) {
+    return json.Marshal(i)
+}
+
+func (i *ItemsSlice) Scan(src interface{}) error {
+    switch v := src.(type) {
+    case []byte:
+        return json.Unmarshal(v, i)
+    case string:
+        return json.Unmarshal([]byte(v), i)
+    }
+    return errors.New("type assertion failed")
+
+}
+
+
+
 type groceryRequest struct {
     OrderID        string `json:"order_id"`
     Location       location
@@ -54,7 +83,19 @@ type groceryRequest struct {
     InQuarantine   bool `json:"inQuarantine"`
     MinimumSupply  bool `json:"minimumSupply"`
     Elderly        bool `json:"elderly"`
-    RequestedItems string `json:"requestedItems"`
+    RequestedItems ItemsSlice `json:"requestedItems"`    // This could be a string array []string
+}
+
+func (l location) Value() (driver.Value, error) {
+    return json.Marshal(l)
+}
+
+func (l *location) Scan(value interface{}) error {
+    b, ok := value.([]byte)
+    if !ok {
+        return errors.New("type asserting to []byte failed")
+    }
+    return json.Unmarshal(b, &l)
 }
 
 // TODO: Hospital struct
@@ -75,23 +116,6 @@ type apikeys struct {
     GMmaps string
 }
 
-//var dbconfocean = DBConfig{
-//    Host: "db-postgresql-fra1-47535-do-user-1884949-0.a.db.ondigitalocean.com",
-//    Port: 25060,
-//    User: "doadmin",
- //   Password: "y1m27iy7ahk9t0a4",
-//    DBName: "defaultdb",
-//    SSL: "require"}
-
-
-
-var dbconfelephant = DBConfig{
-    Host: "kandula.db.elephantsql.com",
-    Port: 5432,
-    User: "lwnxzsyj",
-    Password: "kST7gElVkHJA6IWrRuLx9wEDhmGnS0tF",
-    DBName: "lwnxzsyj",
-    SSL: "disable"}
 
 
 var seq = 1
@@ -163,6 +187,7 @@ if rawData, err := gonfig.Read(); err != nil {
 
     groceryGroup := e.Group("/groceries")
     groceryGroup.POST("/create", createGroceryRequest)
+    groceryGroup.GET("/getgroceries", getGroceries)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -180,17 +205,47 @@ func createGroceryRequest(c echo.Context) error {
 
 func DBCreateGroceryRequest(g *groceryRequest) {
      sqlInsertStatement := fmt.Sprintf(`
-    INSERT INTO delivery_order (order_id, budget, for_someone_else, in_quarantine, elderly, requested_Items, geom, created_at)
-    VALUES ($1, $2, $3, $4, $5, $6, ST_GeomFromText('POINT(%v %v)', 4326), $7) returning order_id`, g.Location.Long, g.Location.Lat)
+    INSERT INTO delivery_order (order_id, budget, for_someone_else, in_quarantine, elderly, requested_Items, geom, location, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, ST_GeomFromText('POINT(%v %v)', 4326), $7, $8) returning order_id`, g.Location.Long, g.Location.Lat)
     var order_id string
 
     err := db.QueryRow(sqlInsertStatement,
-    uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, time.Now()).Scan(&order_id)
+    uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now()).Scan(&order_id)
+    //_, err := db.Exec(sqlInsertStatement,
+    //uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now())
     //_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
 	if err != nil {
 		panic(err)
 	}
 
+}
+
+func getGroceries(c echo.Context) error {
+   // queryid := c.QueryParam("9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96")
+   // queryid := "9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96"
+	sqlStatement := `SELECT order_id, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order;`
+	var g groceryRequest
+    //var lastname string
+	//var user_id int
+	// Replace 3 with an ID from your database or another random
+	// value to test the no rows use case.
+	row := db.QueryRow(sqlStatement)
+
+	switch err := row.Scan(&g.OrderID, &g.Location, &g.Budget, &g.Elderly, &g.ForSomeoneElse, &g.InQuarantine, &g.RequestedItems ); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+        return c.String(http.StatusOK, fmt.Sprintf("No user found"))
+	case nil:
+		//fmt.Println(g.Location)
+        //return c.String(http.StatusOK,
+        //fmt.Sprintf("ID: %d \n User: %s \n Last Name: %s", u.UserID, u.FirstName, u.LastName))
+        return c.JSON(http.StatusOK, g)
+	default:
+		panic(err)
+        return c.String(http.StatusOK, fmt.Sprintf("Error!"))
+	}
+
+    return c.JSON(http.StatusOK, g)
 }
 
 func createUser(c echo.Context) error {

@@ -138,15 +138,21 @@ export default {
         // Send a POST request
         this.axios({
             method: 'post',
-            url: 'http://192.168.1.103:1323/groceries/create',
+            url: 'http://192.168.178.23:1323/groceries/create',
             data: {
 				budget: 100.4,
 				forSomeoneElse: true,
 				inQuarantine: false,
 				minimumSupply: false,
 				elderly: false,
+				requestedItems: [
+					{
+					name: this.requestedItems
+					}
+					],
 				location: {
-					city: "Frankfurt",
+					city: this.adress.city,
+					street: this.adress.street,
 					lat: this.adress.lat,
 					long: this.adress.long
 				}
