@@ -27,7 +27,7 @@
 		<StackLayout class="hr-light" />
         <ScrollView height="300">
             <StackLayout>
-        <Label :text="item" margin="5" marginLeft="25" fontSize="20" v-for="item in groceryRequest.items" :key="i"></Label>
+        <Label :text="item.name" margin="5" marginLeft="25" fontSize="20" v-for="item in groceryRequest.requestedItems" :key="i"></Label>
             </StackLayout>
         </ScrollView>
 		<StackLayout class="hr-light" />

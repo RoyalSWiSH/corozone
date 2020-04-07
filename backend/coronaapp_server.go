@@ -77,7 +77,7 @@ func (i *ItemsSlice) Scan(src interface{}) error {
 
 type groceryRequest struct {
     OrderID        string `json:"order_id"`
-    Location       location
+    Location       location `json:"location"`
     Budget         float32   `json:"budget"`
     ForSomeoneElse bool `json:"forSomeoneElse"`
     InQuarantine   bool `json:"inQuarantine"`
@@ -223,15 +223,24 @@ func DBCreateGroceryRequest(g *groceryRequest) {
 func getGroceries(c echo.Context) error {
    // queryid := c.QueryParam("9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96")
    // queryid := "9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96"
-	sqlStatement := `SELECT order_id, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order;`
-	var g groceryRequest
+	sqlStatement := `SELECT order_id, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order limit 100;`
     //var lastname string
 	//var user_id int
 	// Replace 3 with an ID from your database or another random
 	// value to test the no rows use case.
-	row := db.QueryRow(sqlStatement)
+    rows, err := db.Query(sqlStatement)
+    groceryRequests := make([]*groceryRequest, 0)
+    //groceryRequest := groceryRequest{}
+    defer rows.Close()
+if err != nil {
+    // handle this error better than this
+    panic(err)
+    //return
+}
+    for rows.Next() {
 
-	switch err := row.Scan(&g.OrderID, &g.Location, &g.Budget, &g.Elderly, &g.ForSomeoneElse, &g.InQuarantine, &g.RequestedItems ); err {
+    g := new(groceryRequest)
+	switch err := rows.Scan(&g.OrderID, &g.Location, &g.Budget, &g.Elderly, &g.ForSomeoneElse, &g.InQuarantine, &g.RequestedItems ); err {
 	case sql.ErrNoRows:
 		fmt.Println("No rows were returned!")
         return c.String(http.StatusOK, fmt.Sprintf("No user found"))
@@ -239,13 +248,16 @@ func getGroceries(c echo.Context) error {
 		//fmt.Println(g.Location)
         //return c.String(http.StatusOK,
         //fmt.Sprintf("ID: %d \n User: %s \n Last Name: %s", u.UserID, u.FirstName, u.LastName))
-        return c.JSON(http.StatusOK, g)
+        groceryRequests = append(groceryRequests, g)
+    //    return c.JSON(http.StatusOK, g)
 	default:
 		panic(err)
         return c.String(http.StatusOK, fmt.Sprintf("Error!"))
 	}
 
-    return c.JSON(http.StatusOK, g)
+
+}
+    return c.JSON(http.StatusOK, groceryRequests)
 }
 
 func createUser(c echo.Context) error {

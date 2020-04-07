@@ -138,7 +138,7 @@ export default {
         // Send a POST request
         this.axios({
             method: 'post',
-            url: 'http://192.168.178.23:1323/groceries/create',
+            url: 'http://192.168.1.105:1323/groceries/create',
             data: {
 				budget: 100.4,
 				forSomeoneElse: true,
