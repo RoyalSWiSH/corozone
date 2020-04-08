@@ -223,7 +223,7 @@ func DBCreateGroceryRequest(g *groceryRequest) {
 func getGroceries(c echo.Context) error {
    // queryid := c.QueryParam("9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96")
    // queryid := "9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96"
-	sqlStatement := `SELECT order_id, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order limit 100;`
+	sqlStatement := `SELECT order_id, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order ORDER BY created_at DESC limit 10;`
     //var lastname string
 	//var user_id int
 	// Replace 3 with an ID from your database or another random

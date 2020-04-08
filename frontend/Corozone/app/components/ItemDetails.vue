@@ -32,16 +32,11 @@
 		<StackLayout class="hr-light" />
 
         <ScrollView row="2">
-            <!-- <StackLayout> -->
-        <!-- <Label :text="item.name" margin="5" marginLeft="25" fontSize="20" v-for="item in groceryRequest.requestedItems" :key="i"></Label> -->
         <ListView for="item in groceryRequest.requestedItems">
   <v-template>
-    <!-- Shows the list item label in the default color and style. -->
-    <!-- <Label :text="item.name" fontSize="20" marginLeft="20"/> -->
     <CheckBox :text="item.name" checked="false" fontSize="25" class="fontBig"></CheckBox>
   </v-template>
 </ListView>
-            <!-- </StackLayout> -->
         </ScrollView>
 		<StackLayout class="hr-light" />
         <StackLayout row="3">

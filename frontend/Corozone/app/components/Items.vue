@@ -6,6 +6,7 @@
      <ScrollView>
      <!-- <Frame ~groceriesFrame id="groceriesFrame">     -->
      <StackLayout>
+          <Label v-if="serverFailure" text="Not Connected" />
       <GridLayout rows="*" columns="*, *"  v-for="i in rowCount" :key="i">
       <card-view class="card" col="0" margin="10" elevation="20" radius="1" @tap="seeDetails()">
           <GridLayout rows="280, 40, 40, 60" columns="*, *, *"> 
@@ -75,87 +76,88 @@ export default {
     data: () => {
         return {
             itemsPerRow: 2,
+            serverFailure: true,
             groceryRequests: [
-                {
-                    location: {
-                        "street": "Adickes-Alee 13",
-                        "district": "Heddernheim", 
-                        "city": "Frankfurt a.M",
-                        "distance": "2.0 km",
-                        "lat": "50.1584",
-                        "long": "8.6399"
-                        },
-                    item_categories: ["Food", "Beverages", "Medicine"],
-                    items: [
-                        "2x 1.5 l Wasser", 
-                        "2x Paprika", 
-                        "1x Knäckebrot", 
-                        "500g Mehl",
-                        "Schampoo",
-                        "Müllbeutel 20l",
-                        "Ginger Ale",
-                        "Zewa"],
-                    budget: 100,
-                    forSomeoneElse: "false",
-                    minimumSupply: "false",
-                    inQuarantine: "true",
-                    elderly: "false",
-                    status: "open"
-                },
-                {
-                    location: {
-                        "street": "Adickes-Alee 13",
-                        "district": "",
-                        "city": "Volpertshausen",
-                        "distance": "2.0 km",
-                        "lat": "50.5021339",
-                        "long": "8.5434490"
-                        },
-                    item_categories: ["Medicine"],
-                    items: [
-                        "2x 1.5 l Wasser", 
-                        "2x Paprika", 
-                        "1x Knäckebrot", 
-                        "500g Mehl"]
-                },
-                {
-                    location: {
-                        "street": "Adickes-Alee 13",
-                        "district": "",
-                        "city": "Volpertshausen",
-                        "distance": "2.0 km",
-                        "lat": "50.5021339",
-                        "long": "8.5434490"
-                        },
-                    item_categories: ["Childcare"]
-                },
-                {
-                    location: {
-                        "street": "Adickes-Alee 13",
-                        "district": "Bornheim",
-                        "city": "Frankfurt a.M.",
-                        "distance": "2.0 km",
-                        "lat": "50.5021339",
-                        "long": "8.5434490"
-                        },
-                    item_categories: "Food"
-                },
-                 {
-                    location: "Heddernheim, 2.0 km",
-                    item_categories: "Food, Beverages"
-                },
-                {
-                    location: "Niedereschbach, 3.1 km",
-                    item_categories: "Medicine"
-                },
-                {
-                    location: "Eckenheim, 3.2 km",
-                    item_categories: "Childcare"
-                },
-                {
-                    location: "Bornheim, 1.6 km",
-                    item_categories: "Food"
-                }                
+                // {
+                //     location: {
+                //         "street": "Adickes-Alee 13",
+                //         "district": "Heddernheim", 
+                //         "city": "Frankfurt a.M",
+                //         "distance": "2.0 km",
+                //         "lat": "50.1584",
+                //         "long": "8.6399"
+                //         },
+                //     item_categories: ["Food", "Beverages", "Medicine"],
+                //     items: [
+                //         "2x 1.5 l Wasser", 
+                //         "2x Paprika", 
+                //         "1x Knäckebrot", 
+                //         "500g Mehl",
+                //         "Schampoo",
+                //         "Müllbeutel 20l",
+                //         "Ginger Ale",
+                //         "Zewa"],
+                //     budget: 100,
+                //     forSomeoneElse: "false",
+                //     minimumSupply: "false",
+                //     inQuarantine: "true",
+                //     elderly: "false",
+                //     status: "open"
+                // },
+                // {
+                //     location: {
+                //         "street": "Adickes-Alee 13",
+                //         "district": "",
+                //         "city": "Volpertshausen",
+                //         "distance": "2.0 km",
+                //         "lat": "50.5021339",
+                //         "long": "8.5434490"
+                //         },
+                //     item_categories: ["Medicine"],
+                //     items: [
+                //         "2x 1.5 l Wasser", 
+                //         "2x Paprika", 
+                //         "1x Knäckebrot", 
+                //         "500g Mehl"]
+                // },
+                // {
+                //     location: {
+                //         "street": "Adickes-Alee 13",
+                //         "district": "",
+                //         "city": "Volpertshausen",
+                //         "distance": "2.0 km",
+                //         "lat": "50.5021339",
+                //         "long": "8.5434490"
+                //         },
+                //     item_categories: ["Childcare"]
+                // },
+                // {
+                //     location: {
+                //         "street": "Adickes-Alee 13",
+                //         "district": "Bornheim",
+                //         "city": "Frankfurt a.M.",
+                //         "distance": "2.0 km",
+                //         "lat": "50.5021339",
+                //         "long": "8.5434490"
+                //         },
+                //     item_categories: "Food"
+                // },
+                //  {
+                //     location: "Heddernheim, 2.0 km",
+                //     item_categories: "Food, Beverages"
+                // },
+                // {
+                //     location: "Niedereschbach, 3.1 km",
+                //     item_categories: "Medicine"
+                // },
+                // {
+                //     location: "Eckenheim, 3.2 km",
+                //     item_categories: "Childcare"
+                // },
+                // {
+                //     location: "Bornheim, 1.6 km",
+                //     item_categories: "Food"
+                // }                
             ]};
     },
     created() {
@@ -164,6 +166,7 @@ export default {
     computed: {
         rowCount: function() {
             return Math.ceil(this.groceryRequests.length / this.itemsPerRow)
+          //  return 6
         }
     },
     methods: {
@@ -175,23 +178,41 @@ export default {
                        url: 'http://192.168.1.105:1323/groceries/getgroceries',
                   }).then(resp => {
                 // this.groceryRequests = resp.data
+                // if(resp.data == "") {
+                //     alertConnectionError("Error when connecting to server!")
+                // }
+                //Bug: apparantly this doesnt work when there are more than 17 grocery requests
+                that.groceryRequests = resp.data
+                that.serverFailure = false
                  console.log(resp.data);
-                 that.groceryRequests = resp.data
               }).catch((error) => {   if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log(error.response.data);
       console.log(error.response.status);
       console.log(error.response.headers);
+    //   alertConnectionError("Error when connecting to server!")
+      that.serverFailure = true
     } else if (error.request) {
       // The request was made but no response was received
       // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
       // http.ClientRequest in node.js
+    //   alertConnectionError("Error when connecting to server!")
       console.log(error.request);
+      that.serverFailure = true
     } else {
       // Something happened in setting up the request that triggered an Error
+    //   alertConnectionError("Error when connecting to server!")
       console.log(error.message);
+      that.serverConnection = false
     }});
+        },
+        alertConnectionError (msg) {
+          return  alert({
+        title: "Corozone",
+        okButtonText: "OK",
+        message: msg
+      });
         },
         seeDetails (groceryRequest) {
             this.$navigateTo(ItemDetails, {
@@ -218,7 +239,7 @@ export default {
                 args.map.addMarkers([
                     {
                         lat: this.groceryRequests[0].location.lat,
-                        lng: this.groceryRequests[0].location.lang,
+                       lng: this.groceryRequests[0].location.lang,
                         title: "Tracy, CA",
                         subtitle: "Home of The Polyglot Developer!",
                         onCalloutTap: () => {

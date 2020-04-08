@@ -8,17 +8,17 @@
        <StackLayout class="input-field">
 					<Label text="Groceries" class="field-title" fontSize="19"/>
 					<StackLayout class="hr-light" />
-		</StackLayout>
-        <!-- <StackLayout class="input-field" marginBottom="25">
+		 </StackLayout>
+  <!--      <StackLayout class="input-field" marginBottom="25">
 					<Label text="Street" class="field-title" fontSize="19"/>
-					<TextField class="input" hint="street" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.street"
+					<TextField class="input" hint="street" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="location.street"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 					<StackLayout class="hr-light" />
 					<Label text="Code" class="field-title" fontSize="19"/>
-					<TextField ref="code" class="input" hint="PLZ" keyboardType="plz" autocorrect="false" autocapitalizationType="none" v-model="adress.plz"
+					<TextField ref="code" class="input" hint="PLZ" keyboardType="plz" autocorrect="false" autocapitalizationType="none" v-model="location.plz"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 					<Label text="City" class="field-title" fontSize="19"/>
-					<TextField ref="street" class="input" hint="city" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.city"
+					<TextField ref="street" class="input" hint="city" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="location.city"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 					<Label text="Items" class="field-title" fontSize="19"/>
 					</StackLayout> -->
@@ -90,12 +90,15 @@ export default {
         password: "barbar",
         confirmPassword: "barbar"
       },
-      adress: {
+      location: {
         street: "",
+        street_nr: "",
         plz: "",
-		city: "",
-		lat: 0.0,
-		long: 0.0
+        district: "",
+        city: "",
+        country: "",
+		    lat: 0.0,
+		    long: 0.0
 	  },
 	  requestedItems: [{name: "Marmelade"}],
 	  authHeader: {
@@ -104,9 +107,56 @@ export default {
 		},
     };
   },
+  mounted() {
+       this.getAddressFromCoord()
+    },
   methods: {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
+    },
+    getAddressFromCoord() {
+          let lat = this.location.lat
+          let long = this.location.long
+          let locurl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/'+ long + ','+ lat +'.json?types=address&access_token=pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw' 
+          //let locurl = 'https://api.mapbox.com/geocoding/v5/mapbox.places/8.6267734,50.1732813.json?types=address&access_token=pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw' 
+          console.log(locurl)
+          let that = this
+              this.axios({
+                       method: 'get',
+                       url: locurl,
+                  }).then(resp => {
+                // this.groceryRequests = resp.data
+                 //console.log(resp.data.features[0]);
+                 console.log(resp.data.features[0].text);
+                 that.location.street = resp.data.features[0].text
+                 that.location.street_nr = resp.data.features[0].address
+                 console.log(resp.data.features[0].context[0].text);
+                 that.location.district = resp.data.features[0].context[0].text
+
+                 console.log(resp.data.features[0].context[1].text);
+                 that.location.plz = resp.data.features[0].context[1].text
+
+                 console.log(resp.data.features[0].context[2].text);
+                 that.location.city = resp.data.features[0].context[2].text
+                 console.log(resp.data.features[0].context[3].text);
+                 console.log(resp.data.features[0].context[4].text);
+                 that.location.country = resp.data.features[0].context[4].text
+                 //that.groceryRequests = resp.data
+              }).catch((error) => {   if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log(error.message);
+    }});
     },
     requestGroceries() {
     //   if (!this.adress.street || !this.adress.plz || !this.adress.city) {
@@ -158,8 +208,8 @@ export default {
                             if (!location) {
                                 console.log("Failed to get location!");
                             } else {
-                               this.adress.lat = location.latitude
-                               this.adress.long = location.longitude
+                               that.location.lat = location.latitude
+                               that.location.long = location.longitude
                             }
                         });
    			return true;				
@@ -168,7 +218,7 @@ export default {
         })
 		
 	//console.log(this.requestedItems.split(","))
-
+this.getAddressFromCoord()
         // Send a POST request
         this.axios({
             method: 'post',
@@ -181,10 +231,12 @@ export default {
 				elderly: false,
 				requestedItems: this.requestedItems,
 				location: {
-					city: this.adress.city,
-					street: this.adress.street,
-					lat: this.adress.lat,
-					long: this.adress.long
+					city: this.location.city,
+          street: this.location.street,
+          district: this.location.district,
+          country: this.location.country,
+					lat: this.location.lat,
+					long: this.location.long
 				}
 				}
         }).then(function (response) {
@@ -213,7 +265,7 @@ export default {
       if (!this.itemField) {
         return;
       }
-      console.log(`New task added: ${this.itemField}.`);
+      console.log(`New Grocery Request added: ${this.itemField}.`);
       // Adds tasks in the ToDo array. Newly added tasks are immediately shown on the screen
       this.requestedItems.unshift({
         name: this.itemField,
