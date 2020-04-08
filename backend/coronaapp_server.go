@@ -231,12 +231,13 @@ func getGroceries(c echo.Context) error {
     rows, err := db.Query(sqlStatement)
     groceryRequests := make([]*groceryRequest, 0)
     //groceryRequest := groceryRequest{}
-    defer rows.Close()
 if err != nil {
     // handle this error better than this
     panic(err)
     //return
 }
+    // Defer needs to be after error checking, see https://stackoverflow.com/questions/16280176/go-panic-runtime-error-invalid-memory-address-or-nil-pointer-dereference
+    defer rows.Close()
     for rows.Next() {
 
     g := new(groceryRequest)
