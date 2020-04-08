@@ -5,11 +5,14 @@
             <NavigationButton @tap="goBack()" android.systemIcon="ic_menu_back"/>
             <!-- <Label :text="item.name"></Label> -->
         </ActionBar>
-    <StackLayout>
-        <Label v-if="groceryRequest.location.district" :text="groceryRequest.location.district" row="1" marginTop="25" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
-        <Label v-else :text="groceryRequest.location.city" row="1" marginTop="25" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
+    <GridLayout rows="50,200,170,170">
+        <StackLayout row="0">
+        <Label v-if="groceryRequest.location.district" :text="groceryRequest.location.district" row="1" marginTop="10" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
+        <Label v-else :text="groceryRequest.location.city" row="1" marginTop="10" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
         <Label :text="groceryRequest.location.street" marginLeft="25" fontSize="25"></Label>
-        <!-- <Mapbox
+        </StackLayout>
+        <StackLayout row="1">
+         <Mapbox
                     #map
                     accessToken="pk.eyJ1Ijoicm95YWxzd2lzaCIsImEiOiJjazg2NHhiMHEwOHV3M25tbWo3bXNsaGhsIn0.yH9oQ-IS6McmJ7lBElv4Zw"
                     mapStyle="traffic_day"
@@ -17,20 +20,31 @@
                     :longitude="groceryRequest.location.long"
                     hideCompass="true"
                     zoomLevel="14"
+                    margin="20"                    
                     showUserLocation="true"
                     disableZoom="false"
                     disableRotation="false"
                     disableScroll="false"
                     disableTilt="false"
                     (mapReady)="onMapReady($event)">
-                </Mapbox> -->
+                </Mapbox> 
+        </StackLayout>
 		<StackLayout class="hr-light" />
-        <ScrollView height="300">
-            <StackLayout>
-        <Label :text="item.name" margin="5" marginLeft="25" fontSize="20" v-for="item in groceryRequest.requestedItems" :key="i"></Label>
-            </StackLayout>
+
+        <ScrollView row="2">
+            <!-- <StackLayout> -->
+        <!-- <Label :text="item.name" margin="5" marginLeft="25" fontSize="20" v-for="item in groceryRequest.requestedItems" :key="i"></Label> -->
+        <ListView for="item in groceryRequest.requestedItems">
+  <v-template>
+    <!-- Shows the list item label in the default color and style. -->
+    <!-- <Label :text="item.name" fontSize="20" marginLeft="20"/> -->
+    <CheckBox :text="item.name" checked="false" fontSize="25" class="fontBig"></CheckBox>
+  </v-template>
+</ListView>
+            <!-- </StackLayout> -->
         </ScrollView>
 		<StackLayout class="hr-light" />
+        <StackLayout row="3">
         <Label :text="groceryRequest.budget" margin="5" marginLeft="25" fontSize="20"></Label>
         <TextView editable="false" v-if="groceryRequest.inQuarantine === 'true' " text="You deliver a request to a person in self-quarantine." margin="5" marginLeft="25" fontSize="20" />
         <TextView editable="false" v-if="groceryRequest.elderly === 'true'" text="You deliver a request for a elderly person" margin="5" marginLeft="25" fontSize="20" />
@@ -41,8 +55,8 @@
              <Button text="Open Google Maps" row="4" colSpan="3" @tap="openGoogleMaps()"/> 
             <!-- <Label class="m-10 h3" :text="item.items[0]" verticalAlignment="top" ></Label> -->
         <!-- </GridLayout> -->
-        
-    </StackLayout>
+        </StackLayout>
+    </GridLayout>
 </page>
 <!-- </frame> -->
 </template>
@@ -72,6 +86,7 @@ export default {
         },
         acceptGroceries() {
             console.log("Accepted Grocery Request")
+            console.log(JSON.stringify(this.groceryRequest.requestedItems))
         },
         openGoogleMaps() {
                     directions.navigate({
@@ -122,7 +137,14 @@ export default {
 @import '~@nativescript/theme/css/core.css';
 @import '~@nativescript/theme/css/default.css';
 // End custom common variables
-
+CheckBox {
+  vertical-align: center;
+  color: white;
+  font-size: 20;
+}
+.fontBig {
+  font-size: 25;
+}
 // Custom styles
 
 </style>

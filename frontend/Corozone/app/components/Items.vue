@@ -52,11 +52,11 @@
                     disableTilt="false"
                     (mapReady)="onMapReady($event)">
                 </Mapbox>
-                 <Label v-if="groceryRequests[(i-1)* itemsPerRow + 1].location.district" :text="groceryRequests[(i-1)* itemsPerRow].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label v-if="groceryRequests[(i-1)* itemsPerRow + 1].location.district" :text="groceryRequests[(i-1)* itemsPerRow+1].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <Label v-else :text="groceryRequests[(i-1)* itemsPerRow + 1].location.city" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <!-- Display the Type of request, Groceries, Petcare... -->
                  <Label :text="groceryRequests[(i-1)* itemsPerRow + 1].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
-                 <Button text="Details" row="3" colSpan="3" @tap="seeDetails(groceryRequests[(i-1)* itemsPerRow])"/>
+                 <Button text="Details" row="3" colSpan="3" @tap="seeDetails(groceryRequests[(i-1)* itemsPerRow+1])"/>
           </GridLayout>
       </card-view>
       </GridLayout>
@@ -163,8 +163,7 @@ export default {
     },
     computed: {
         rowCount: function() {
-            //return Math.ceil(this.groceryRequests.length / this.itemsPerRow)
-            return 2;
+            return Math.ceil(this.groceryRequests.length / this.itemsPerRow)
         }
     },
     methods: {
@@ -218,8 +217,8 @@ export default {
           onMapReady(args) {
                 args.map.addMarkers([
                     {
-                        lat: 50.1584,
-                        lng: 8.6399,
+                        lat: this.groceryRequests[0].location.lat,
+                        lng: this.groceryRequests[0].location.lang,
                         title: "Tracy, CA",
                         subtitle: "Home of The Polyglot Developer!",
                         onCalloutTap: () => {

@@ -20,7 +20,10 @@ Vue.registerElement(
   "CardView", 
   () => require("@nstudio/nativescript-cardview").CardView
 )
-
+Vue.registerElement(
+  'CheckBox',
+  () => require('@nstudio/nativescript-checkbox').CheckBox,
+)
 Vue.registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 
 //import App from "./components/App";

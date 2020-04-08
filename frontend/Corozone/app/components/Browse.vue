@@ -8,28 +8,66 @@
        <StackLayout class="input-field">
 					<Label text="Groceries" class="field-title" fontSize="19"/>
 					<StackLayout class="hr-light" />
-				</StackLayout>
-
-        <StackLayout class="input-field" marginBottom="25">
+		</StackLayout>
+        <!-- <StackLayout class="input-field" marginBottom="25">
 					<Label text="Street" class="field-title" fontSize="19"/>
 					<TextField class="input" hint="street" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.street"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 					<StackLayout class="hr-light" />
 					<Label text="Code" class="field-title" fontSize="19"/>
-					<TextField ref="code" class="input" hint="plzt" keyboardType="plz" autocorrect="false" autocapitalizationType="none" v-model="adress.plz"
+					<TextField ref="code" class="input" hint="PLZ" keyboardType="plz" autocorrect="false" autocapitalizationType="none" v-model="adress.plz"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 					<Label text="City" class="field-title" fontSize="19"/>
 					<TextField ref="street" class="input" hint="city" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="adress.city"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
 					<Label text="Items" class="field-title" fontSize="19"/>
-					<TextField ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="requestedItems"
+					</StackLayout> -->
+					<StackLayout>
+					<ListView
+            class="list-group"
+            for="gitem in requestedItems"
+            style="height:75%"
+            separator-color="transparent"
+			>
+            <v-template>
+              <!-- <Label
+                id="active-task"
+                :text="item.name"
+                class="list-group-item-heading"
+                text-wrap="true"
+              /> -->
+					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" :text="gitem.name"
 					 returnKeyType="next" @returnPress="" fontSize="18" />
-				<Button text="Request Groceries" @tap="requestGroceries" class="btn" />
-				</StackLayout>
-		
+            </v-template>
+          </ListView>
+		  </StackLayout>
+		   <GridLayout
+            columns="2*,*"
+            rows="*,*"
+            width="100%"
+            height="25%"
+          >
+            <TextField
+              v-model="itemField"
+              col="0"
+              row="0"
+              hint="Add Item"
+              editable="true"
+              @returnPress="onButtonTap"
+            />
+            <!-- Configures the text field and ensures that pressing Return on the keyboard produces the same result as tapping the button. -->
+            <Button
+              col="1"
+              row="0"
+              text="Add Item"
+              @tap="onButtonTap"
+            />
+			<Button text="Request Groceries" row="1" colSpan="2" @tap="requestGroceries" class="btn" /><
+          </GridLayout>
+	
 			</StackLayout>
 
-	     		</FlexboxLayout>
+	     </FlexboxLayout>
     </Page>
 </template>
 
@@ -45,7 +83,8 @@ import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at wha
 export default {
   data() {
     return {
-      isLoggingIn: true,
+	  isLoggingIn: true,
+	  itemField: "",
       user: {
         email: "foo@foo.com",
         password: "barbar",
@@ -58,7 +97,7 @@ export default {
 		lat: 0.0,
 		long: 0.0
 	  },
-	  requestedItems: "",
+	  requestedItems: [{name: "Marmelade"}],
 	  authHeader: {
     	'Accept': 'application/json',
     	'Content-Type': 'application/json'
@@ -73,12 +112,7 @@ export default {
     //   if (!this.adress.street || !this.adress.plz || !this.adress.city) {
     //     this.alert("Please provide city, street and adress.");
     //     return;
-	//   }
-	
-    //   axios.get('http://webcode.me').then(resp => {
-    //     console.log(resp.data);
-	//   });
-	 
+	  // }
 
 //var geolocation = require("nativescript-geolocation");
 
@@ -145,11 +179,7 @@ export default {
 				inQuarantine: false,
 				minimumSupply: false,
 				elderly: false,
-				requestedItems: [
-					{
-					name: this.requestedItems
-					}
-					],
+				requestedItems: this.requestedItems,
 				location: {
 					city: this.adress.city,
 					street: this.adress.street,
@@ -177,7 +207,20 @@ export default {
     }});
 
 
-      },
+	  },
+	  onButtonTap() {
+      // Prevent users from entering an empty string
+      if (!this.itemField) {
+        return;
+      }
+      console.log(`New task added: ${this.itemField}.`);
+      // Adds tasks in the ToDo array. Newly added tasks are immediately shown on the screen
+      this.requestedItems.unshift({
+        name: this.itemField,
+      });
+      // Clear the text field
+      this.itemField = '';
+    },
     alert(message) {
       return alert({
         title: "Corozone",
@@ -197,8 +240,8 @@ export default {
 	}
 
 	.form {
-		margin-left: 30;
-		margin-right: 30;
+		margin-left: 10;
+		margin-right: 10;
 		flex-grow: 2;
 		vertical-align: middle;
 	}
