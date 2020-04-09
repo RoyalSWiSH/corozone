@@ -43,32 +43,33 @@
 <script>
 import firebase from "nativescript-plugin-firebase";
 import App from "./App"
+const timerModule = require("tns-core-modules/timer")
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
 var loader = new LoadingIndicator();
 // A stub for a service that authenticates users.
-const userService = {
-  async register(user) {
-    return await firebase.createUser({
-      email: user.email,
-      password: user.password
-    });
-  },
-  async login(user) {
-    return await firebase.login({
-        type: firebase.LoginType.PASSWORD,
-        passwordOptions: {
-          email: user.email,
-          password: user.password
-        }
-    });
-  },
-  async resetPassword(email) {
-    return await firebase.resetPassword({ 
-      email: email
-      });
-}
-}
+// const userService = {
+//   async register(user) {
+//     return await firebase.createUser({
+//       email: user.email,
+//       password: user.password
+//     });
+//   },
+//   async login(user) {
+//     return await firebase.login({
+//         type: firebase.LoginType.PASSWORD,
+//         passwordOptions: {
+//           email: user.email,
+//           password: user.password
+//         }
+//     });
+//   },
+//   async resetPassword(email) {
+//     return await firebase.resetPassword({ 
+//       email: email
+//       });
+// }
+// }
 // A stub for the main page of your app. In a real app you’d put this page in its own .vue file.
 const HomePage = {
   template: `
@@ -81,6 +82,7 @@ export default {
   data() {
     return {
       isLoggingIn: true,
+      isInitialized: false,
       user: {
         email: "foo@foo.com",
         password: "barbar",
@@ -88,6 +90,11 @@ export default {
         uid: ""
       }
     };
+  },
+  created() {
+    setTimeout(() => {
+      this.isInitialized = true;
+    }, 1500);
   },
   methods: {
     toggleForm() {
@@ -105,51 +112,50 @@ export default {
       }
     },
      login() {
-      let that = this
-      loader.show(global.loaderOptions)
-      userService
+      this.$authService
         .login(this.user)
-        .then(firebaseUser => {
-         // alert("Login")
-          //this.$navigateTo(App);
-          loader.hide()
-          console.log("Firebae UID")
-          console.log(firebaseUser.uid)
-          this.user.uid = firebaseUser.uid
-          this.$navigateTo(App, {clearHistory: true}); //works fine, but not to TabView App.vue :(
+        .then(() => {
+          loader.hide();
+          this.$navigateTo(App);
         })
-        .catch(() => {
-          loader.hide()
+        .catch(err => {
           console.error(err);
-          this.alert("Unfortunately we could not find your account.");
+          loader.hide();
+          this.alert(err);
         });
     },
     register() {
       if (this.user.password != this.user.confirmPassword) {
+        loader.hide();
         this.alert("Your passwords do not match.");
         return;
       }
-      if(this.user.password.length < 6) {
-        this.alert("Your password must be at least 6 characters.")
-        return
+      if (this.user.password.length < 6) {
+        loader.hide();
+        this.alert("Your password must at least 6 characters.");
+        return;
       }
-
-      loader.show(global.loaderOptions)
-      this.userService
+      // TODO: Reactivate validating email adresses later
+      // var validator = require("email-validator");
+      // if (!validator.validate(this.user.email)) {
+      //   loader.hide();
+      //   this.alert("Please enter a valid email address.");
+      //   return;
+      // }
+      this.$authService
         .register(this.user)
         .then(() => {
-          loader.hide()
+          loader.hide();
           this.alert("Your account was successfully created.");
           this.isLoggingIn = true;
         })
-        .catch(() => {
-          loader.hide()
+        .catch(err => {
           console.error(err);
+          loader.hide();
           this.alert(err);
         });
     },
     forgotPassword() {
-      let that = this
       prompt({
         title: "Forgot Password",
         message:
@@ -160,20 +166,18 @@ export default {
         cancelButtonText: "Cancel"
       }).then(data => {
         if (data.result) {
-          loader.show(global.loaderOptions)
-          userService
+          loader.show();
+          this.$authService
             .resetPassword(data.text.trim())
             .then(() => {
-              loader.hide()
+              loader.hide();
               this.alert(
                 "Your password was successfully reset. Please check your email for instructions on choosing a new password."
               );
             })
-            .catch(() => {
-              loader.hide()
-              this.alert(
-                "Unfortunately, an error occurred resetting your password."
-              );
+            .catch(err => {
+              loader.hide();
+              this.alert(err);
             });
         }
       });

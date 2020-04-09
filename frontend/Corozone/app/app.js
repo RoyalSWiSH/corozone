@@ -6,6 +6,9 @@ import App from './components/App'
 import LoginPage from './components/LoginPage'
 import Items from './components/Items'
 import ItemDetails from './components/ItemDetails'
+import firebase from "nativescript-plugin-firebase"
+import BackendService from './services/BackendService'
+import AuthService from './services/AuthService'
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 
 // Enable global check if device is android or iOS to disable Maps on Android since mapbox crashes right now
@@ -26,6 +29,12 @@ Vue.registerElement(
 )
 Vue.registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 
+export const backendService = new BackendService()
+export const authService = new AuthService()
+
+Vue.prototype.$authService = authService
+Vue.prototype.$backendService = backendService
+
 //import App from "./components/App";
 if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
@@ -33,11 +42,18 @@ if(TNS_ENV !== 'production') {
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production')
 
-var firebase = require("nativescript-plugin-firebase");
+
 firebase
   .init({
-    // Optionally pass in properties for database, authentication and cloud messaging,
-    // see their respective docs.
+    onAuthStateChanged: data => { 
+      console.log((data.loggedIn ? "Logged in to firebase" : "Logged out from firebase") + " (firebase.init() onAuthStateChanged callback)");
+      if (data.loggedIn) {
+        backendService.token = data.user.uid
+        console.log("uID: " + data.user.uid)
+      }
+      else {      
+      }
+    }
   })
   .then(
     function(instance) {
@@ -47,6 +63,8 @@ firebase
       console.log("firebase.init error: " + error);
     }
   );
+
+
 // Used for loading indicator
   global.loaderOptions = {
     android: {
