@@ -41,8 +41,11 @@
 </template>
 
 <script>
-import firebase from "nativescript-plugin-firebase";
+import firebase from "nativescript-plugin-firebase"
 import App from "./App"
+import { mapState } from "vuex"
+
+
 const timerModule = require("tns-core-modules/timer")
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
@@ -95,6 +98,20 @@ export default {
     setTimeout(() => {
       this.isInitialized = true;
     }, 1500);
+  },
+  // VueX will synchronize the state of this variable to the page by adding this in the export default { object 
+  // What does ... mean?
+  computed: {
+    ...mapState(["isLoggedIn"])
+  },
+  watch: {   
+    isLoggedIn(val) {
+      if (!val) {        
+        this.isInitialized = true;        
+      }else{
+        this.$navigateTo(App, { clearHistory: true });
+      }
+    }
   },
   methods: {
     toggleForm() {

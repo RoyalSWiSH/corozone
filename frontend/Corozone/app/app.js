@@ -1,4 +1,6 @@
 import Vue from "nativescript-vue";
+// store needs to imported before VueDevtools
+import store from './store'
 import VueDevtools from 'nativescript-vue-devtools'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -19,6 +21,7 @@ Vue.use(VueAxios, axios)
 axios.defaults.baseURL = "http://192.168.178.23:1323";
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
+
 Vue.registerElement(
   "CardView", 
   () => require("@nstudio/nativescript-cardview").CardView
@@ -34,6 +37,7 @@ export const authService = new AuthService()
 
 Vue.prototype.$authService = authService
 Vue.prototype.$backendService = backendService
+// What does this import? Everything? Just index.js?
 
 //import App from "./components/App";
 if(TNS_ENV !== 'production') {
@@ -85,6 +89,7 @@ firebase
 //     render: h => h('frame', [h(LoginPage)])
 //  }).$start();
 new Vue({
+    store,
     template: `
     <Frame>
       <LoginPage />
