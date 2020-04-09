@@ -84,7 +84,8 @@ export default {
       user: {
         email: "foo@foo.com",
         password: "barbar",
-        confirmPassword: "barbar"
+        confirmPassword: "barbar",
+        uid: ""
       }
     };
   },
@@ -103,15 +104,18 @@ export default {
         this.register();
       }
     },
-    login() {
+     login() {
       let that = this
       loader.show(global.loaderOptions)
       userService
         .login(this.user)
-        .then(() => {
+        .then(firebaseUser => {
          // alert("Login")
           //this.$navigateTo(App);
           loader.hide()
+          console.log("Firebae UID")
+          console.log(firebaseUser.uid)
+          this.user.uid = firebaseUser.uid
           this.$navigateTo(App, {clearHistory: true}); //works fine, but not to TabView App.vue :(
         })
         .catch(() => {
