@@ -74,7 +74,9 @@
 import ItemDetails from "./ItemDetails";
 import { Accuracy } from "ui/enums";
 import * as geolocation from "nativescript-geolocation";
-
+var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
+    .LoadingIndicator;
+var loader = new LoadingIndicator();
 export default {
     data: () => {
         return {
@@ -175,6 +177,7 @@ export default {
     methods: {
         getGroceryRequests () {
             console.log("Get Grocery Reqests...")
+            loader.show()
             let that = this
               this.axios({
                        method: 'get',
@@ -188,6 +191,7 @@ export default {
                 that.groceryRequests = resp.data
                 that.serverFailure = false
                  console.log(resp.data);
+                 loader.hide()
               }).catch((error) => {   if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx

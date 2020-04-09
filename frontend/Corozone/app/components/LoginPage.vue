@@ -105,6 +105,8 @@ export default {
         this.alert("Please provide both an email address and password.");
         return;
       }
+
+      loader.show()
       if (this.isLoggingIn) {
         this.login();
       } else {

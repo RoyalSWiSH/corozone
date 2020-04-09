@@ -101,7 +101,9 @@ import axios from "axios/dist/axios"
 
 import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
-
+var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
+    .LoadingIndicator;
+var loader = new LoadingIndicator();
 
 export default {
   data() {
@@ -231,12 +233,14 @@ export default {
     async onTapRequestGroceries() {
     // TODO: Fix this properly to return with promises / async await
     //this.enableGeolocation().then(res => {getLocationfromGPS()}).then(res => {getAddressFromCoord()}).then(res => {postRequestGroceries()})
+    loader.show()
     this.enableGeolocation()
      this.getLocationfromGPS()
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 2500));
        this.getAddressFromCoord()
-    await new Promise(r => setTimeout(r, 2000));
+    await new Promise(r => setTimeout(r, 2500));
        this.postRequestGroceries()
+       loader.hide()
     },
     postRequestGroceries() {
     
