@@ -6,9 +6,32 @@
       <FlexboxLayout class="page">
 			<StackLayout class="form">
        <StackLayout class="input-field">
-					<Label text="Groceries" class="field-title" fontSize="19"/>
+					<!-- <Label text="Groceries" class="field-title" fontSize="19"/> -->
 					<StackLayout class="hr-light" />
 		 </StackLayout>
+     <GridLayout
+            columns="2*,*"
+            rows="*,*"
+            width="100%"
+            height="25%"
+          >
+            <TextField
+              v-model="itemField"
+              col="0"
+              row="0"
+              hint="Milch"
+              editable="true"
+              @returnPress="onButtonTap"
+            />
+            <!-- Configures the text field and ensures that pressing Return on the keyboard produces the same result as tapping the button. -->
+            <Button
+              col="1"
+              row="0"
+              text="Add Item"
+              @tap="onButtonTap"
+            />
+			<!-- <Button text="Request Groceries" row="1" colSpan="2" @tap="onTapRequestGroceries" class="btn" /> -->
+          </GridLayout>
   <!--      <StackLayout class="input-field" marginBottom="25">
 					<Label text="Street" class="field-title" fontSize="19"/>
 					<TextField class="input" hint="street" keyboardType="street" autocorrect="false" autocapitalizationType="none" v-model="location.street"
@@ -47,22 +70,22 @@
             width="100%"
             height="25%"
           >
-            <TextField
+            <!-- <TextField
               v-model="itemField"
               col="0"
               row="0"
               hint="Add Item"
               editable="true"
               @returnPress="onButtonTap"
-            />
+            /> -->
             <!-- Configures the text field and ensures that pressing Return on the keyboard produces the same result as tapping the button. -->
-            <Button
+            <!-- <Button
               col="1"
               row="0"
               text="Add Item"
               @tap="onButtonTap"
-            />
-			<Button text="Request Groceries" row="1" colSpan="2" @tap="requestGroceries" class="btn" /><
+            /> -->
+			<Button text="Request Groceries" row="0" colSpan="2" @tap="onTapRequestGroceries" class="btn" /><
           </GridLayout>
 	
 			</StackLayout>
@@ -157,14 +180,9 @@ export default {
       // Something happened in setting up the request that triggered an Error
       console.log(error.message);
     }});
+    return this
     },
-    requestGroceries() {
-    //   if (!this.adress.street || !this.adress.plz || !this.adress.city) {
-    //     this.alert("Please provide city, street and adress.");
-    //     return;
-	  // }
-
-//var geolocation = require("nativescript-geolocation");
+    enableGeolocation() {
 
 	 geolocation.isEnabled().then(function (isEnabled) {
                     if (!isEnabled) {
@@ -179,19 +197,10 @@ export default {
                 }, function (e) {
                     console.log("Error: " + (e.message || e));
                 });
-	//  let that = this;
-    //             geolocation.getCurrentLocation({
-    //                 desiredAccuracy: Accuracy.high,
-    //                 maximumAge: 5000,
-    //                 timeout: 10000
-    //             }).then(function (loc) {
-    //                 if (loc) {
-    //                     that.locations.push(loc);
-    //                 }
-    //             }, function (e) {
-    //                 console.log("Error: " + (e.message || e));
-	// 			});
-				
+                return this
+	
+    },
+    getLocationfromGPS() {
 	let that = this
         geolocation.enableLocationRequest(true, true).then(() => {
             geolocation.isEnabled().then(value => {
@@ -212,17 +221,41 @@ export default {
                                that.location.long = location.longitude
                             }
                         });
-   			return true;				
+   			return this;				
 			}
 			});
         })
+        return this
 		
-	//console.log(this.requestedItems.split(","))
-this.getAddressFromCoord()
+    },
+    async onTapRequestGroceries() {
+    // TODO: Fix this properly to return with promises / async await
+    //this.enableGeolocation().then(res => {getLocationfromGPS()}).then(res => {getAddressFromCoord()}).then(res => {postRequestGroceries()})
+    this.enableGeolocation()
+     this.getLocationfromGPS()
+    await new Promise(r => setTimeout(r, 2000));
+       this.getAddressFromCoord()
+    await new Promise(r => setTimeout(r, 2000));
+       this.postRequestGroceries()
+    },
+    postRequestGroceries() {
+    
+    //             geolocation.getCurrentLocation({
+    //                 desiredAccuracy: Accuracy.high,
+    //                 maximumAge: 5000,
+    //                 timeout: 10000
+    //             }).then(function (loc) {
+    //                 if (loc) {
+    //                     that.locations.push(loc);
+    //                 }
+    //             }, function (e) {
+    //                 console.log("Error: " + (e.message || e));
+	// 			});
+
         // Send a POST request
         this.axios({
             method: 'post',
-            url: 'http://192.168.1.105:1323/groceries/create',
+            url: 'http://corozone.sebastian-roy.de/groceries/create',
             data: {
 				budget: 100.4,
 				forSomeoneElse: true,

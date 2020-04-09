@@ -1,7 +1,10 @@
 <template>
  <Page>
-     <ActionBar>
-            <Label text="Groceries"></Label>
+     <ActionBar>            
+             <GridLayout rows="*" columns="3*, *"  v-for="i in rowCount" :key="i">
+                  <!-- <Label text="Groceries" column="0"></Label> -->
+                  <Button text="Reload" @tap="getGroceryRequests()" column="1" />
+             </GridLayout>
         </ActionBar>
      <ScrollView>
      <!-- <Frame ~groceriesFrame id="groceriesFrame">     -->
@@ -175,7 +178,7 @@ export default {
             let that = this
               this.axios({
                        method: 'get',
-                       url: 'http://192.168.1.105:1323/groceries/getgroceries',
+                       url: 'http://corozone.sebastian-roy.de/groceries/getgroceries',
                   }).then(resp => {
                 // this.groceryRequests = resp.data
                 // if(resp.data == "") {
