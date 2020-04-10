@@ -129,6 +129,35 @@ export default {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
+    async postUserProfile() {
+
+        // Send a POST request
+        return await this.axios({
+            method: 'post',
+            url: 'http://corozone.sebastian-roy.de/users/createprofile',
+            data: {
+        firstName: this.user.firstName,
+        lastName: this.user.lastName
+				}})
+    //     .then(function (response) {
+    //         console.log(response.data);  //Outputs API response in CL to verify functionality.
+		// })
+		.catch((error) => {   if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log(error.message);
+    }});
+    },
     submit() {
       if (!this.user.email || !this.user.password) {
         this.alert("Please provide both an email address and password.");
@@ -176,9 +205,14 @@ export default {
       this.$authService
         .register(this.user)
         .then(() => {
-          loader.hide();
-          this.alert("Your account was successfully created.");
+          //loader.hide();
+         // this.alert("Your account was successfully created.");
           this.isLoggingIn = true;
+        })
+        .then(() =>  {
+          console.log("Update User Profile")
+          this.postUserProfile()
+          loader.hide();
         })
         .catch(err => {
           console.error(err);

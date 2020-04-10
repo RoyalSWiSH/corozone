@@ -33,7 +33,7 @@ type JwtClaims struct {
     jwt.StandardClaims
 }
 type user struct {
-        UserID   int    `json:"id"`
+        UserID   string    `json:"user_id"`
         FirstName string `json:"firstName"`
         LastName string `json:"lastName"`
         Email string `json:"email"`
@@ -183,7 +183,8 @@ if rawData, err := gonfig.Read(); err != nil {
     userGroup := e.Group("/users")
     userGroup.POST("/create", createUser)
     userGroup.GET("/:id", getUser)
-    userGroup.GET("/login", loginUser)
+    userGroup.POST("/createprofile", createUserProfile)
+    //userGroup.GET("/login", loginUser)
 
     groceryGroup := e.Group("/groceries")
     groceryGroup.POST("/create", createGroceryRequest)
@@ -264,7 +265,7 @@ if err != nil {
 func createUser(c echo.Context) error {
 	// User ID from path `users/:id`
     u := &user{
-	    UserID: seq,
+	//    UserID: seq,
 	}
 	if err := c.Bind(u); err != nil {
 	    return err
@@ -275,12 +276,38 @@ func createUser(c echo.Context) error {
     //return c.String(http.StatusCreated, fmt.Sprintf("User %s %s", u.FirstName, u.LastName))
 }
 
+func createUserProfile(c echo.Context) error {
+  u := &user{
+    }
+    if err:= c.Bind(u); err != nil {
+        return err
+    }
+
+    DBCreateUserProfile(u)
+    return c.JSON(http.StatusCreated, u)
+}
+
+func DBCreateUserProfile(u *user) {
+  var id string
+    sqlInsertStatement := `
+    INSERT INTO user_profile (user_id, first_name, last_name, email, phone_nr, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6) returning user_id`
+
+    err := db.QueryRow(sqlInsertStatement, uuid.New(), u.FirstName, u.LastName, u.Email, u.Mobile, time.Now()).Scan(&id)
+    //_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
+	if err != nil {
+		panic(err)
+	}
+
+
+}
+
 func DBCreateUser(u *user) {
     // Creates a user in the DB in table user_profile. With the returned user_id it
     // adds the credentials to and user_auth with a hashed password
     // TODO: Make one out of the two SQL statements
     // TODO: Salt the hashes
-    var id int
+    var id string
     sqlInsertStatement := `
     INSERT INTO user_profile (first_name, last_name, email, phone_nr, created_at)
     VALUES ($1, $2, $3, $4, $5) returning user_id`
