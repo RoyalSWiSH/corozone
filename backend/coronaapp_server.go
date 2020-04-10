@@ -37,7 +37,7 @@ type user struct {
         FirstName string `json:"firstName"`
         LastName string `json:"lastName"`
         Email string `json:"email"`
-        Password string `json: "password"`
+      //  Password string `json: "password"`
         Mobile string `json:"mobile"`
     }
 
@@ -293,7 +293,7 @@ func DBCreateUserProfile(u *user) {
     INSERT INTO user_profile (user_id, first_name, last_name, email, phone_nr, created_at)
     VALUES ($1, $2, $3, $4, $5, $6) returning user_id`
 
-    err := db.QueryRow(sqlInsertStatement, uuid.New(), u.FirstName, u.LastName, u.Email, u.Mobile, time.Now()).Scan(&id)
+    err := db.QueryRow(sqlInsertStatement, u.UserID, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now()).Scan(&id)
     //_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
 	if err != nil {
 		panic(err)

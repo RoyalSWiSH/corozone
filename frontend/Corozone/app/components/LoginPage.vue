@@ -24,7 +24,7 @@
 				<StackLayout class="input-field" marginBottom="25">
 					<TextField ref="password" class="input" hint="Password" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'"
 					 @returnPress="focusConfirmPassword" fontSize="18" />
-					<TextField ref="confirmPassword" class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done"
+					<TextField ref="confirmPassword" v-show="!isLoggingIn"  class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done"
 					 fontSize="18" />
 					<StackLayout class="hr-light" />
 				</StackLayout>
@@ -129,15 +129,17 @@ export default {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    async postUserProfile() {
+    async postUserProfile(uid) {
 
         // Send a POST request
         return await this.axios({
             method: 'post',
             url: 'http://corozone.sebastian-roy.de/users/createprofile',
             data: {
+        user_id: uid,      
         firstName: this.user.firstName,
-        lastName: this.user.lastName
+        lastName: this.user.lastName,
+        email: this.user.email
 				}})
     //     .then(function (response) {
     //         console.log(response.data);  //Outputs API response in CL to verify functionality.
@@ -204,14 +206,17 @@ export default {
       // }
       this.$authService
         .register(this.user)
-        .then(() => {
+        .then(uid => {
           //loader.hide();
          // this.alert("Your account was successfully created.");
           this.isLoggingIn = true;
+          //console.log(uid)
+          return uid
         })
-        .then(() =>  {
+        .then(uid =>  {
           console.log("Update User Profile")
-          this.postUserProfile()
+          console.log(uid)
+          this.postUserProfile(uid)
           loader.hide();
         })
         .catch(err => {

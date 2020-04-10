@@ -47,10 +47,11 @@ async login(user) {
     //   }
 
      // loader.show(global.loaderOptions)
-      return await firebase.createUser({
+      const createdUser = await firebase.createUser({
           email: user.email,
           password: user.password
       });
+      return await createdUser.uid
     }
 
    async forgotPassword(email) {
