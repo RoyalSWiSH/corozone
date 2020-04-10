@@ -54,8 +54,10 @@ firebase
       if (data.loggedIn) {
         backendService.token = data.user.uid
         console.log("uID: " + data.user.uid)
+        store.commit('setIsLoggedIn', true)
       }
-      else {      
+      else {     
+        store.commit('setIsLoggedIn', false) 
       }
     }
   })

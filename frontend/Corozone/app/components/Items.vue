@@ -1,9 +1,10 @@
 <template>
  <Page>
      <ActionBar>            
-             <GridLayout rows="*" columns="3*, *"  v-for="i in rowCount" :key="i">
+             <GridLayout rows="*" columns="3*, *, *"  v-for="i in rowCount" :key="i">
                   <!-- <Label text="Groceries" column="0"></Label> -->
                   <Button text="Reload" @tap="getGroceryRequests()" column="1" />
+                   <Button text="Logout" @tap="logout()" column="2" />
              </GridLayout>
         </ActionBar>
      <ScrollView>
@@ -72,6 +73,7 @@
 
 <script>
 import ItemDetails from "./ItemDetails";
+import LoginPage from "./LoginPage";
 import { Accuracy } from "ui/enums";
 import * as geolocation from "nativescript-geolocation";
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
@@ -174,7 +176,17 @@ export default {
           //  return 6
         }
     },
+    watch: {
+    isLoggedIn(val) {
+      if (!val) {
+        this.$navigateTo(LoginPage, { clearHistory: true });
+      }
+    }
+  },
     methods: {
+        logout () {
+            this.$authService.logout()
+        },
         getGroceryRequests () {
             console.log("Get Grocery Reqests...")
             loader.show()

@@ -7,7 +7,14 @@
 			<StackLayout class="form">
 				<Image class="logo" src="~/images/logo.png" />
 				<Label class="header" text="Corozone" />
+        	<StackLayout v-show="!isLoggingIn" class="input-field">
+           <TextField ref="firstName" class="input" hint="First Name" v-model="user.firstName" returnKeyType="done"
+					 fontSize="18" />
+            <TextField ref="lastName" class="input" hint="Last Name" v-model="user.lastName" returnKeyType="done"
+					 fontSize="18" />
+					<StackLayout class="hr-light" />
 
+				</StackLayout>
 				<StackLayout class="input-field" marginBottom="25">
 					<TextField class="input" hint="Email" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.email"
 					 returnKeyType="next" @returnPress="focusPassword" fontSize="18" />
@@ -17,14 +24,14 @@
 				<StackLayout class="input-field" marginBottom="25">
 					<TextField ref="password" class="input" hint="Password" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'"
 					 @returnPress="focusConfirmPassword" fontSize="18" />
-					<StackLayout class="hr-light" />
-				</StackLayout>
-
-				<StackLayout v-show="!isLoggingIn" class="input-field">
 					<TextField ref="confirmPassword" class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done"
 					 fontSize="18" />
 					<StackLayout class="hr-light" />
 				</StackLayout>
+
+				<!-- <StackLayout v-show="!isLoggingIn" class="input-field">
+					<StackLayout class="hr-light" />
+				</StackLayout> -->
 
 				<Button :text="isLoggingIn ? 'Log In' : 'Sign Up'" @tap="submit" class="btn btn-primary m-t-20" />
 				<Label v-show="isLoggingIn" text="Forgot your password?" class="login-label" @tap="forgotPassword" />
@@ -87,17 +94,22 @@ export default {
       isLoggingIn: true,
       isInitialized: false,
       user: {
-        email: "foo@foo.com",
-        password: "barbar",
-        confirmPassword: "barbar",
-        uid: ""
+        email: "",
+        password: "",
+        confirmPassword: "",
+        uid: "",
+        firstName: "",
+        lastName: ""
       }
     };
   },
   created() {
-    setTimeout(() => {
+    // setTimeout(() => {
+    //   this.isInitialized = true;
+    // }, 1500);
+    if(this.$store.state.isLoggedIn!=null){
       this.isInitialized = true;
-    }, 1500);
+    }
   },
   // VueX will synchronize the state of this variable to the page by adding this in the export default { object 
   // What does ... mean?
