@@ -49,6 +49,7 @@ import Items from "./Items.vue";
 import Browse from "./Browse.vue";
 import Search from "./Search.vue";
 import LoginPage from "./LoginPage.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "app",
@@ -57,14 +58,21 @@ export default {
     Browse,
     Search,
     LoginPage
-  }
-//  watch: {
-//     isLoggedIn(val) {
-//       if (!val) {
-//         this.$navigateTo(LoginPage, { clearHistory: true });
-//       }
-//     }
-//   } 
+  },
+  computed: {
+    ...mapState(["isLoggedIn"])    
+  },
+ watch: {
+     // Logout leads to strange behaviour like details page not working
+    isLoggedIn(val) {
+      if (!val) {
+        this.$navigateTo(LoginPage, {   
+            // frame: "itemsFrame", 
+        //clearHistory: true 
+        });
+      }
+    }
+  } 
 };
 </script>
 

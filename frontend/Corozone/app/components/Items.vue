@@ -4,7 +4,7 @@
              <GridLayout rows="*" columns="3*, *, *">
                   <!-- <Label text="Groceries" column="0"></Label> -->
                   <Button text="Reload" @tap="getGroceryRequests()" column="1" />
-                   <Button text="Logout" @tap="logout()" column="2" />
+                   <Button text="Logout" @tap="logoutApp()" column="2" />
              </GridLayout>
         </ActionBar>
      <ScrollView>
@@ -241,6 +241,13 @@ export default {
                     props: { groceryRequest: groceryRequest } 
                 });
         },
+        // Logout leads to strange behaviour like details page not working
+        logoutApp() {
+      this.$authService.logout()
+      //.then(() => {
+      //  this.$navigateTo(LoginPage, {  clearHistory: true });
+     // });
+    },
         onItemTap (args) {
             const view = args.view;
             const page = view.page;
