@@ -48,14 +48,23 @@
 import Items from "./Items.vue";
 import Browse from "./Browse.vue";
 import Search from "./Search.vue";
+import LoginPage from "./LoginPage.vue";
 
 export default {
   name: "app",
   components: {
     Items,
     Browse,
-    Search
+    Search,
+    LoginPage
   }
+//  watch: {
+//     isLoggedIn(val) {
+//       if (!val) {
+//         this.$navigateTo(LoginPage, { clearHistory: true });
+//       }
+//     }
+//   } 
 };
 </script>
 

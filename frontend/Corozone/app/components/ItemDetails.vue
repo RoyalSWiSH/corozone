@@ -7,8 +7,9 @@
         </ActionBar>
     <GridLayout rows="50,200,170,170">
         <StackLayout row="0">
-        <Label v-if="groceryRequest.location.district" :text="groceryRequest.location.district" row="1" marginTop="10" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
+        <Label v-if="groceryRequest.location.district" :text="groceryRequest.location.district+', '+groceryRequest.createdBy" row="1" marginTop="10" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
         <Label v-else :text="groceryRequest.location.city" row="1" marginTop="10" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
+        <Label :text="groceryRequest.createdBy" row="1" marginTop="10" marginLeft="25" fontSize="25" colSpan="3" rowSpan="2"/>
         <Label :text="groceryRequest.location.street" marginLeft="25" fontSize="25"></Label>
         </StackLayout>
         <StackLayout row="1">
@@ -30,7 +31,6 @@
                 </Mapbox> 
         </StackLayout>
 		<StackLayout class="hr-light" />
-
         <ScrollView row="2">
         <ListView for="item in groceryRequest.requestedItems">
   <v-template>
@@ -85,12 +85,13 @@ export default {
         },
         openGoogleMaps() {
                     directions.navigate({
-            from: { // optional, default 'current location'
-                lat: 52.215987,
-                lng: 5.282764
-            },
+            // from: { // optional, default 'current location'
+            //     lat: 52.215987,
+            //     lng: 5.282764
+            // },
             to: { // either pass in a single object or an Array (see the TypeScript example below)
-                address: "Hof der Kolommen 34, Amersfoort, Netherlands"
+                lat: this.groceryRequest.location.lat,
+                lng: this.groceryRequest.location.long 
             }
             // for iOS-specific options, see the TypeScript example below.
             }).then(

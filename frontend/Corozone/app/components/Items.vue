@@ -1,7 +1,7 @@
 <template>
  <Page>
      <ActionBar>            
-             <GridLayout rows="*" columns="3*, *, *"  v-for="i in rowCount" :key="i">
+             <GridLayout rows="*" columns="3*, *, *">
                   <!-- <Label text="Groceries" column="0"></Label> -->
                   <Button text="Reload" @tap="getGroceryRequests()" column="1" />
                    <Button text="Logout" @tap="logout()" column="2" />
@@ -33,6 +33,7 @@
                  <!-- Check if a district for larger cities is present and if not display the city -->
                  <Label v-if="groceryRequests[(i-1)* itemsPerRow].location.district" :text="groceryRequests[(i-1)* itemsPerRow].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <Label v-else :text="groceryRequests[(i-1)* itemsPerRow].location.city" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label :text="groceryRequests[(i-1)* itemsPerRow].createdBy" row="2" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <!-- Display the Type of request, Groceries, Petcare... -->
                  <Label :text="groceryRequests[(i-1)* itemsPerRow].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
                   <Button text="Details" row="3" colSpan="3" @tap="seeDetails(groceryRequests[(i-1)* itemsPerRow])"/> 
@@ -58,7 +59,8 @@
                     (mapReady)="onMapReady($event)">
                 </Mapbox>
                  <Label v-if="groceryRequests[(i-1)* itemsPerRow + 1].location.district" :text="groceryRequests[(i-1)* itemsPerRow+1].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
-                 <Label v-else :text="groceryRequests[(i-1)* itemsPerRow + 1].location.city" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label v-else :text="groceryRequests[(i-1)* itemsPerRow + 1].location.city" row="3" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label :text="groceryRequests[(i-1)* itemsPerRow + 1].createdBy" row="2" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <!-- Display the Type of request, Groceries, Petcare... -->
                  <Label :text="groceryRequests[(i-1)* itemsPerRow + 1].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
                  <Button text="Details" row="3" colSpan="3" @tap="seeDetails(groceryRequests[(i-1)* itemsPerRow+1])"/>
@@ -176,13 +178,13 @@ export default {
           //  return 6
         }
     },
-    watch: {
-    isLoggedIn(val) {
-      if (!val) {
-        this.$navigateTo(LoginPage, { clearHistory: true });
-      }
-    }
-  },
+  //   watch: {
+  //   isLoggedIn(val) {
+  //     if (!val) {
+  //       this.$navigateTo(LoginPage, { clearHistory: true });
+  //     }
+  //   }
+  // },
     methods: {
         logout () {
             this.$authService.logout()
@@ -200,8 +202,8 @@ export default {
                 //     alertConnectionError("Error when connecting to server!")
                 // }
                 //Bug: apparantly this doesnt work when there are more than 17 grocery requests
-                that.groceryRequests = resp.data
-                that.serverFailure = false
+                 that.groceryRequests = resp.data
+                 that.serverFailure = false
                  console.log(resp.data);
                  loader.hide()
               }).catch((error) => {   if (error.response) {
@@ -258,7 +260,7 @@ export default {
                 args.map.addMarkers([
                     {
                         lat: this.groceryRequests[0].location.lat,
-                       lng: this.groceryRequests[0].location.lang,
+                        lng: this.groceryRequests[0].location.lang,
                         title: "Tracy, CA",
                         subtitle: "Home of The Polyglot Developer!",
                         onCalloutTap: () => {
