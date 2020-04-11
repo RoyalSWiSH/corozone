@@ -4,6 +4,10 @@ package main
 // Date: 19. March 2020
 
 
+// Run local: go build && ./coronaapp_server
+// Run server: GOOS=linux GOARCH=amd64 go build
+// scp coronaapp_server SERVERIP:/home/USER/corozone
+
 import (
 	"database/sql"
     "database/sql/driver"
@@ -17,7 +21,7 @@ import (
     jwt "github.com/dgrijalva/jwt-go"
 //    "crypto/sha1"
     "strings"
-    "crypto/sha256"
+    _ "crypto/sha256"
     "github.com/google/uuid"
     gonfig "github.com/eduardbcom/gonfig"
     "encoding/json"
@@ -32,6 +36,7 @@ type JwtClaims struct {
     Name string `json:"name"`
     jwt.StandardClaims
 }
+
 type user struct {
         UserID   string    `json:"user_id"`
         FirstName string `json:"firstName"`
@@ -77,6 +82,7 @@ func (i *ItemsSlice) Scan(src interface{}) error {
 
 type groceryRequest struct {
     OrderID        string `json:"order_id"`
+    CreatedBy      string   `json:"createdBy"`
     Location       location `json:"location"`
     Budget         float32   `json:"budget"`
     ForSomeoneElse bool `json:"forSomeoneElse"`
@@ -206,24 +212,24 @@ func createGroceryRequest(c echo.Context) error {
 
 func DBCreateGroceryRequest(g *groceryRequest) {
      sqlInsertStatement := fmt.Sprintf(`
-    INSERT INTO delivery_order (order_id, budget, for_someone_else, in_quarantine, elderly, requested_Items, geom, location, created_at)
-    VALUES ($1, $2, $3, $4, $5, $6, ST_GeomFromText('POINT(%v %v)', 4326), $7, $8) returning order_id`, g.Location.Long, g.Location.Lat)
+    INSERT INTO delivery_order (order_id, request_user_id, budget, for_someone_else, in_quarantine, elderly, requested_Items, geom, location, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, ST_GeomFromText('POINT(%v %v)', 4326), $8, $9) returning order_id`, g.Location.Long, g.Location.Lat)
     var order_id string
 
     err := db.QueryRow(sqlInsertStatement,
-    uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now()).Scan(&order_id)
+    uuid.New(), g.CreatedBy, g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now()).Scan(&order_id)
     //_, err := db.Exec(sqlInsertStatement,
     //uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now())
     //_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
 	if err != nil {
 		panic(err)
 	}
-
 }
 
 func getGroceries(c echo.Context) error {
    // queryid := c.QueryParam("9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96")
    // queryid := "9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96"
+   // select order_id, location, first_name, last_name from delivery_order inner join user_profile on delivery_order.request_user_id = user_profile.user_id
 	sqlStatement := `SELECT order_id, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order ORDER BY created_at DESC limit 10;`
     //var lastname string
 	//var user_id int
@@ -318,17 +324,17 @@ func DBCreateUser(u *user) {
 		panic(err)
 	}
 
-    h := sha256.New()
-    h.Write([]byte(u.Password))
-    hashsum := h.Sum(nil)
+  //  h := sha256.New()
+  //  h.Write([]byte(u.Password))
+  //  hashsum := h.Sum(nil)
 
-   sqlPassStatement := `
-    INSERT INTO user_auth (user_id, pw_hash, pw_salt, hash_algorithm, created_at)
-    VALUES ($1, $2, $3, $4, $5)`
-    _, err2 := db.Exec(sqlPassStatement, id, fmt.Sprintf("%x", hashsum), "no salt", "sha256, no salt", time.Now())
-	if err2 != nil {
-		panic(err)
-	}
+  // sqlPassStatement := `
+  //  INSERT INTO user_auth (user_id, pw_hash, pw_salt, hash_algorithm, created_at)
+  //  VALUES ($1, $2, $3, $4, $5)`
+  //  _, err2 := db.Exec(sqlPassStatement, id, fmt.Sprintf("%x", hashsum), "no salt", "sha256, no salt", time.Now())
+//	if err2 != nil {
+//		panic(err)
+//	}
 
     // Some server-side reponse when a user is created. Shoud go to logfiles and contain useful information
     fmt.Println(u.FirstName)

@@ -98,6 +98,7 @@
 import firebase from "nativescript-plugin-firebase";
 import axios from "axios/dist/axios"
 // A stub for a service that authenticates users
+import { backendService } from "../app";
 
 import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
@@ -261,7 +262,8 @@ export default {
             method: 'post',
             url: 'http://corozone.sebastian-roy.de/groceries/create',
             data: {
-				budget: 100.4,
+        createdBy: backendService.token,
+        budget: 100.4,
 				forSomeoneElse: true,
 				inQuarantine: false,
 				minimumSupply: false,
