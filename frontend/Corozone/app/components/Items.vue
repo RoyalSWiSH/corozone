@@ -12,7 +12,7 @@
      <StackLayout>
           <Label v-if="serverFailure" text="Not Connected" />
       <GridLayout rows="*" columns="*, *"  v-for="i in rowCount" :key="i">
-      <card-view class="card" col="0" margin="10" elevation="20" radius="1" @tap="seeDetails()">
+      <card-view class="card" col="0" margin="10" elevation="20" radius="1" @tap="seeDetails()" v-if="groceryRequests[(i - 1) * itemsPerRow] && groceryRequests[(i - 1) * itemsPerRow].order_id">
           <GridLayout rows="280, 40, 40, 60" columns="*, *, *"> 
                   <Mapbox
                     #map
@@ -33,13 +33,13 @@
                  <!-- Check if a district for larger cities is present and if not display the city -->
                  <Label v-if="groceryRequests[(i-1)* itemsPerRow].location.district" :text="groceryRequests[(i-1)* itemsPerRow].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <Label v-else :text="groceryRequests[(i-1)* itemsPerRow].location.city" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
-                 <Label :text="groceryRequests[(i-1)* itemsPerRow].createdBy" row="2" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label :text="groceryRequests[(i-1)* itemsPerRow].createdBy + ', (' + groceryRequests[(i-1)* itemsPerRow].requestedItems.length + ')'" row="2" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <!-- Display the Type of request, Groceries, Petcare... -->
                  <Label :text="groceryRequests[(i-1)* itemsPerRow].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
                   <Button text="Details" row="3" colSpan="3" @tap="seeDetails(groceryRequests[(i-1)* itemsPerRow])"/> 
           </GridLayout>
       </card-view>
-        <card-view class="card" col="1" margin="10" elevation="20" radius="1" @tap="seeDetails()">
+        <card-view class="card" col="1" margin="10" elevation="20" radius="1" @tap="seeDetails()" v-if="groceryRequests[(i - 1) * itemsPerRow +1] && groceryRequests[(i - 1) * itemsPerRow +1].order_id">
           <GridLayout rows="280, 40, 40, 60" columns="*, *, *"> 
                  <Label :text="groceryRequests[(i-1)* itemsPerRow + 1].location.district" row="0" margin="5" fontSize="15" colSpan="3" rowSpan="2"/>
                     <Mapbox
@@ -60,7 +60,7 @@
                 </Mapbox>
                  <Label v-if="groceryRequests[(i-1)* itemsPerRow + 1].location.district" :text="groceryRequests[(i-1)* itemsPerRow+1].location.district" row="1" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <Label v-else :text="groceryRequests[(i-1)* itemsPerRow + 1].location.city" row="3" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
-                 <Label :text="groceryRequests[(i-1)* itemsPerRow + 1].createdBy" row="2" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
+                 <Label :text="groceryRequests[(i-1)* itemsPerRow + 1].createdBy + ', (' + groceryRequests[(i-1)* itemsPerRow+1].requestedItems.length + ')'" row="2" margin="5" fontSize="18" colSpan="3" rowSpan="2"/>
                  <!-- Display the Type of request, Groceries, Petcare... -->
                  <Label :text="groceryRequests[(i-1)* itemsPerRow + 1].item_categories" row="2" margin="5" fontSize="18" colSpan="3"/>
                  <Button text="Details" row="3" colSpan="3" @tap="seeDetails(groceryRequests[(i-1)* itemsPerRow+1])"/>

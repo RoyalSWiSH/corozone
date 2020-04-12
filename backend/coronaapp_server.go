@@ -230,7 +230,7 @@ func getGroceries(c echo.Context) error {
    // queryid := c.QueryParam("9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96")
    // queryid := "9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96"
    // select order_id, location, first_name, last_name from delivery_order inner join user_profile on delivery_order.request_user_id = user_profile.user_id
-	sqlStatement := `SELECT order_id, first_name, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order INNER JOIN user_profile ON delivery_order.request_user_id = user_profile.user_id ORDER BY delivery_order.created_at DESC limit 10;`
+	sqlStatement := `SELECT order_id, first_name, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order INNER JOIN user_profile ON delivery_order.request_user_id = user_profile.user_id ORDER BY delivery_order.created_at DESC limit 30;`
     //var lastname string
 	//var user_id int
 	// Replace 3 with an ID from your database or another random
