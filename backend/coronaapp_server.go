@@ -261,7 +261,7 @@ func acceptGroceries(c echo.Context) error {
 
 
 func DBOpenStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
-    // TODO: Check first if order_id exists in groceryRequests table
+    // DONE: Check first if order_id exists in groceryRequests table
     // TODO: Return HTTP Error when accepted twice
      sqlInsertStatement := `
     INSERT INTO delivery_status (order_id, helper_user_id, status, created_at)
@@ -279,6 +279,23 @@ func DBOpenStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
 }
 
 func DBAcceptStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
+   // DONE: Check first if order_id exists in groceryRequests table
+// TODO: Return HTTP Error when accepted twice by different users
+ sqlInsertStatement := `
+UPDATE delivery_status
+SET status=$1, helper_user_id=$2
+WHERE order_id=$3;
+`
+//var order_id string
+
+_, err := db.Query(sqlInsertStatement,
+"accepted", g.HelperID, guid)
+//_, err := db.Exec(sqlInsertStatement,
+//uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now())
+//_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
+if err != nil {
+    panic(err)
+}
 
 }
 
