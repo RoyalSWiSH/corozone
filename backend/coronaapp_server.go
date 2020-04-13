@@ -79,6 +79,11 @@ func (i *ItemsSlice) Scan(src interface{}) error {
 }
 
 
+type groceryStatus struct {
+    OrderID     uuid.UUID  `json:"orderID"`
+    HelperID    string  `json:"helperID"`
+    Status      string `json:"status"`
+}
 
 type groceryRequest struct {
     OrderID        string `json:"order_id"`
@@ -167,6 +172,7 @@ if rawData, err := gonfig.Read(); err != nil {
 
     e := echo.New()
 	e.GET("/", hello)
+
     pr := e.Group("/projects")
     pr.Use(ServerHeader)
     pr.Use(middleware.Logger())
@@ -186,15 +192,19 @@ if rawData, err := gonfig.Read(); err != nil {
     cookieGroup.GET("/main", mainCookie)
     cookieGroup.Use(middleware.Logger())
 
-    userGroup := e.Group("/users")
+    apiGroup := e.Group("/api")
+    apiv1Group := apiGroup.Group("/v1")
+
+    userGroup := apiv1Group.Group("/users")
     userGroup.POST("/create", createUser)
     userGroup.GET("/:id", getUser)
     userGroup.POST("/createprofile", createUserProfile)
     //userGroup.GET("/login", loginUser)
 
-    groceryGroup := e.Group("/groceries")
+    groceryGroup := apiv1Group.Group("/groceries")
     groceryGroup.POST("/create", createGroceryRequest)
     groceryGroup.GET("/getgroceries", getGroceries)
+    groceryGroup.POST("/:id/accept", acceptGroceries)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -206,11 +216,18 @@ func createGroceryRequest(c echo.Context) error {
         return err
     }
 
-    DBCreateGroceryRequest(g)
+    order_id := DBCreateGroceryRequest(g)
+
+    gstatus:= &groceryStatus{
+        OrderID: order_id,
+        Status: "open" }
+
+    DBOpenStatusGroceryRequest(gstatus, order_id)
+
     return c.JSON(http.StatusCreated, g)
 }
 
-func DBCreateGroceryRequest(g *groceryRequest) {
+func DBCreateGroceryRequest(g *groceryRequest) uuid.UUID {
      sqlInsertStatement := fmt.Sprintf(`
     INSERT INTO delivery_order (order_id, request_user_id, budget, for_someone_else, in_quarantine, elderly, requested_Items, geom, location, created_at)
     VALUES ($1, $2, $3, $4, $5, $6, $7, ST_GeomFromText('POINT(%v %v)', 4326), $8, $9) returning order_id`, g.Location.Long, g.Location.Lat)
@@ -224,13 +241,56 @@ func DBCreateGroceryRequest(g *groceryRequest) {
 	if err != nil {
 		panic(err)
 	}
+    return uuid.MustParse(order_id)
+}
+
+func acceptGroceries(c echo.Context) error {
+    order_id := c.Param("id")
+    guid := uuid.MustParse(order_id)
+    g := &groceryStatus{
+    }
+
+    if err:= c.Bind(g); err != nil {
+        return err
+    }
+    DBAcceptStatusGroceryRequest(g, guid)
+    // TODO: Just return when DBAcceptStatusGroceryRequest has been executed without errors
+    return c.String(http.StatusOK, fmt.Sprintf("Accepted grocery request %s", order_id))
+
+}
+
+
+func DBOpenStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
+    // TODO: Check first if order_id exists in groceryRequests table
+    // TODO: Return HTTP Error when accepted twice
+     sqlInsertStatement := `
+    INSERT INTO delivery_status (order_id, helper_user_id, status, created_at)
+    VALUES ($1, $2, $3, $4) returning order_id`
+    var order_id string
+
+    err := db.QueryRow(sqlInsertStatement,
+    guid, g.HelperID, "open", time.Now()).Scan(&order_id)
+    //_, err := db.Exec(sqlInsertStatement,
+    //uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now())
+    //_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
+	if err != nil {
+		panic(err)
+	}
+}
+
+func DBAcceptStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
+
 }
 
 func getGroceries(c echo.Context) error {
    // queryid := c.QueryParam("9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96")
    // queryid := "9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96"
    // select order_id, location, first_name, last_name from delivery_order inner join user_profile on delivery_order.request_user_id = user_profile.user_id
-	sqlStatement := `SELECT order_id, first_name, location, budget, elderly, for_someone_else, in_quarantine, requested_Items FROM delivery_order INNER JOIN user_profile ON delivery_order.request_user_id = user_profile.user_id ORDER BY delivery_order.created_at DESC limit 30;`
+	sqlStatement := `SELECT delivery_order.order_id, first_name, location, budget, elderly, for_someone_else, in_quarantine, requested_Items
+    FROM delivery_order
+    INNER JOIN user_profile ON delivery_order.request_user_id = user_profile.user_id
+    INNER JOIN delivery_status ON delivery_order.order_id = delivery_status.order_id
+    ORDER BY delivery_order.created_at DESC limit 30;`
     //var lastname string
 	//var user_id int
 	// Replace 3 with an ID from your database or another random
@@ -267,7 +327,6 @@ if err != nil {
 }
     return c.JSON(http.StatusOK, groceryRequests)
 }
-
 func createUser(c echo.Context) error {
 	// User ID from path `users/:id`
     u := &user{
@@ -304,7 +363,6 @@ func DBCreateUserProfile(u *user) {
 	if err != nil {
 		panic(err)
 	}
-
 
 }
 

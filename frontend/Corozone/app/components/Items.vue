@@ -195,13 +195,12 @@ export default {
             let that = this
               this.axios({
                        method: 'get',
-                       url: 'http://corozone.sebastian-roy.de/groceries/getgroceries',
+                       url: 'http://corozone.sebastian-roy.de/api/v1/groceries/getgroceries',
                   }).then(resp => {
                 // this.groceryRequests = resp.data
                 // if(resp.data == "") {
                 //     alertConnectionError("Error when connecting to server!")
                 // }
-                //Bug: apparantly this doesnt work when there are more than 17 grocery requests
                  that.groceryRequests = resp.data
                  that.serverFailure = false
                  console.log(resp.data);

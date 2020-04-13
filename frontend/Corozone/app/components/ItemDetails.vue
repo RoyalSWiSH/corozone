@@ -59,6 +59,7 @@
 <script>
 
 import { Directions } from "nativescript-directions";
+import { backendService } from "../app";
 
 // instantiate the plugin
 let directions = new Directions();
@@ -80,7 +81,35 @@ export default {
           this.$navigateBack();
         },
         acceptGroceries() {
+            let url = 'http://corozone.sebastian-roy.de/api/v1/groceries/' + this.groceryRequest.order_id + '/accept' 
             console.log("Accepted Grocery Request")
+            console.log(url)
+              this.axios({
+            method: 'post',
+            url: url,
+            data: {
+                    orderID: this.groceryRequest.order_id,
+                    helperID: backendService.token,
+                    status: "accepted"
+				}
+        }).then(function (response) {
+            console.log(response.data);  //Outputs API response in CL to verify functionality.
+		})
+		.catch((error) => {   if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log(error.message);
+    }});
             console.log(JSON.stringify(this.groceryRequest.requestedItems))
         },
         openGoogleMaps() {

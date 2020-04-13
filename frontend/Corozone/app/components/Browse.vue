@@ -260,7 +260,7 @@ export default {
         // Send a POST request
         this.axios({
             method: 'post',
-            url: 'http://corozone.sebastian-roy.de/groceries/create',
+            url: 'http://corozone.sebastian-roy.de/api/v1/groceries/create',
             data: {
         createdBy: backendService.token,
         budget: 100.4,
