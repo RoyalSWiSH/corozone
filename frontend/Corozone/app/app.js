@@ -13,12 +13,17 @@ import BackendService from './services/BackendService'
 import AuthService from './services/AuthService'
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 
+import { localize } from "nativescript-localize";
+
+// require('globals')
+// require('nativescript-i18n')
+
 // Enable global check if device is android or iOS to disable Maps on Android since mapbox crashes right now
 Vue.prototype.$isAndroid = isAndroid;
 Vue.prototype.$isIOS = isIOS;
 
 Vue.use(VueAxios, axios)
-axios.defaults.baseURL = "http://192.168.178.23:1323";
+axios.defaults.baseURL = "http://corozone.sebastian-roy.de/api/v1";
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 
@@ -46,6 +51,7 @@ if(TNS_ENV !== 'production') {
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production')
 
+Vue.filter("L", localize);
 
 firebase
   .init({

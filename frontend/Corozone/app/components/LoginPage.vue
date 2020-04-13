@@ -134,7 +134,7 @@ export default {
         // Send a POST request
         return await this.axios({
             method: 'post',
-            url: 'http://corozone.sebastian-roy.de/users/createprofile',
+            url: '/users/createprofile',
             data: {
         user_id: uid,      
         firstName: this.user.firstName,

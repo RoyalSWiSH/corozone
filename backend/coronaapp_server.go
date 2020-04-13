@@ -83,11 +83,12 @@ type groceryStatus struct {
     OrderID     uuid.UUID  `json:"orderID"`
     HelperID    string  `json:"helperID"`
     Status      string `json:"status"`
-}
+    ReceiptAmount float32 `json:"receiptAmount"` }
 
 type groceryRequest struct {
     OrderID        string `json:"order_id"`
     CreatedBy      string   `json:"createdBy"`
+    Status         string `json:"status"`
     Location       location `json:"location"`
     Budget         float32   `json:"budget"`
     ForSomeoneElse bool `json:"forSomeoneElse"`
@@ -203,8 +204,13 @@ if rawData, err := gonfig.Read(); err != nil {
 
     groceryGroup := apiv1Group.Group("/groceries")
     groceryGroup.POST("/create", createGroceryRequest)
-    groceryGroup.GET("/getgroceries", getGroceries)
+    groceryGroup.GET("/", getGroceries)
+    //Routes authenticate for helper
     groceryGroup.POST("/:id/accept", acceptGroceries)
+    groceryGroup.POST("/:id/paid", paidGroceries)
+    groceryGroup.POST("/:id/delivered", deliveredGroceries)
+    groceryGroup.POST("/:id/repaid", repaidGroceries)
+    //Routes authenticate for requester
 
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -259,6 +265,53 @@ func acceptGroceries(c echo.Context) error {
 
 }
 
+func paidGroceries(c echo.Context) error {
+    order_id := c.Param("id")
+    guid := uuid.MustParse(order_id)
+    g := &groceryStatus{
+    }
+
+    if err:= c.Bind(g); err != nil {
+        return err
+    }
+    DBPaidStatusGroceryRequest(g, guid)
+    // TODO: Just return when DBAcceptStatusGroceryRequest has been executed without errors
+    return c.String(http.StatusOK, fmt.Sprintf("Paid groceries %s", order_id))
+
+}
+
+func deliveredGroceries(c echo.Context) error {
+    order_id := c.Param("id")
+    guid := uuid.MustParse(order_id)
+    g := &groceryStatus{
+    }
+
+    if err:= c.Bind(g); err != nil {
+        return err
+    }
+    DBDeliveredStatusGroceryRequest(g, guid)
+    // TODO: Just return when DBAcceptStatusGroceryRequest has been executed without errors
+    return c.String(http.StatusOK, fmt.Sprintf("Delivered groceries %s", order_id))
+
+}
+
+func repaidGroceries(c echo.Context) error {
+    order_id := c.Param("id")
+    guid := uuid.MustParse(order_id)
+    g := &groceryStatus{
+    }
+
+    if err:= c.Bind(g); err != nil {
+        return err
+    }
+    DBRepaidStatusGroceryRequest(g, guid)
+    // TODO: Just return when DBAcceptStatusGroceryRequest has been executed without errors
+    return c.String(http.StatusOK, fmt.Sprintf("Repaid groceries %s", order_id))
+
+}
+
+
+
 
 func DBOpenStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
     // DONE: Check first if order_id exists in groceryRequests table
@@ -290,23 +343,77 @@ WHERE order_id=$3;
 
 _, err := db.Query(sqlInsertStatement,
 "accepted", g.HelperID, guid)
-//_, err := db.Exec(sqlInsertStatement,
-//uuid.New(), g.Budget, g.ForSomeoneElse, g.InQuarantine, g.Elderly, g.RequestedItems, g.Location, time.Now())
-//_, err := db.Exec(sqlInsertStatement, u.FirstName, u.LastName, u.Email, u.Mobile, time.Now())
+if err != nil {
+    panic(err)
+}
+
+}
+func DBPaidStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
+   // DONE: Check first if order_id exists in groceryRequests table
+// TODO: Return HTTP Error when accepted twice by different users
+ sqlInsertStatement := `
+UPDATE delivery_status
+SET status=$1, receipt_amount=$2
+WHERE order_id=$3 AND helper_user_id=$4;
+`
+//var order_id string
+
+_, err := db.Query(sqlInsertStatement,
+"paid", g.ReceiptAmount, guid, g.HelperID)
+if err != nil {
+    panic(err)
+}
+
+}
+func DBDeliveredStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
+   // DONE: Check first if order_id exists in groceryRequests table
+// TODO: Return HTTP Error when accepted twice by different users
+ sqlInsertStatement := `
+UPDATE delivery_status
+SET status=$1
+WHERE order_id=$2 AND helper_user_id=$3;
+`
+//var order_id string
+
+_, err := db.Query(sqlInsertStatement,
+"delivered",  guid, g.HelperID)
+if err != nil {
+    panic(err)
+}
+
+}
+func DBRepaidStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
+   // DONE: Check first if order_id exists in groceryRequests table
+// TODO: Return HTTP Error when accepted twice by different users
+ sqlInsertStatement := `
+UPDATE delivery_status
+SET status=$1
+WHERE order_id=$2 AND helper_user_id=$3;
+`
+//var order_id string
+
+_, err := db.Query(sqlInsertStatement,
+"closed",  guid, g.HelperID)
 if err != nil {
     panic(err)
 }
 
 }
 
+
+
+
+
+
 func getGroceries(c echo.Context) error {
    // queryid := c.QueryParam("9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96")
    // queryid := "9ffbc79a-77b2-46a8-b3c4-a0dbed9ffa96"
    // select order_id, location, first_name, last_name from delivery_order inner join user_profile on delivery_order.request_user_id = user_profile.user_id
-	sqlStatement := `SELECT delivery_order.order_id, first_name, location, budget, elderly, for_someone_else, in_quarantine, requested_Items
+	sqlStatement := `SELECT delivery_order.order_id, status, first_name, location, budget, elderly, for_someone_else, in_quarantine, requested_Items
     FROM delivery_order
     INNER JOIN user_profile ON delivery_order.request_user_id = user_profile.user_id
     INNER JOIN delivery_status ON delivery_order.order_id = delivery_status.order_id
+    WHERE delivery_status.status != 'closed'
     ORDER BY delivery_order.created_at DESC limit 30;`
     //var lastname string
 	//var user_id int
@@ -325,7 +432,7 @@ if err != nil {
     for rows.Next() {
 
     g := new(groceryRequest)
-	switch err := rows.Scan(&g.OrderID, &g.CreatedBy, &g.Location, &g.Budget, &g.Elderly, &g.ForSomeoneElse, &g.InQuarantine, &g.RequestedItems ); err {
+	switch err := rows.Scan(&g.OrderID, &g.Status, &g.CreatedBy, &g.Location, &g.Budget, &g.Elderly, &g.ForSomeoneElse, &g.InQuarantine, &g.RequestedItems ); err {
 	case sql.ErrNoRows:
 		fmt.Println("No rows were returned!")
         return c.String(http.StatusOK, fmt.Sprintf("No user found"))

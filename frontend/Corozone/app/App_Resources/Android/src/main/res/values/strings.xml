@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="_not_found_in_en_default_8PvJR">"pas trouvé dans en.default"</string>
+  <string name="_groceries_thankyou_21AMqn">"Thank You! This grocery request has been closed."</string>
+  <string name="_groceries_receivedrepayment_1cN4KD">"Received Payment"</string>
+  <string name="_groceries_delivered_ycgwj">"Delivered"</string>
+  <string name="_groceries_opengooglemaps_2n7lDh">"Open Google Maps"</string>
+  <string name="_groceries_paidgroceries_Z13zuhW">"Paid Groceries"</string>
+  <string name="_groceries_accept_ZWcKU9">"Accept"</string>
+  <string name="_groceries_requestgroceries_ZfE4r7">"Request Groceries"</string>
+  <string name="_groceries_additem_WPKsK">"Add Item"</string>
+  <string name="_groceries_nogroceryrequests_122GQm">"No grocery requests in your area."</string>
+  <string name="_groceries_notconnected_ZxUGVL">"Not connected."</string>
+  <string name="delete">"Delete"</string>
+  <string name="logout">"Logout"</string>
+  <string name="reload">"Reload"</string>
+  <string name="_hello_world_Z2tF6Gu">"Bonjour le monde !"</string>
+  <string name="_app_name_1k3Sbz">"Corozone"</string>
+  <string name="app_name">"Corozone"</string>
+  <string name="title_activity_kimera">"Corozone"</string>
+</resources>

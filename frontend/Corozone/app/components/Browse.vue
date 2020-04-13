@@ -27,7 +27,7 @@
             <Button
               col="1"
               row="0"
-              text="Add Item"
+              :text="'groceries.additem' | L"
               @tap="onButtonTap"
             />
 			<!-- <Button text="Request Groceries" row="1" colSpan="2" @tap="onTapRequestGroceries" class="btn" /> -->
@@ -59,8 +59,20 @@
                 class="list-group-item-heading"
                 text-wrap="true"
               /> -->
-					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" :text="gitem.name"
-					 returnKeyType="next" @returnPress="" fontSize="18" />
+              <GridLayout
+            columns="2*,*"
+            rows="*,*"
+            width="100%"
+            height="25%"
+          > 
+					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="gitem.name"
+					 returnKeyType="next" @returnPress="" fontSize="18" /> <Button
+              col="1"
+              row="0"
+              :text="'delete' | L"
+              @tap="onButtonTapDelete"
+            />
+            </GridLayout>
             </v-template>
           </ListView>
 		  </StackLayout>
@@ -85,7 +97,7 @@
               text="Add Item"
               @tap="onButtonTap"
             /> -->
-			<Button text="Request Groceries" row="0" colSpan="2" @tap="onTapRequestGroceries" class="btn" /><
+			<Button :text="'groceries.requestgroceries' | L" row="0" colSpan="2" @tap="onTapRequestGroceries" class="btn" /><
           </GridLayout>
 	
 			</StackLayout>
@@ -139,6 +151,10 @@ export default {
   methods: {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
+    },
+    onButtonTapDelete(args) {
+        console.log("Deleted Item")
+        this.requestedItems.splice(args.index, 1);
     },
     getAddressFromCoord() {
           let lat = this.location.lat
@@ -260,7 +276,7 @@ export default {
         // Send a POST request
         this.axios({
             method: 'post',
-            url: 'http://corozone.sebastian-roy.de/api/v1/groceries/create',
+            url: '/groceries/create',
             data: {
         createdBy: backendService.token,
         budget: 100.4,

@@ -1,0 +1,21 @@
+{"app.name": "Corozone",
+    "hello": {
+      "world": "Bonjour le monde !"
+    },
+    "reload": "Neu Laden",
+    "logout": "Logout",
+    "delete": "Löschen",
+    "groceries": {
+       "notconnected": "Nicht verbunden.",
+       "nogroceryrequests": "Keine Gesuche in deiner Gegend.",
+       "additem": "Hinzufügen",
+       "requestgroceries": "Einkaufsanfrage senden",
+       "accept": "Annehmen",
+       "paidgroceries": "Einkäufe bezahlt",
+       "opengooglemaps": "Google Maps öffnen",
+       "delivered": "Abgeliefert",
+       "receivedrepayment": "Bezahlung erhalten",
+       "thankyou": "Danke! Die Anfrage wurde geschlossen."
+  },
+    "not found in en.default": "pas trouvé dans en.default"
+  }
