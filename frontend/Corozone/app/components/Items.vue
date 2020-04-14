@@ -176,7 +176,6 @@ export default {
     computed: {
         rowCount: function() {
             return Math.ceil(this.groceryRequests.length / this.itemsPerRow)
-          //  return 6
         }
     },
   //   watch: {

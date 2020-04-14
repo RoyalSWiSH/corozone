@@ -6,5 +6,6 @@
       "~/*": ["app/*"]
     }
   },
-  "include": ["app/**/*"]
+  "include": ["app/**/*"],
+  "exclude": [ "e2e" ]
 }

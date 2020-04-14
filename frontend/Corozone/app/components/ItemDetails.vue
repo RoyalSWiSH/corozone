@@ -146,7 +146,6 @@ export default {
       // Something happened in setting up the request that triggered an Error
       console.log(error.message);
     }});
-
         },
         paidGroceries() {
             console.log("Paid Groceries")

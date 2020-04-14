@@ -19,7 +19,7 @@
               v-model="itemField"
               col="0"
               row="0"
-              hint="Milch"
+              hint="z.B. Milch"
               editable="true"
               @returnPress="onButtonTap"
             />
@@ -205,6 +205,7 @@ export default {
 
 	 geolocation.isEnabled().then(function (isEnabled) {
                     if (!isEnabled) {
+
                         geolocation.enableLocationRequest(true, true).then(() => {
                             console.log("User Enabled Location Service");
                         }, (e) => {
