@@ -1,0 +1,201 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 3,
+    "passes": 2,
+    "pending": 0,
+    "failures": 1,
+    "start": "2020-04-14T19:14:13.418Z",
+    "end": "2020-04-14T19:15:14.175Z",
+    "duration": 60757,
+    "testsRegistered": 3,
+    "passPercent": 66.7,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false,
+    "passPercentClass": "warning",
+    "pendingPercentClass": "danger"
+  },
+  "suites": {
+    "uuid": "60a113c3-de3d-42c3-8c50-52844b3d362d",
+    "title": "",
+    "fullFile": "",
+    "file": "",
+    "beforeHooks": [
+      {
+        "title": "\"before all\" hook: start server",
+        "fullTitle": "\"before all\" hook: start server",
+        "timedOut": false,
+        "duration": 4353,
+        "pass": false,
+        "fail": false,
+        "pending": false,
+        "context": "[\n  \"on_server_started\",\n  \"./on_server_started.png\"\n]",
+        "code": "nsAppium.nsCapabilities.testReporter.context = this;\nawait nsAppium.startServer();",
+        "err": {},
+        "isRoot": true,
+        "uuid": "9992ea23-291b-49da-aa38-40b2c239d854",
+        "isHook": true,
+        "skipped": false
+      }
+    ],
+    "afterHooks": [
+      {
+        "title": "\"after all\" hook: stop appium server",
+        "fullTitle": "\"after all\" hook: stop appium server",
+        "timedOut": false,
+        "duration": 458,
+        "pass": false,
+        "fail": false,
+        "pending": false,
+        "code": "await nsAppium.stopServer();",
+        "err": {},
+        "isRoot": true,
+        "uuid": "758ce4ef-7bd9-4bf8-86bc-01fc3317213c",
+        "isHook": true,
+        "skipped": false
+      }
+    ],
+    "tests": [],
+    "suites": [
+      {
+        "uuid": "57bb03bc-7afc-4ab9-b183-7bae9cca40f6",
+        "title": "sample scenario",
+        "fullFile": "/Users/swish/Dropbox/Coden/gotest/frontend/Corozone/e2e/sample.e2e-spec.js",
+        "file": "/e2e/sample.e2e-spec.js",
+        "beforeHooks": [
+          {
+            "title": "\"before all\" hook",
+            "fullTitle": "sample scenario \"before all\" hook",
+            "timedOut": false,
+            "duration": 17494,
+            "pass": false,
+            "fail": false,
+            "pending": false,
+            "code": "nsAppium.nsCapabilities.testReporter.context = this; \ndriver = await nsAppium.createDriver();",
+            "err": {},
+            "isRoot": false,
+            "uuid": "ceb90a2c-ac81-4a86-a39e-015171e81b39",
+            "isHook": true,
+            "skipped": false
+          }
+        ],
+        "afterHooks": [
+          {
+            "title": "\"after all\" hook",
+            "fullTitle": "sample scenario \"after all\" hook",
+            "timedOut": false,
+            "duration": 2107,
+            "pass": false,
+            "fail": false,
+            "pending": false,
+            "context": "[\n  \"on_server_stopped\",\n  \"./on_server_stopped.png\"\n]",
+            "code": "await driver.quit();\nconsole.log(\"Quit driver!\");",
+            "err": {},
+            "isRoot": false,
+            "uuid": "761892d8-3ef0-425f-9391-cfa057ca9fb7",
+            "isHook": true,
+            "skipped": false
+          },
+          {
+            "title": "\"after each\" hook",
+            "fullTitle": "sample scenario \"after each\" hook",
+            "timedOut": false,
+            "duration": 1683,
+            "pass": false,
+            "fail": false,
+            "pending": false,
+            "code": "if (this.currentTest.state === \"failed\") {\n    await driver.logTestArtifacts(this.currentTest.title);\n}",
+            "err": {},
+            "isRoot": false,
+            "uuid": "70b2e7b2-dfe9-416d-a8e7-bc6cdfce3787",
+            "isHook": true,
+            "skipped": false
+          }
+        ],
+        "tests": [
+          {
+            "title": "Ask if passowrd forgotten",
+            "fullTitle": "sample scenario Ask if passowrd forgotten",
+            "timedOut": false,
+            "duration": 1111,
+            "state": "passed",
+            "speed": "slow",
+            "pass": true,
+            "fail": false,
+            "pending": false,
+            "context": "[\n  \"appium_driver_started\",\n  \"./appium_driver_started.png\"\n]",
+            "code": "const label = await driver.findElementByText(\"Forgot your Password?\", \"contains\");\nassert.isTrue(await label.isDisplayed());",
+            "err": {},
+            "isRoot": false,
+            "uuid": "956592d0-a0d2-4564-b4cf-213ebeee83d4",
+            "isHook": false,
+            "skipped": false
+          },
+          {
+            "title": "Show login Button",
+            "fullTitle": "sample scenario Show login Button",
+            "timedOut": false,
+            "duration": 404,
+            "state": "passed",
+            "speed": "slow",
+            "pass": true,
+            "fail": false,
+            "pending": false,
+            "code": "const label = await driver.findElementByText(\"Log In\", \"contains\");\nassert.isTrue(await label.isDisplayed());",
+            "err": {},
+            "isRoot": false,
+            "uuid": "12ad9908-74d8-4a3b-97d4-7fcda89ff5cb",
+            "isHook": false,
+            "skipped": false
+          },
+          {
+            "title": "Test Login",
+            "fullTitle": "sample scenario Test Login",
+            "timedOut": false,
+            "duration": 33135,
+            "state": "failed",
+            "pass": false,
+            "fail": true,
+            "pending": false,
+            "context": "[\n  \"Test_Login\",\n  \"./Test_Login.png\",\n  \"appium_driver_quit\",\n  \"./appium_driver_quit.png\"\n]",
+            "code": "// const label = await driver.findElementByText(\"Log In\", \"contains\");\n //const mailField = await driver.findElementByAccessibilityId(\"Email\");\n const EMAIL = \"asd@asd.de\"\n const PASSWORD = \"asdasd\"\n const allFields = await driver.findElementsByClassName(\"android.widget.EditText\");\n await allFields[0].sendKeys(EMAIL);\n await allFields[1].sendKeys(PASSWORD);\n await driver.hideDeviceKeyboard();\n //await mailField.sendKeys(\"2\");\n const tapButton = await driver.findElementByText(\"Log In\");\n await tapButton.click();\n await driver.wait(6000);\n //await  driver.elementByXPath('//android.widget.TextView[@text=\\'Log In\\']').click();\n const label = await driver.findElementByText(\"Reload\", \"contains\");\n //const notconnectedmsg = await driver.findElementByText(\"Not connected.\", \"contains\");\n const detailsButton = await driver.findElementByText(\"Details\", \"contains\");\n// assert.isTrue(await label.isDisplayed());\n// assert.isTrue(await detailsButton.isDisplayed());\n await detailsButton.click() \n await driver.wait(8000);\n// await detailsButton.click() \n const acceptButton = await driver.findElementByText(\"Google Maps\", \"contains\");\n assert.isTrue(await acceptButton.isDisplayed());",
+            "err": {
+              "message": "Error: [waitForElementByXPath(\"//*[contains(translate(@content-desc,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'google maps') or contains(translate(@resource-id,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'google maps') or contains(translate(@text,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'google maps')]\",5000)] Element condition wasn't satisfied!",
+              "estack": "Error: [waitForElementByXPath(\"//*[contains(translate(@content-desc,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'google maps') or contains(translate(@resource-id,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'google maps') or contains(translate(@text,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'google maps')]\",5000)] Element condition wasn't satisfied!\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/lib/commands.js:979:12\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/lib/commands.js:884:11\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/lib/commands.js:966:13\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/node_modules/async/dist/async.js:3888:9\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/node_modules/async/dist/async.js:473:16\n    at replenish (node_modules/wd/node_modules/async/dist/async.js:1006:25)\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/node_modules/async/dist/async.js:1016:9\n    at eachOfLimit (node_modules/wd/node_modules/async/dist/async.js:1041:24)\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/node_modules/async/dist/async.js:1046:16\n    at _parallel (node_modules/wd/node_modules/async/dist/async.js:3879:5)\n    at Object.series (node_modules/wd/node_modules/async/dist/async.js:4735:5)\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/lib/commands.js:964:15\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/wd/lib/promise-webdriver.js:52:11\n    at _fulfilled (node_modules/q/q.js:854:54)\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/q/q.js:883:30\n    at Promise.promise.promiseDispatch (node_modules/q/q.js:816:13)\n    at /Users/swish/Dropbox/Coden/gotest/frontend/Corozone/node_modules/q/q.js:624:44\n    at runSingle (node_modules/q/q.js:137:13)\n    at flush (node_modules/q/q.js:125:13)\n    at process._tickCallback (internal/process/next_tick.js:61:11)"
+            },
+            "isRoot": false,
+            "uuid": "86c6b3cc-30aa-41b7-90e6-cc1daa27b38a",
+            "isHook": false,
+            "skipped": false
+          }
+        ],
+        "suites": [],
+        "passes": [
+          "956592d0-a0d2-4564-b4cf-213ebeee83d4",
+          "12ad9908-74d8-4a3b-97d4-7fcda89ff5cb"
+        ],
+        "failures": [
+          "86c6b3cc-30aa-41b7-90e6-cc1daa27b38a"
+        ],
+        "pending": [],
+        "skipped": [],
+        "duration": 34650,
+        "root": false,
+        "rootEmpty": false,
+        "_timeout": 999999
+      }
+    ],
+    "passes": [],
+    "failures": [],
+    "pending": [],
+    "skipped": [],
+    "duration": 0,
+    "root": true,
+    "rootEmpty": true,
+    "_timeout": 999999
+  },
+  "copyrightYear": 2020
+}

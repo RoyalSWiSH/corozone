@@ -250,7 +250,7 @@ export default {
     },
     props: {
         groceryRequest: {
-            type: Object,
+      //      type: Object,
             required: true
         }
     },
