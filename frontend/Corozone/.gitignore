@@ -34,3 +34,5 @@ typings/
 !.vscode/extensions.json
 
 app/App_Resources/Android/google-services.json
+
+mochawesome-report/
