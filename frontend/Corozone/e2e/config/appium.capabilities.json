@@ -119,5 +119,12 @@
         "noReset": false,
         "fullReset": false,
         "app": ""
+    },
+    "myoneplus5": {
+        "browserName": "",
+        "platformName": "Android",
+        "platformVersion": "9.0",
+        "deviceName": "device",
+        "udid": "918b10aa"
     }
 }

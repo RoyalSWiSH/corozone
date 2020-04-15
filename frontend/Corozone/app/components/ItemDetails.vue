@@ -118,7 +118,7 @@ export default {
         },
         deliveredGroceries() {
             console.log("Delivered Groceries")
-            let url = 'http://corozone.sebastian-roy.de/api/v1/groceries/' + this.groceryRequest.order_id + '/delivered'
+            let url = '/groceries/' + this.groceryRequest.order_id + '/delivered'
             this.groceryRequest.status = "delivered"
             this.axios({
             method: 'post',

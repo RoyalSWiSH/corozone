@@ -38,6 +38,7 @@ describe("sample scenario", () => {
         const PASSWORD = "asdasd"
         const allFields = await driver.findElementsByClassName("android.widget.EditText");
         await allFields[0].sendKeys(EMAIL);
+        await driver.hideDeviceKeyboard();
         await allFields[1].sendKeys(PASSWORD);
         await driver.hideDeviceKeyboard();
         //await mailField.sendKeys("2");
@@ -46,8 +47,11 @@ describe("sample scenario", () => {
         await tapButton.click();
         await driver.wait(6000);
         //await  driver.elementByXPath('//android.widget.TextView[@text=\'Log In\']').click();
-        const label = await driver.findElementByText("Reload", "contains");
+       // const label = await driver.findElementByText("Reload", "contains");
         //const notconnectedmsg = await driver.findElementByText("Not connected.", "contains");
+        const allButtons = await driver.findElementsByClassName("android.widget.Button");
+        await allButtons[0].click();
+        await driver.wait(6000); 
         const detailsButton = await driver.findElementByText("Details", "contains");
        // assert.isTrue(await label.isDisplayed());
        // assert.isTrue(await detailsButton.isDisplayed());
