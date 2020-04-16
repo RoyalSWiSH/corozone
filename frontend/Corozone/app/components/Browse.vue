@@ -132,7 +132,11 @@ export default {
        this.getAddressFromCoord()
     },
   computed: {
-    ...mapState(["shoppingList"])
+    ...mapState(["shoppingList"]),
+    ...mapGetters("getShoppingList"),
+    showShoppingList() {
+      return this.getShoppingList
+    }
    },
   methods: {
     toggleForm() {
@@ -267,13 +271,13 @@ export default {
             method: 'post',
             url: '/groceries/create',
             data: {
-        createdBy: backendService.token,
+        createdBy: $this.firebase,
         budget: 100.4,
 				forSomeoneElse: true,
 				inQuarantine: false,
 				minimumSupply: false,
 				elderly: false,
-				requestedItems: this.requestedItems,
+				requestedItems: this.shoppingList,
 				location: {
 					city: this.location.city,
           street: this.location.street,

@@ -1,22 +1,62 @@
 import Vue from 'nativescript-vue';
 import Vuex from 'vuex';
+//import localStorage from 'nativescript-localstorage';
+import { SecureStorage } from "nativescript-secure-storage";
+
 import firebase from 'nativescript-plugin-firebase'
+import { backendService } from '~/app';
 Vue.use(Vuex);
 
 const state = {
   isLoggedIn:null,
-  shoppingList: [{
-    name: "Klopapier",
-    status: "open"     // requested, selfbought, requestbought, requestunavailable, selfunavailable
-    }],
+    shoppingList: [{
+       name: "Klopapier",
+       status: "open",     // requested, selfbought, requestbought, requestunavailable, selfunavailable
+       uid: ""
+      }]
 }
+//Load local storage after login
+let secureStorage = new SecureStorage();
+const VuexPersistent = store => {
+  // Init hook.
+console.log("Vues Persistent")
+ // let storageStr = localStorage.getItem('ns-vuex-persistent');
+ //TODO: Also encrypt data
+  var storageStr = secureStorage.getSync({
+    key: "vuex-persistent-secure", //+ backendService.token
+  });
+  if (storageStr) {
+   store.replaceState(JSON.parse(storageStr))
+  }
+  store.subscribe((mutation, state) => {
+   // Suscribe hook.
+  // localStorage.setItem('ns-vuex-persistent', JSON.stringify(state));
+   secureStorage.setSync({
+    key: "vuex-persistent-secure", //+ backendService.token,
+    value: JSON.stringify(state) 
+  });
+  })
+ };
+
+//  secureStorage.set({
+//   key: "vuex-persistent-secure",
+//   value: JSON.stringify(state)
+// }).then(success => console.log("Successfully set a value? " + success));
+
+// sync
+// const success = secureStorage.setSync({
+//   key: "vuex-persistent-secure",
+//   value: JSON.stringify(state) 
+// });
 
 const getters = {
   isLoggedIn: state =>{
     return state.isLoggedIn
   },
-  shoppingList: state =>{
-    return state.shoppingList
+  getShoppingList: state =>{
+    return state.shoppingList.filter(item => item.uid === backendService.token)
+    //return state.shoppingList
+    //return shoppingList
   }
 }
 const mutations = {
@@ -28,6 +68,8 @@ const mutations = {
   },
   addItemToShoppingList: (state, item) => {
    // state.shoppingList = shoppingList
+    item.uid = backendService.token
+    console.log(item)
     state.shoppingList.push(item);
   },
   delItemFromShoppingList: (state, item) => {
@@ -60,6 +102,7 @@ const storeConf = {
   state,
   getters,
   mutations,
-  actions
+  actions,
+  plugins:[VuexPersistent]
 }
 export default new Vuex.Store(storeConf)

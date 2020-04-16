@@ -57,6 +57,9 @@ type location struct {
 
 type Items struct {
     Name string `json:"name"`
+    Status string `json:"status"`
+  //  Market string `json:"status"`
+    //Brand string `json:"status"`
     // Add quantity and Unit maybe later
 }
 
@@ -75,7 +78,6 @@ func (i *ItemsSlice) Scan(src interface{}) error {
         return json.Unmarshal([]byte(v), i)
     }
     return errors.New("type assertion failed")
-
 }
 
 

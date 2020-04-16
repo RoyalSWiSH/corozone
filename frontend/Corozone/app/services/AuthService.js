@@ -27,7 +27,6 @@ async login(user) {
           //this.user.uid = firebaseUser.uid
           backendService.token = firebaseUser.uid
           return firebaseUser
-          //this.$navigateTo(App, {clearHistory: true}); //works fine, but not to TabView App.vue :(
         })
         // .catch(() => {
         //   loader.hide()
