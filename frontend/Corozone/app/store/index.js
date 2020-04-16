@@ -5,7 +5,10 @@ Vue.use(Vuex);
 
 const state = {
   isLoggedIn:null,
-  shoppingList: [{name: "Klopapier"}],
+  shoppingList: [{
+    name: "Klopapier",
+    status: "open"     // requested, selfbought, requestbought, requestunavailable, selfunavailable
+    }],
 }
 
 const getters = {
@@ -32,7 +35,16 @@ const mutations = {
     //const item = state.shoppingList.find(item => item.item_name === item.name)
     state.shoppingList.splice(state.shoppingList.indexOf(item), 1) 
     //item.pop();
-   }
+   },
+   markItemAsUnavailable: (state, item) => {
+      item.status = "unavailable"
+   },
+   markItemAsSelfbought: (state, item) => {
+      item.status = "selfbought"
+ },
+ markItemAsOpen: (state, item) => {
+  item.status = "open"
+}
 }
 
 // Asynchronous operations are actions

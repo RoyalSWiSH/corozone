@@ -65,8 +65,8 @@
             width="100%"
             height="25%"
           > 
-					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="gitem.name"
-					 returnKeyType="next" @returnPress="" fontSize="18" /> 
+					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="gitem.name+' '+gitem.status"
+					 returnKeyType="next" @returnPress="" @tap="onItemTap(gitem)" fontSize="18" /> 
            <Button
               col="1"
               row="0"
@@ -246,6 +246,7 @@ export default {
     await new Promise(r => setTimeout(r, 2500));
        this.postRequestGroceries()
        loader.hide()
+       // TODO: Mark all Items as requested
     },
     postRequestGroceries() {
     
@@ -283,6 +284,7 @@ export default {
 				}
 				}
         }).then(function (response) {
+          //TODO: Mark all Items as requested
             console.log(response.data);  //Outputs API response in CL to verify functionality.
 		})
 		.catch((error) => {   if (error.response) {
@@ -313,9 +315,18 @@ export default {
       // this.requestedItems.unshift({
       //   name: this.itemField,
       // });
-      this.$store.commit("addItemToShoppingList", {name: this.itemField});
+      this.$store.commit("addItemToShoppingList", {name: this.itemField, status: "open"});
       // Clear the text field
       this.itemField = '';
+    },
+    onItemTap(item) {
+        if(item.status == "open") {
+          console.log(item.name + " bought myself.")
+           this.$store.commit("markItemAsSelfbought", item)}
+        else if(item.status == "selfbought") {
+          console.log(item.name + " need again.")
+          this.$store.commit("markItemAsOpen", item)
+          }
     },
     alert(message) {
       return alert({
