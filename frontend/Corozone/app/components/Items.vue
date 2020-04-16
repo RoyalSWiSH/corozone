@@ -13,7 +13,7 @@
           <Label v-if="serverFailure" :text="'groceries.notconnected' | L" />
           <Label v-if="rowCount === 0" :text="'groceries.nogroceryrequests' | L" />
       <GridLayout rows="*" columns="*, *"  v-for="i in rowCount" :key="i">
-      <card-view class="card" col="0" margin="10" elevation="20" radius="1" @tap="seeDetails()" v-if="groceryRequests[(i - 1) * itemsPerRow] && groceryRequests[(i - 1) * itemsPerRow].order_id">
+      <card-view class="card" col="0" margin="10" elevation="20" radius="1" @tap="seeDetails()" v-if="groceryRequests[(i - 1) * itemsPerRow] && groceryRequests[(i - 1) * itemsPerRow].order_id" :key="groceryRequests[(i - 1) * itemsPerRow].order_id">
           <GridLayout rows="280, 40, 40, 60" columns="*, *, *"> 
                   <Mapbox
                     #map

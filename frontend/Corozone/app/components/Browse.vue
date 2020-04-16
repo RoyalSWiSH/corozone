@@ -48,7 +48,7 @@
 					<StackLayout>
 					<ListView
             class="list-group"
-            for="gitem in requestedItems"
+            for="gitem in shoppingList"
             style="height:75%"
             separator-color="transparent"
 			>
@@ -66,11 +66,12 @@
             height="25%"
           > 
 					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="gitem.name"
-					 returnKeyType="next" @returnPress="" fontSize="18" /> <Button
+					 returnKeyType="next" @returnPress="" fontSize="18" /> 
+           <Button
               col="1"
               row="0"
               :text="'delete' | L"
-              @tap="onButtonTapDelete"
+              @tap="onButtonTapDelete(gitem)"
             />
             </GridLayout>
             </v-template>
@@ -82,21 +83,6 @@
             width="100%"
             height="25%"
           >
-            <!-- <TextField
-              v-model="itemField"
-              col="0"
-              row="0"
-              hint="Add Item"
-              editable="true"
-              @returnPress="onButtonTap"
-            /> -->
-            <!-- Configures the text field and ensures that pressing Return on the keyboard produces the same result as tapping the button. -->
-            <!-- <Button
-              col="1"
-              row="0"
-              text="Add Item"
-              @tap="onButtonTap"
-            /> -->
 			<Button :text="'groceries.requestgroceries' | L" row="0" colSpan="2" @tap="onTapRequestGroceries" class="btn" /><
           </GridLayout>
 	
@@ -111,6 +97,7 @@ import firebase from "nativescript-plugin-firebase";
 import axios from "axios/dist/axios"
 // A stub for a service that authenticates users
 import { backendService } from "../app";
+import { mapState, mapGetters } from "vuex";
 
 import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
@@ -122,13 +109,8 @@ export default {
   data() {
     return {
 	  isLoggingIn: true,
-	  itemField: "",
-      user: {
-        email: "foo@foo.com",
-        password: "barbar",
-        confirmPassword: "barbar"
-      },
-      location: {
+    itemField: "",
+    location: {
         street: "",
         street_nr: "",
         plz: "",
@@ -145,16 +127,21 @@ export default {
 		},
     };
   },
-  mounted() {
+  created() {
+     //  this.requestedItems = Object.assign({}, this.$store.state.shoppingList)
        this.getAddressFromCoord()
     },
+  computed: {
+    ...mapState(["shoppingList"])
+   },
   methods: {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    onButtonTapDelete(args) {
+    onButtonTapDelete(item) {
         console.log("Deleted Item")
-        this.requestedItems.splice(args.index, 1);
+        this.$store.commit("delItemFromShoppingList", item)
+      //  this.requestedItems.splice(args.index, 1);
     },
     getAddressFromCoord() {
           let lat = this.location.lat
@@ -323,9 +310,10 @@ export default {
       }
       console.log(`New Grocery Request added: ${this.itemField}.`);
       // Adds tasks in the ToDo array. Newly added tasks are immediately shown on the screen
-      this.requestedItems.unshift({
-        name: this.itemField,
-      });
+      // this.requestedItems.unshift({
+      //   name: this.itemField,
+      // });
+      this.$store.commit("addItemToShoppingList", {name: this.itemField});
       // Clear the text field
       this.itemField = '';
     },
