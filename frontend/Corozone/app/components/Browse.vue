@@ -271,7 +271,7 @@ export default {
             method: 'post',
             url: '/groceries/create',
             data: {
-        createdBy: $this.firebase,
+        createdBy: backendService.token,
         budget: 100.4,
 				forSomeoneElse: true,
 				inQuarantine: false,

@@ -25,6 +25,10 @@ import (
     "github.com/google/uuid"
     gonfig "github.com/eduardbcom/gonfig"
     "encoding/json"
+    "bytes"
+    "io/ioutil"
+    _ "net/http/httptrace"
+    "net/http/httputil"
  //   "github.com/lib/pq"
 
 )
@@ -35,6 +39,10 @@ var db *sql.DB
 type JwtClaims struct {
     Name string `json:"name"`
     jwt.StandardClaims
+}
+
+type pushtoken struct {
+    FirebasePushtoken  string `json:"firebasePushtoken"`
 }
 
 type user struct {
@@ -202,6 +210,7 @@ if rawData, err := gonfig.Read(); err != nil {
     userGroup.POST("/create", createUser)
     userGroup.GET("/:id", getUser)
     userGroup.POST("/createprofile", createUserProfile)
+    userGroup.POST("/:user_id/pushtoken", updatePushtoken)
     //userGroup.GET("/login", loginUser)
 
     groceryGroup := apiv1Group.Group("/groceries")
@@ -214,7 +223,12 @@ if rawData, err := gonfig.Read(); err != nil {
     groceryGroup.POST("/:id/repaid", repaidGroceries)
     //Routes authenticate for requester
 
-	e.Logger.Fatal(e.Start(":1323"))
+    // token := DBGetPushtoken("c299a902-9589-42cc-9bfc-5f7221f81364")
+    // fmt.Printf(token.FirebasePushtoken)
+
+
+
+    e.Logger.Fatal(e.Start(":1323"))
 }
 
 func createGroceryRequest(c echo.Context) error {
@@ -256,15 +270,138 @@ func acceptGroceries(c echo.Context) error {
     order_id := c.Param("id")
     guid := uuid.MustParse(order_id)
     g := &groceryStatus{
-    }
+        OrderID: guid }
 
     if err:= c.Bind(g); err != nil {
         return err
     }
     DBAcceptStatusGroceryRequest(g, guid)
+
+    // reqBody, err := json.Marshal(map[string]string{
+    //     "username": "Krunal Lathiya",
+    //     "email":    "krunal@appdividend.com",
+    // })
+    // if err != nil {
+    //     print(err)
+    // }
+    // resp, err := http.Post("https://httpbin.org/post",
+    //     "application/json", bytes.NewBuffer(reqBody))
+    // if err != nil {
+    //     print(err)
+    // }
+    // defer resp.Body.Close()
+    // body, err := ioutil.ReadAll(resp.Body)
+    // if err != nil {
+    //     print(err)
+    // }
+    // fmt.Println(string(body))
+
+
+    token := DBGetPushtoken(guid)
+    // fmt.Printf(token.FirebasePushtoken)
+    client := &http.Client{}
+    requestBody,err := json.Marshal(map[string]interface{}{
+        "notification": map[string]string{
+            "title":"Corozone",
+            "body":"Ihr Einkauf wurde angenommen",
+            "sound":"default",
+            "click_action":"FCM_PLUGIN_ACTIVITY",
+            "icon":"fcm_push_icon"  },
+        //  "data":map[string]string{
+        //    "from":"codewithabdul.com" },
+          "to":token.FirebasePushtoken,
+          "priority":"high"})
+    
+    req, err3 := http.NewRequest("POST", 
+    "https://fcm.googleapis.com/fcm/send", 
+    //"http://corozone.sebastian-roy.de/api/v1/884ae0a0-3503-4c78-94f0-c91806ad7ba7/accept",
+    bytes.NewBuffer(requestBody))
+    req.Header.Set("Content-type", "application/json")
+    req.Header.Set("Authorization", "key=AAAA81wLwEw:APA91bE_mRbaG79hv7FC8S36ie2YUN3O_Krzayg86uRrFrbWVMuqLgqUg14dHGSziYUqnfwt8kahVNgf11bXK5IV7RFewV8otCoqthFwovJgMNAOnq7ftCv5hFHNKP8QAyyDgBcs4oCt")
+    // strings.NewReader(""))
+
+    // Trace HTTP Event
+    // trace := &httptrace.ClientTrace{
+    //     DNSDone: func(dnsInfo httptrace.DNSDoneInfo) {
+    //         fmt.Printf("DNS Info: %+v\n", dnsInfo)
+    //     },
+    //     GotConn: func(connInfo httptrace.GotConnInfo) {
+    //         fmt.Printf("Got Conn: %+v\n", connInfo)
+    //     },
+    // }
+    // req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
+    // if _, err := http.DefaultTransport.RoundTrip(req); err != nil {
+    //     panic(err)
+    // }
+    requestDump, err := httputil.DumpRequestOut(req, true)
+	if err != nil {
+		panic(err)
+	} else {
+		fmt.Print(string(requestDump))
+	}
+
+     if err3 != nil {
+       panic(err)
+    }
+    defer req.Body.Close()
+
+    // body,err2 := ioutil.ReadAll(req.Body)
+    // if err2 != nil {
+    //     panic(err)
+    // }
+    // fmt.Printf(string(body))
+    //fmt.Printf(req.Response)
+    resp, err := client.Do(req)
+    if err != nil {
+         fmt.Println("Unable to reach the server.")
+    } else {
+         body, _ := ioutil.ReadAll(resp.Body)
+         fmt.Println("body=", string(body))
+    }
+    resp.Body.Close()
+
+
+   //fmt.Print(req)
+    // f, err := ioutil.ReadAll(resp.Body)
+	// if err != nil {
+	// 	panic(err)
+    // }
+    // fmt.Printf(string(f))
+	
     // TODO: Just return when DBAcceptStatusGroceryRequest has been executed without errors
     return c.String(http.StatusOK, fmt.Sprintf("Accepted grocery request %s", order_id))
 
+}
+
+func DBGetPushtoken(guid uuid.UUID) pushtoken {
+    sqlStatement := `SELECT user_profile.firebase_pushtoken
+    FROM delivery_order
+    INNER JOIN user_profile ON delivery_order.request_user_id = user_profile.user_id
+    WHERE delivery_order.order_id = $1`
+    
+    var token pushtoken
+    //var lastname string
+	//var user_id int
+	// Replace 3 with an ID from your database or another random
+	// value to test the no rows use case.
+	row := db.QueryRow(sqlStatement, guid)
+	switch err := row.Scan(&token.FirebasePushtoken); err {
+	case sql.ErrNoRows:
+        fmt.Println("No rows were returned!")
+        panic(err)
+       // return c.String(http.StatusOK, fmt.Sprintf("No user found"))
+    case nil:
+        //panic(err)
+        //fmt.Print(token.FirebasePushtoken)
+        //fmt.Println(u.UserID,u.FirstName)
+        //return c.String(http.StatusOK,
+        //fmt.Sprintf("ID: %d \n User: %s \n Last Name: %s", u.UserID, u.FirstName, u.LastName))
+    //    return c.JSON(http.StatusOK, "T")
+	default:
+		panic(err)
+    //    return c.String(http.StatusOK, fmt.Sprintf("Error!"))
+    }
+    return token
 }
 
 func paidGroceries(c echo.Context) error {
@@ -524,6 +661,31 @@ func DBCreateUser(u *user) {
     fmt.Println(u.FirstName)
 
 }
+func updatePushtoken(c echo.Context) error {
+   // DONE: Check first if order_id exists in groceryRequests table
+// TODO: Return HTTP Error when accepted twice by different users
+uid :=  c.Param("user_id") 
+g := &pushtoken{
+}
+if err:= c.Bind(g); err != nil {
+    return err
+}
+
+sqlInsertStatement := `
+UPDATE user_profile
+SET firebase_pushtoken=$1
+WHERE user_id=$2;
+`
+//var order_id string
+
+_, err := db.Query(sqlInsertStatement,
+g.FirebasePushtoken, uid)
+if err != nil {
+    panic(err)
+}
+
+  return c.JSON(http.StatusCreated, "Token updated.")
+}
 
 
 func getUser(c echo.Context) error {
@@ -620,7 +782,7 @@ func cookieLogin(c echo.Context) error {
         c.SetCookie(cookie)
         token,err := createJwtToken()
         if err != nil {
-            fmt.Printf("Error Creating JWT token", err)
+            fmt.Sprint("Error Creating JWT token $1", err)
             return c.String(http.StatusInternalServerError, "something went wrong")
         }
         return c.JSON(http.StatusOK, map[string]string{
