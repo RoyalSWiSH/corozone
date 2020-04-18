@@ -13,9 +13,11 @@ const state = {
        name: "Klopapier",
        status: "open",     // requested, selfbought, requestbought, requestunavailable, selfunavailable
        uid: ""
-      }]
+      }],
+    notification_message: "Keine Nachrichten"
 }
 //Load local storage after login
+
 let secureStorage = new SecureStorage();
 const VuexPersistent = store => {
   // Init hook.
@@ -38,10 +40,10 @@ console.log("Vues Persistent")
   })
  };
 
-//  secureStorage.set({
-//   key: "vuex-persistent-secure",
-//   value: JSON.stringify(state)
-// }).then(success => console.log("Successfully set a value? " + success));
+ secureStorage.set({
+  key: "vuex-persistent-secure",
+  value: JSON.stringify(state)
+}).then(success => console.log("Successfully set a value? " + success));
 
 // sync
 // const success = secureStorage.setSync({
@@ -57,6 +59,9 @@ const getters = {
     return state.shoppingList.filter(item => item.uid === backendService.token)
     //return state.shoppingList
     //return shoppingList
+  },
+  getNotificationMessage: state=> {
+    return state.notification_message
   }
 }
 const mutations = {
@@ -86,6 +91,9 @@ const mutations = {
  },
  markItemAsOpen: (state, item) => {
   item.status = "open"
+},
+setNotificationMessage: (state, msg) => {
+  state.notification_message = msg
 }
 }
 

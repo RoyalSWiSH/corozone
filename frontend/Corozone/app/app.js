@@ -13,6 +13,7 @@ import BackendService from './services/BackendService'
 import AuthService from './services/AuthService'
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 
+
 import { localize } from "nativescript-localize";
 
 // require('globals')
@@ -102,6 +103,7 @@ firebase
       },
       onMessageReceivedCallback: (message) => {
         console.log('[Firebase] onMessageReceivedCallback:', { message });
+        store.commit("setNotificationMessage", message.body)
       }
   })
   .then(

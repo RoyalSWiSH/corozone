@@ -4,7 +4,9 @@
             <Label text="Corozone"></Label>
         </ActionBar>
       <FlexboxLayout class="page">
+   
 			<StackLayout class="form">
+       <Label ref="message" class="input" hint="" :text="notification_message" fontSize="18" /> 
        <StackLayout class="input-field">
 					<!-- <Label text="Groceries" class="field-title" fontSize="19"/> -->
 					<StackLayout class="hr-light" />
@@ -132,8 +134,8 @@ export default {
        this.getAddressFromCoord()
     },
   computed: {
-    ...mapState(["shoppingList"]),
-    ...mapGetters("getShoppingList"),
+    ...mapState(["shoppingList", "notification_message"]),
+    ...mapGetters(["getShoppingList", "getNotificationMessage"]),
     showShoppingList() {
       return this.getShoppingList
     }
@@ -146,6 +148,7 @@ export default {
         console.log("Deleted Item")
         this.$store.commit("delItemFromShoppingList", item)
       //  this.requestedItems.splice(args.index, 1);
+      this.$store.commit("setNotificationMessage", "Item gelöscht")
     },
     getAddressFromCoord() {
           let lat = this.location.lat
@@ -277,7 +280,7 @@ export default {
 				inQuarantine: false,
 				minimumSupply: false,
 				elderly: false,
-				requestedItems: this.shoppingList,
+			 	requestedItems: this.shoppingList,
 				location: {
 					city: this.location.city,
           street: this.location.street,

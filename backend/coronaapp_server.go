@@ -298,12 +298,14 @@ func acceptGroceries(c echo.Context) error {
 
 
     token := DBGetPushtoken(guid)
+    firstName:= DBGetFirstname(g.HelperID)
+
     // fmt.Printf(token.FirebasePushtoken)
     client := &http.Client{}
     requestBody,err := json.Marshal(map[string]interface{}{
         "notification": map[string]string{
             "title":"Corozone",
-            "body":"Ihr Einkauf wurde angenommen",
+            "body": fmt.Sprintf("%v hat ihren Einkauf angenommen", firstName),
             "sound":"default",
             "click_action":"FCM_PLUGIN_ACTIVITY",
             "icon":"fcm_push_icon"  },
@@ -402,6 +404,35 @@ func DBGetPushtoken(guid uuid.UUID) pushtoken {
     //    return c.String(http.StatusOK, fmt.Sprintf("Error!"))
     }
     return token
+}
+func DBGetFirstname(uid string) string {
+    sqlStatement := `SELECT user_profile.first_name
+    FROM user_profile
+    WHERE user_profile.user_id = $1`
+    
+    var firstName string
+    //var lastname string
+	//var user_id int
+	// Replace 3 with an ID from your database or another random
+	// value to test the no rows use case.
+	row := db.QueryRow(sqlStatement, uid)
+	switch err := row.Scan(&firstName); err {
+	case sql.ErrNoRows:
+        fmt.Println("No rows were returned!")
+        panic(err)
+       // return c.String(http.StatusOK, fmt.Sprintf("No user found"))
+    case nil:
+        //panic(err)
+        //fmt.Print(token.FirebasePushtoken)
+        //fmt.Println(u.UserID,u.FirstName)
+        //return c.String(http.StatusOK,
+        //fmt.Sprintf("ID: %d \n User: %s \n Last Name: %s", u.UserID, u.FirstName, u.LastName))
+    //    return c.JSON(http.StatusOK, "T")
+	default:
+		panic(err)
+    //    return c.String(http.StatusOK, fmt.Sprintf("Error!"))
+    }
+    return firstName
 }
 
 func paidGroceries(c echo.Context) error {
