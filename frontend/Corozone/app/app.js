@@ -106,6 +106,8 @@ firebase
         store.commit("setNotificationMessage", message.body)
         if(message.data.acceptedItems){
         store.commit("setAcceptedItems",message.data.acceptedItems)
+
+
         var notFoundItems = JSON.parse(message.data.acceptedItems).filter(function (item) {
           return item.status == "helpernotavailable" ||
                  item.status == "helpernotfound";
@@ -115,8 +117,40 @@ firebase
           for(var i=0; i<arr.length; i++) {
            arr[i]=notFoundItems[i].name;
           }
-          var msg= message.body+ " " + arr.toString().replace(",", ", ") + " hat er/sie nicht bekommen."
+
+          var itemsString;
+          if(arr.length == 2){
+            itemsString = arr.toString().replace(",", " und ") 
+          }
+          else {
+          itemsString = arr.toString().replace(",", ", ") 
+          }
+
+          var msg= message.body+ " " + itemsString + " hat er/sie leider nicht bekommen :(."
+          // TODO: Send firstname in data part to avoid splitting in message
+    axios.get("https://genderapi.io/api/?name=" +  message.body.split(" ")[0])
+  .then(function (genderrequest) {
+    // handle success
+    console.log(genderrequest);
+    if(genderrequest.data.gender == "male") {
+      msg = msg.replace("er/sie", "er")
+    }
+    else if(genderrequest.data.gender == "female") {
+      msg = msg.replace("er/sie", "sie")
+    }
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .then(function () {
+    // always executed
         store.commit("setNotificationMessage", msg)
+  });
+
+          // genderrequest = axios.get("https://genderapi.io/api/?name=" +  message.body.split(" ")[0])
+          // console.log(genderrequest)
+
        }
       }
        
