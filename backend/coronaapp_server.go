@@ -89,10 +89,11 @@ func (i *ItemsSlice) Scan(src interface{}) error {
 }
 
 type groceryStatus struct {
-	OrderID       uuid.UUID `json:"orderID"`
-	HelperID      string    `json:"helperID"`
-	Status        string    `json:"status"`
-	ReceiptAmount float32   `json:"receiptAmount"`
+	OrderID       uuid.UUID  `json:"orderID"`
+	HelperID      string     `json:"helperID"`
+	Status        string     `json:"status"`
+	ReceiptAmount float32    `json:"receiptAmount,omitempty"`
+	AcceptedItems ItemsSlice `json:"acceptedItems"`
 }
 
 type groceryRequest struct {
@@ -245,7 +246,7 @@ func createGroceryRequest(c echo.Context) error {
 
 func dbCreateGroceryRequest(g *groceryRequest) uuid.UUID {
 	sqlInsertStatement := fmt.Sprintf(`
-    INSERT INTO delivery_order (order_id, request_user_id, budget, for_someone_else, in_quarantine, elderly, requested_Items, geom, location, created_at)
+    INSERT INTO delivery_order (order_id, request_user_id, budget, for_someone_else, in_quarantine, elderly, requested_items, geom, location, created_at)
     VALUES ($1, $2, $3, $4, $5, $6, $7, ST_GeomFromText('POINT(%v %v)', 4326), $8, $9) returning order_id`, g.Location.Long, g.Location.Lat)
 	var order_id string
 
@@ -294,8 +295,7 @@ func NotificationAccepted(guid uuid.UUID, groceryStatus *groceryStatus, message 
 			"sound":        "default",
 			"click_action": "FCM_PLUGIN_ACTIVITY",
 			"icon":         "fcm_push_icon"},
-		//  "data":map[string]string{
-		//    "from":"codewithabdul.com" },
+		"data":     map[string]interface{}{"acceptedItems": groceryStatus.AcceptedItems},
 		"to":       requesterToken.FirebasePushtoken,
 		"priority": "high"})
 
@@ -403,7 +403,9 @@ func paidGroceries(c echo.Context) error {
 	DBPaidStatusGroceryRequest(g, guid)
 
 	helperFirstName := DBGetFirstname(g.HelperID)
-	NotificationAccepted(guid, g, fmt.Sprintf("%v hat %v EUR für deinen Einkauf bezahlt.", helperFirstName, g.ReceiptAmount))
+	// TODO: Check for paypal
+	// TODO: Receive unavailable and not found items
+	NotificationAccepted(guid, g, fmt.Sprintf("%v hat %v EUR für deinen Einkauf bezahlt. Bitte begleiche das bei seiner Ankunft.", helperFirstName, g.ReceiptAmount))
 	// TODO: Just return when DBAcceptStatusGroceryRequest has been executed without errors
 	return c.String(http.StatusOK, fmt.Sprintf("Paid groceries %s", orderID))
 
@@ -469,7 +471,7 @@ WHERE order_id=$3;
 `
 	//var order_id string
 
-	_, err := db.Query(sqlInsertStatement,
+	_, err := db.Exec(sqlInsertStatement,
 		"accepted", g.HelperID, guid)
 	if err != nil {
 		panic(err)
@@ -486,11 +488,37 @@ WHERE order_id=$3 AND helper_user_id=$4;
 `
 	//var order_id string
 
-	_, err := db.Query(sqlInsertStatement,
+	res, err := db.Exec(sqlInsertStatement,
 		"paid", g.ReceiptAmount, guid, g.HelperID)
 	if err != nil {
 		panic(err)
 	}
+
+	numChanged, err := res.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	print(numChanged)
+
+	sqlInsertStatement2 := `
+	UPDATE delivery_order
+	SET requested_items=$1
+	WHERE order_id=$2;
+	` // TODO: just change status in JSON to avoid that Items got deleted,
+	// Write a test where fewer Items then requested are passed to this method
+
+	//var order_id string
+
+	res2, err2 := db.Exec(sqlInsertStatement2, g.AcceptedItems, guid)
+	if err2 != nil {
+		panic(err)
+	}
+
+	numDeleted2, err := res2.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	print(numDeleted2)
 
 }
 func DBDeliveredStatusGroceryRequest(g *groceryStatus, guid uuid.UUID) {
@@ -503,7 +531,7 @@ WHERE order_id=$2 AND helper_user_id=$3;
 `
 	//var order_id string
 
-	_, err := db.Query(sqlInsertStatement,
+	_, err := db.Exec(sqlInsertStatement,
 		"delivered", guid, g.HelperID)
 	if err != nil {
 		panic(err)
@@ -520,7 +548,7 @@ WHERE order_id=$2 AND helper_user_id=$3;
 `
 	//var order_id string
 
-	_, err := db.Query(sqlInsertStatement,
+	_, err := db.Exec(sqlInsertStatement,
 		"closed", guid, g.HelperID)
 	if err != nil {
 		panic(err)

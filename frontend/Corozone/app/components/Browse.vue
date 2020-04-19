@@ -147,8 +147,8 @@ export default {
     onButtonTapDelete(item) {
         console.log("Deleted Item")
         this.$store.commit("delItemFromShoppingList", item)
-      //  this.requestedItems.splice(args.index, 1);
-      this.$store.commit("setNotificationMessage", "Item gelöscht")
+        //  this.requestedItems.splice(args.index, 1);
+        this.$store.commit("setNotificationMessage", "Item gelöscht")
     },
     getAddressFromCoord() {
           let lat = this.location.lat
@@ -215,7 +215,7 @@ export default {
 	
     },
     getLocationfromGPS() {
-	let that = this
+  	let that = this
         geolocation.enableLocationRequest(true, true).then(() => {
             geolocation.isEnabled().then(value => {
                 if (!value) {

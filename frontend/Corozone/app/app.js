@@ -103,7 +103,8 @@ firebase
       },
       onMessageReceivedCallback: (message) => {
         console.log('[Firebase] onMessageReceivedCallback:', { message });
-        store.commit("setNotificationMessage", message.body)
+        store.commit("setNotificationMessage", message.body+message.data)
+       
       }
   })
   .then(

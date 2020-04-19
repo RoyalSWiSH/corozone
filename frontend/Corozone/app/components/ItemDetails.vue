@@ -35,6 +35,22 @@
         <ListView for="item in groceryRequest.requestedItems">
   <v-template>
     <CheckBox :text="item.name" checked="false" fontSize="25" class="fontBig"></CheckBox>
+       <GridLayout
+            columns="2*,*"
+            rows="*,*"
+            width="100%"
+            height="25%"
+          > 
+					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="item.name+' '+item.status"
+					 returnKeyType="next" @tap="onItemTap(item)" fontSize="18" /> 
+           <!-- <Button
+              col="1"
+              row="0"
+              :text="'delete' | L"
+              @tap="onButtonTapDelete(gitem)"
+            /> -->
+            </GridLayout>
+ 
   </v-template>
 </ListView>
         </ScrollView>
@@ -155,10 +171,11 @@ export default {
             method: 'post',
             url: url,
             data: {
-                    orderID: this.groceryRequest.order_id,
+                   // orderID: this.groceryRequest.order_id,
                     helperID: backendService.token,
                     receiptAmount: 55,
-                    status: "paid"
+                    status: "paid",
+                    acceptedItems: this.groceryRequest.requestedItems
 				}
         }).then(function (response) {
             console.log(response.data);  //Outputs API response in CL to verify functionality.
@@ -246,14 +263,37 @@ export default {
                         }
                     }
                 ]);
+          },
+          onItemTap(item) {
+        if(this.groceryRequest.status == "accepted")  {  
+        if(item.status == "open") {
+          console.log(item.name + " bought for someone.")
+          //  this.$store.commit("markItemAsSelfbought", item)
+          item.status = "foreignbought"}
+        else if(item.status == "foreignbought") {
+          console.log(item.name + " need again.")
+         // this.$store.commit("markItemAsOpen", item)
+          item.status = "notavailable"
           }
+          else if(item.status == "notavailable") {
+          console.log(item.name + " not available.")
+         // this.$store.commit("markItemAsOpen", item)
+          item.status = "notfound"
+          }
+          else if(item.status == "notfound") {
+          console.log(item.name + " not found.")
+         // this.$store.commit("markItemAsOpen", item)
+          item.status = "open"
+          }
+          }
+    },
     },
     props: {
         groceryRequest: {
       //      type: Object,
             required: true
         }
-    },
+    }
 };
 </script>
 
