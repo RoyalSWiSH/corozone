@@ -6,7 +6,7 @@
       <FlexboxLayout class="page">
    
 			<StackLayout class="form">
-       <Label ref="message" class="input" hint="" :text="notification_message" fontSize="18" /> 
+       <Label ref="message" class="input" hint="" :text="notification_message" fontSize="18" textWrap="true"/> 
        <StackLayout class="input-field">
 					<!-- <Label text="Groceries" class="field-title" fontSize="19"/> -->
 					<StackLayout class="hr-light" />
@@ -327,10 +327,10 @@ export default {
       this.itemField = '';
     },
     onItemTap(item) {
-        if(item.status == "open") {
+        if(item.status == "open" ) {
           console.log(item.name + " bought myself.")
            this.$store.commit("markItemAsSelfbought", item)}
-        else if(item.status == "selfbought") {
+        else if(item.status == "selfbought" || item.status == "helperbought" || item.status == "helpernotavailable") {
           console.log(item.name + " need again.")
           this.$store.commit("markItemAsOpen", item)
           }

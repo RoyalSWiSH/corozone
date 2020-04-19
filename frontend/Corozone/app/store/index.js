@@ -94,6 +94,11 @@ const mutations = {
 },
 setNotificationMessage: (state, msg) => {
   state.notification_message = msg
+},
+setAcceptedItems: (state, items) => {
+  //TODO Just change some items, dont override
+ state.shoppingList = JSON.parse(items)
+ console.log(items)
 }
 }
 

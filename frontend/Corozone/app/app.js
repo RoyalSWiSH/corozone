@@ -103,7 +103,22 @@ firebase
       },
       onMessageReceivedCallback: (message) => {
         console.log('[Firebase] onMessageReceivedCallback:', { message });
-        store.commit("setNotificationMessage", message.body+message.data)
+        store.commit("setNotificationMessage", message.body)
+        if(message.data.acceptedItems){
+        store.commit("setAcceptedItems",message.data.acceptedItems)
+        var notFoundItems = JSON.parse(message.data.acceptedItems).filter(function (item) {
+          return item.status == "helpernotavailable" ||
+                 item.status == "helpernotfound";
+        });
+        if(notFoundItems.length>0){
+          var arr = new Array(notFoundItems.length);
+          for(var i=0; i<arr.length; i++) {
+           arr[i]=notFoundItems[i].name;
+          }
+          var msg= message.body+ " " + arr.toString().replace(",", ", ") + " hat er/sie nicht bekommen."
+        store.commit("setNotificationMessage", msg)
+       }
+      }
        
       }
   })

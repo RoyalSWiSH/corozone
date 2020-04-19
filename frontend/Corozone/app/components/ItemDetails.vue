@@ -269,18 +269,18 @@ export default {
         if(item.status == "open") {
           console.log(item.name + " bought for someone.")
           //  this.$store.commit("markItemAsSelfbought", item)
-          item.status = "foreignbought"}
-        else if(item.status == "foreignbought") {
+          item.status = "helperbought"}
+        else if(item.status == "helperbought") {
           console.log(item.name + " need again.")
          // this.$store.commit("markItemAsOpen", item)
-          item.status = "notavailable"
+          item.status = "helpernotavailable"
           }
-          else if(item.status == "notavailable") {
+          else if(item.status == "helpernotavailable") {
           console.log(item.name + " not available.")
          // this.$store.commit("markItemAsOpen", item)
-          item.status = "notfound"
+          item.status = "helpernotfound"
           }
-          else if(item.status == "notfound") {
+          else if(item.status == "helpernotfound") {
           console.log(item.name + " not found.")
          // this.$store.commit("markItemAsOpen", item)
           item.status = "open"
