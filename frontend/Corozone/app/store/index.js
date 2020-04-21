@@ -30,6 +30,7 @@ console.log("Vues Persistent")
   if (storageStr) {
    store.replaceState(JSON.parse(storageStr))
   }
+
   store.subscribe((mutation, state) => {
    // Suscribe hook.
   // localStorage.setItem('ns-vuex-persistent', JSON.stringify(state));
@@ -38,6 +39,8 @@ console.log("Vues Persistent")
     value: JSON.stringify(state) 
   });
   })
+
+  
  };
 
  secureStorage.set({

@@ -341,23 +341,37 @@ await groceriesCollection.get({ source: "server" }).then(querySnapshot => {
 });
   });
 
-// const citiesCollection = firebase.firestore().collection("cities");
-
-// await citiesCollection.add({
-//   name: "Los Angeles",
-//   state: "CA",
-//   country: "USA",
-//   capital: false,
-//   population: 860000,
-//   location: db.GeoPoint(4.34, 5.67)
-// }).then(documentRef => {
-//   console.log(`San Francisco added with auto-generated ID: ${documentRef.id}`);
-// });
 console.log(JSON.stringify(this.shoppingList))
-await groceriesCollection.add(this.shoppingList[0]).then(documentRef => {
-  console.log(`Shopping List added with auto-generated ID: ${documentRef.id}`);
+
+const arrayToObject = (array) =>
+   array.reduce((obj, item) => {
+     obj[item.name] = item
+     return obj
+   }, {})
+const shoppingObject = arrayToObject(this.shoppingList)
+console.log(shoppingObject)
+
+//  await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").set(shoppingObject).then(doc => {
+//   console.log(`Shopping List updated ${doc}`);
+// });
+
+
+const unsubscribe = groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").onSnapshot(doc => {
+  console.log(doc.data())
+  console.log("Subscribed")
 });
- 
+
+const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
+  console.log(doc2.data())
+  console.log("Subscribed2")
+});
+
+// then after a while, to detach the listener:
+unsubscribe();
+
+unsubscribe2();
+
+
 
 
   },
