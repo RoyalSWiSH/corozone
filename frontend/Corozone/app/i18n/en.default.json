@@ -17,5 +17,8 @@
        "receivedrepayment": "Received Payment",
        "thankyou": "Thank You! This grocery request has been closed."
       },
+      "notifications": {
+        "groceries_accepted": "Groceries accepted"
+      },
     "not found in en.default": "pas trouvé dans en.default"
   }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="_not_found_in_en_default_8PvJR">"pas trouvé dans en.default"</string>
+  <string name="_notifications_groceries_accepted_Z2sU1Xp">"Groceries accepted"</string>
   <string name="_groceries_thankyou_21AMqn">"Thank You! This grocery request has been closed."</string>
   <string name="_groceries_receivedrepayment_1cN4KD">"Received Payment"</string>
   <string name="_groceries_delivered_ycgwj">"Delivered"</string>

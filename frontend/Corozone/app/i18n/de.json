@@ -17,5 +17,8 @@
        "receivedrepayment": "Bezahlung erhalten",
        "thankyou": "Danke! Die Anfrage wurde geschlossen."
   },
+  "notifications": {
+    "groceries_accepted": "Ihr Einkauf wurde angenommen."
+  },
     "not found in en.default": "pas trouvé dans en.default"
   }

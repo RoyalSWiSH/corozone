@@ -96,6 +96,7 @@
 
 <script>
 import firebase from "nativescript-plugin-firebase";
+import firestore from "nativescript-plugin-firebase/app/firestore"
 import axios from "axios/dist/axios"
 // A stub for a service that authenticates users
 import { backendService } from "../app";
@@ -312,7 +313,7 @@ export default {
 
 
 	  },
-	  onButtonTap() {
+	 async onButtonTap() {
       // Prevent users from entering an empty string
       if (!this.itemField) {
         return;
@@ -325,7 +326,41 @@ export default {
       this.$store.commit("addItemToShoppingList", {name: this.itemField, status: "open"});
       // Clear the text field
       this.itemField = '';
-    },
+      const db = firebase.firestore
+      const groceriesCollection = db.collection("Groceries");
+
+    console.log("preFirebase")
+//note that the options object is optional, but you can use it to specify the source of data ("server", "cache", "default").
+await groceriesCollection.get({ source: "server" }).then(querySnapshot => {
+  querySnapshot.forEach(doc => {
+    console.log("Firebase")
+    console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
+     if (doc.exists) {
+    
+  }
+});
+  });
+
+// const citiesCollection = firebase.firestore().collection("cities");
+
+// await citiesCollection.add({
+//   name: "Los Angeles",
+//   state: "CA",
+//   country: "USA",
+//   capital: false,
+//   population: 860000,
+//   location: db.GeoPoint(4.34, 5.67)
+// }).then(documentRef => {
+//   console.log(`San Francisco added with auto-generated ID: ${documentRef.id}`);
+// });
+console.log(JSON.stringify(this.shoppingList))
+await groceriesCollection.add(this.shoppingList[0]).then(documentRef => {
+  console.log(`Shopping List added with auto-generated ID: ${documentRef.id}`);
+});
+ 
+
+
+  },
     onItemTap(item) {
         if(item.status == "open" ) {
           console.log(item.name + " bought myself.")
@@ -334,6 +369,8 @@ export default {
           console.log(item.name + " need again.")
           this.$store.commit("markItemAsOpen", item)
           }
+
+  
     },
     alert(message) {
       return alert({

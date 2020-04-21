@@ -90,8 +90,12 @@ directions.available().then(avail => {
 });
 
 export default {
+    data: () => {
+      return {
+        receiptAmount: 55
+      };
+    },
     props: ["context"],
-
     computed: {
         // item() {
         //     return this.context || {};
@@ -142,7 +146,9 @@ export default {
             data: {
                     orderID: this.groceryRequest.order_id,
                     helperID: backendService.token,
-                    status: "delivered"
+                    status: "delivered",
+                    receiptAmount: this.receiptAmount,
+
 				}
         }).then(function (response) {
             console.log(response.data);  //Outputs API response in CL to verify functionality.
@@ -173,7 +179,7 @@ export default {
             data: {
                    // orderID: this.groceryRequest.order_id,
                     helperID: backendService.token,
-                    receiptAmount: 55,
+                    receiptAmount: this.receiptAmount,
                     status: "paid",
                     acceptedItems: this.groceryRequest.requestedItems
 				}

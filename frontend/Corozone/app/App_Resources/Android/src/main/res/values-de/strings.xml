@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="_not_found_in_en_default_8PvJR">"pas trouvé dans en.default"</string>
+  <string name="_notifications_groceries_accepted_Z2sU1Xp">"Ihr Einkauf wurde angenommen."</string>
   <string name="_groceries_thankyou_21AMqn">"Danke! Die Anfrage wurde geschlossen."</string>
   <string name="_groceries_receivedrepayment_1cN4KD">"Bezahlung erhalten"</string>
   <string name="_groceries_delivered_ycgwj">"Abgeliefert"</string>
