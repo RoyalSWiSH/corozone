@@ -12,7 +12,8 @@ const state = {
     shoppingList: [{
        name: "Klopapier",
        status: "open",     // requested, selfbought, requestbought, requestunavailable, selfunavailable
-       uid: ""
+       uid: "",
+       crypto: "none",
       }],
     notification_message: "Keine Nachrichten"
 }

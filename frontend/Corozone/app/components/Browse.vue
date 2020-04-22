@@ -131,8 +131,26 @@ export default {
     };
   },
   created() {
-     //  this.requestedItems = Object.assign({}, this.$store.state.shoppingList)
+     //  this.requestedItems = O(bject.assign({}, this.$store.state.shoppingList)
        this.getAddressFromCoord()
+           const db = firebase.firestore
+      const groceriesCollection = db.collection("Groceries");
+        const unsubscribe = groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").onSnapshot(doc => {
+  console.log(doc.data())
+  console.log("Subscribed")
+  console.log(Object.values(doc.data()))
+  //this.shoppingList = Object.values(doc.data()) 
+ this.$store.commit("mergeShoppingList", Object.values(doc.data()) ) 
+});
+
+const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
+  console.log(doc2.data())
+  console.log("Subscribed2")
+    console.log(Object.values(doc2.data()))
+    this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
+});
+
+
     },
   computed: {
     ...mapState(["shoppingList", "notification_message"]),
@@ -355,21 +373,6 @@ console.log(shoppingObject)
   console.log(`Shopping List updated ${doc}`);
 });
 
-
-const unsubscribe = groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").onSnapshot(doc => {
-  console.log(doc.data())
-  console.log("Subscribed")
-  console.log(Object.values(doc.data()))
-  //this.shoppingList = Object.values(doc.data()) 
- this.$store.commit("mergeShoppingList", Object.values(doc.data()) ) 
-});
-
-const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
-  console.log(doc2.data())
-  console.log("Subscribed2")
-    console.log(Object.values(doc2.data()))
-    this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
-});
 
 // then after a while, to detach the listener:
 //unsubscribe();
