@@ -108,6 +108,16 @@ var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
 var loader = new LoadingIndicator();
 
+const db = firebase.firestore
+      const groceriesCollection = db.collection("Groceries");
+
+
+const arrayToObject = (array) =>
+   array.reduce((obj, item) => {
+     obj[item.name] = item
+     return obj
+   }, {})
+
 export default {
   data() {
     return {
@@ -146,8 +156,8 @@ export default {
 const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
   console.log(doc2.data())
   console.log("Subscribed2")
-    console.log(Object.values(doc2.data()))
-    this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
+  console.log(Object.values(doc2.data()))
+  this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
 });
 
 
@@ -163,11 +173,21 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    onButtonTapDelete(item) {
+    async onButtonTapDelete(item) {
         console.log("Deleted Item")
         this.$store.commit("delItemFromShoppingList", item)
         //  this.requestedItems.splice(args.index, 1);
         this.$store.commit("setNotificationMessage", "Item gelöscht")
+
+//    const shoppingObject = await arrayToObject(this.shoppingList)
+// console.log(shoppingObject)
+  const db = firebase.firestore
+      const groceriesCollection = db.collection("Groceries");
+ await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").update({
+   [item.name]: db.FieldValue.delete()
+ }).then(doc => {
+ // console.log(`Shopping List updated ${doc}`);
+});
     },
     getAddressFromCoord() {
           let lat = this.location.lat
@@ -341,13 +361,11 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
       // this.requestedItems.unshift({
       //   name: this.itemField,
       // });
-      this.$store.commit("addItemToShoppingList", {name: this.itemField, status: "open"});
+      let item = {name: this.itemField, status: "open"}
+      this.$store.commit("addItemToShoppingList", item);
       // Clear the text field
       this.itemField = '';
-      const db = firebase.firestore
-      const groceriesCollection = db.collection("Groceries");
-
-    console.log("preFirebase")
+        console.log("preFirebase")
 //note that the options object is optional, but you can use it to specify the source of data ("server", "cache", "default").
 // await groceriesCollection.get({ source: "server" }).then(querySnapshot => {
 //   querySnapshot.forEach(doc => {
@@ -361,15 +379,18 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
 
 //console.log(JSON.stringify(this.shoppingList))
 
-const arrayToObject = (array) =>
-   array.reduce((obj, item) => {
-     obj[item.name] = item
-     return obj
-   }, {})
+  const db = firebase.firestore
+  const groceriesCollection = db.collection("Groceries");
 const shoppingObject = arrayToObject(this.shoppingList)
 console.log(shoppingObject)
 
- await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").set(shoppingObject).then(doc => {
+//  await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").set(shoppingObject).then(doc => {
+//   console.log(`Shopping List updated ${doc}`);
+// });
+
+await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").update({
+  [item.name]: item
+}).then(doc => {
   console.log(`Shopping List updated ${doc}`);
 });
 
