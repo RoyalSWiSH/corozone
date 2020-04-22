@@ -331,17 +331,17 @@ export default {
 
     console.log("preFirebase")
 //note that the options object is optional, but you can use it to specify the source of data ("server", "cache", "default").
-await groceriesCollection.get({ source: "server" }).then(querySnapshot => {
-  querySnapshot.forEach(doc => {
-    console.log("Firebase")
-    console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-     if (doc.exists) {
+// await groceriesCollection.get({ source: "server" }).then(querySnapshot => {
+//   querySnapshot.forEach(doc => {
+//     console.log("Firebase")
+//     console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
+//      if (doc.exists) {
     
-  }
-});
-  });
+//   }
+// });
+//   });
 
-console.log(JSON.stringify(this.shoppingList))
+//console.log(JSON.stringify(this.shoppingList))
 
 const arrayToObject = (array) =>
    array.reduce((obj, item) => {
@@ -351,25 +351,30 @@ const arrayToObject = (array) =>
 const shoppingObject = arrayToObject(this.shoppingList)
 console.log(shoppingObject)
 
-//  await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").set(shoppingObject).then(doc => {
-//   console.log(`Shopping List updated ${doc}`);
-// });
+ await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").set(shoppingObject).then(doc => {
+  console.log(`Shopping List updated ${doc}`);
+});
 
 
 const unsubscribe = groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").onSnapshot(doc => {
   console.log(doc.data())
   console.log("Subscribed")
+  console.log(Object.values(doc.data()))
+  //this.shoppingList = Object.values(doc.data()) 
+ this.$store.commit("mergeShoppingList", Object.values(doc.data()) ) 
 });
 
 const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
   console.log(doc2.data())
   console.log("Subscribed2")
+    console.log(Object.values(doc2.data()))
+    this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
 });
 
 // then after a while, to detach the listener:
-unsubscribe();
+//unsubscribe();
 
-unsubscribe2();
+//unsubscribe2();
 
 
 

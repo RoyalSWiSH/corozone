@@ -74,6 +74,22 @@ const mutations = {
   setShoppingList: (state, shoppingList) => {
     state.shoppingList = shoppingList
   },
+  mergeShoppingList: (state,shoppingList) => {
+    // Merge two arrays without duplicates
+    // https://stackoverflow.com/questions/1584370/how-to-merge-two-arrays-in-javascript-and-de-duplicate-items
+    const mergeDedupe = (arr) => {
+      return [...new Set([].concat(...arr))];
+    }
+    //let newShoppingList = mergeDedupe(state.shoppingList, shoppingList) 
+    //let newShoppingList =  _.unionBy(shoppingList, state.shoppingList, 'name'); 
+    const newShoppingList = shoppingList.concat(state.shoppingList).filter(function(o) {  
+      return this.has(o.name) ? false : this.add(o.name);
+    }, new Set());
+    console.log("New Shopping LIst")
+    console.log(newShoppingList)
+    state.shoppingList = newShoppingList
+    //state.shoppingList = state.shoppingList.concat(shoppingList)
+  },
   addItemToShoppingList: (state, item) => {
    // state.shoppingList = shoppingList
     item.uid = backendService.token
