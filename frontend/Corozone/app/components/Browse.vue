@@ -148,7 +148,7 @@ export default {
        const db = firebase.firestore
       const groceriesCollection = db.collection("Groceries");
 
-      groceriesCollection.get().doc(backendService.token).then( doc => {
+      groceriesCollection.doc(backendService.token).get().then( doc => {
         console.log("Firebase")
        console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
        this.$store.commit("setShoppingList", Object.values(doc.data()) ) 
