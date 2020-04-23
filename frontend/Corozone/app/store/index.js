@@ -18,37 +18,37 @@ const state = {
     notification_message: "Keine Nachrichten"
 }
 //Load local storage after login
+// ---------------------
+// let secureStorage = new SecureStorage();
+// const VuexPersistent = store => {
+//   // Init hook.
+// console.log("Vues Persistent")
+//  // let storageStr = localStorage.getItem('ns-vuex-persistent');
+//  //TODO: Also encrypt data
+//   var storageStr = secureStorage.getSync({
+//     key: "vuex-persistent-secure", //+ backendService.token
+//   });
+//   if (storageStr) {
+//    store.replaceState(JSON.parse(storageStr))
+//   }
 
-let secureStorage = new SecureStorage();
-const VuexPersistent = store => {
-  // Init hook.
-console.log("Vues Persistent")
- // let storageStr = localStorage.getItem('ns-vuex-persistent');
- //TODO: Also encrypt data
-  var storageStr = secureStorage.getSync({
-    key: "vuex-persistent-secure", //+ backendService.token
-  });
-  if (storageStr) {
-   store.replaceState(JSON.parse(storageStr))
-  }
-
-  store.subscribe((mutation, state) => {
-   // Suscribe hook.
-  // localStorage.setItem('ns-vuex-persistent', JSON.stringify(state));
-   secureStorage.setSync({
-    key: "vuex-persistent-secure", //+ backendService.token,
-    value: JSON.stringify(state) 
-  });
-  })
+//   store.subscribe((mutation, state) => {
+//    // Suscribe hook.
+//   // localStorage.setItem('ns-vuex-persistent', JSON.stringify(state));
+//    secureStorage.setSync({
+//     key: "vuex-persistent-secure", //+ backendService.token,
+//     value: JSON.stringify(state) 
+//   });
+//   })
 
   
- };
+//  };
 
- secureStorage.set({
-  key: "vuex-persistent-secure",
-  value: JSON.stringify(state)
-}).then(success => console.log("Successfully set a value? " + success));
-
+//  secureStorage.set({
+//   key: "vuex-persistent-secure",
+//   value: JSON.stringify(state)
+// }).then(success => console.log("Successfully set a value? " + success));
+//----------------
 // sync
 // const success = secureStorage.setSync({
 //   key: "vuex-persistent-secure",
@@ -76,6 +76,7 @@ const mutations = {
     state.shoppingList = shoppingList
   },
   mergeShoppingList: (state,shoppingList) => {
+
     // Merge two arrays without duplicates
     // https://stackoverflow.com/questions/1584370/how-to-merge-two-arrays-in-javascript-and-de-duplicate-items
     const mergeDedupe = (arr) => {
@@ -83,7 +84,8 @@ const mutations = {
     }
     //let newShoppingList = mergeDedupe(state.shoppingList, shoppingList) 
     //let newShoppingList =  _.unionBy(shoppingList, state.shoppingList, 'name'); 
-    const newShoppingList = shoppingList.concat(state.shoppingList).filter(function(o) {  
+    const newShoppingList = state.shoppingList.concat(shoppingList).filter(function(o) {  
+      console.log(o)
       return this.has(o.name) ? false : this.add(o.name);
     }, new Set());
     console.log("New Shopping LIst")
@@ -93,7 +95,7 @@ const mutations = {
   },
   addItemToShoppingList: (state, item) => {
    // state.shoppingList = shoppingList
-    item.uid = backendService.token
+    //item.uid = backendService.token
     console.log(item)
     state.shoppingList.push(item);
   },
@@ -135,7 +137,7 @@ const storeConf = {
   state,
   getters,
   mutations,
-  actions,
-  plugins:[VuexPersistent]
+  actions
+ // plugins:[VuexPersistent]
 }
 export default new Vuex.Store(storeConf)

@@ -217,6 +217,22 @@ export default {
           console.log("Update User Profile")
           console.log(uid)
           this.postUserProfile(uid)
+
+//             const db = firebase.firestore
+//            const groceriesCollection = db.collection("Groceries");
+//             // const shoppingObject = arrayToObject(this.shoppingList)
+//             //   console.log(shoppingObject)
+
+//  groceriesCollection.doc(uid).set({exists: true}).then(doc => {
+//   console.log(`Shopping List created ${doc}`);
+// });
+
+// await groceriesCollection.doc(uid).update({
+//   [item.name]: item
+// }).then(doc => {
+//   console.log(`Shopping List updated ${doc}`);
+// });
+
           loader.hide();
         })
         .catch(err => {

@@ -50,7 +50,7 @@ async login(user) {
           email: user.email,
           password: user.password
       });
-      return await firebase.firestore.set("users", createdUser.uid, {});
+      return createdUser.uid
     }
 
    async forgotPassword(email) {

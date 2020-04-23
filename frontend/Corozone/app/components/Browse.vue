@@ -109,7 +109,7 @@ var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
 var loader = new LoadingIndicator();
 
 const db = firebase.firestore
-      const groceriesCollection = db.collection("Groceries");
+const groceriesCollection = db.collection("Groceries");
 
 
 const arrayToObject = (array) =>
@@ -140,17 +140,38 @@ export default {
 		},
     };
   },
-  created() {
+  async created() {
      //  this.requestedItems = O(bject.assign({}, this.$store.state.shoppingList)
+
+     
        this.getAddressFromCoord()
-           const db = firebase.firestore
+       const db = firebase.firestore
       const groceriesCollection = db.collection("Groceries");
-        const unsubscribe = groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").onSnapshot(doc => {
+
+      groceriesCollection.get().doc(backendService.token).then( doc => {
+        console.log("Firebase")
+       console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
+       this.$store.commit("setShoppingList", Object.values(doc.data()) ) 
+    }).catch(() => {
+      const shoppingObject = arrayToObject(this.shoppingList)
+console.log(shoppingObject)
+
+  groceriesCollection.doc(backendService.token).set(shoppingObject).then(doc => {
+  console.log(`Shopping List updated ${doc}`);
+}); 
+ 
+    });
+    
+
+      //this read is actually not required. just push to local list and compare once and a while to save reads
+        const unsubscribe = groceriesCollection.doc(backendService.token).onSnapshot(doc => {
+        
   console.log(doc.data())
   console.log("Subscribed")
   console.log(Object.values(doc.data()))
   //this.shoppingList = Object.values(doc.data()) 
  this.$store.commit("mergeShoppingList", Object.values(doc.data()) ) 
+          
 });
 
 const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
@@ -183,7 +204,7 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
 // console.log(shoppingObject)
   const db = firebase.firestore
       const groceriesCollection = db.collection("Groceries");
- await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").update({
+ await groceriesCollection.doc(backendService.token).update({
    [item.name]: db.FieldValue.delete()
  }).then(doc => {
  // console.log(`Shopping List updated ${doc}`);
@@ -351,7 +372,7 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
 
 
 	  },
-	 async onButtonTap() {
+	 onButtonTap() {
       // Prevent users from entering an empty string
       if (!this.itemField) {
         return;
@@ -361,10 +382,13 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
       // this.requestedItems.unshift({
       //   name: this.itemField,
       // });
-      let item = {name: this.itemField, status: "open"}
+
+     
+      let item = {name: this.itemField, status: "open", crypto: "none", 
+      //uid: backendService.token, 
+      store_category: "none"}
       this.$store.commit("addItemToShoppingList", item);
       // Clear the text field
-      this.itemField = '';
         console.log("preFirebase")
 //note that the options object is optional, but you can use it to specify the source of data ("server", "cache", "default").
 // await groceriesCollection.get({ source: "server" }).then(querySnapshot => {
@@ -381,26 +405,25 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
 
   const db = firebase.firestore
   const groceriesCollection = db.collection("Groceries");
-const shoppingObject = arrayToObject(this.shoppingList)
-console.log(shoppingObject)
-
-//  await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").set(shoppingObject).then(doc => {
+// const shoppingObject = arrayToObject(this.shoppingList)
+// console.log(shoppingObject)
+// let that = this
+// groceriesCollection.doc(backendService.token).set(shoppingObject).then(doc => {
 //   console.log(`Shopping List updated ${doc}`);
-// });
+// }).then(() => {that.itemField = '';});
 
-await groceriesCollection.doc("kNAMH2qMp7XVQIr88CgV").update({
+ groceriesCollection.doc(backendService.token).update({
   [item.name]: item
 }).then(doc => {
   console.log(`Shopping List updated ${doc}`);
+}).then(() => {
+ this.itemField = '';
 });
-
-
+this.itemField = '';
 // then after a while, to detach the listener:
 //unsubscribe();
 
 //unsubscribe2();
-
-
 
 
   },
