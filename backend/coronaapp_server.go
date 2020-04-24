@@ -565,7 +565,7 @@ func getGroceries(c echo.Context) error {
     INNER JOIN user_profile ON delivery_order.request_user_id = user_profile.user_id
     INNER JOIN delivery_status ON delivery_order.order_id = delivery_status.order_id
     WHERE delivery_status.status != 'closed'
-    ORDER BY delivery_order.created_at DESC limit 30;`
+    ORDER BY delivery_order.created_at DESC limit 20;`
 	//var lastname string
 	//var user_id int
 	// Replace 3 with an ID from your database or another random

@@ -7,3 +7,4 @@ Thumbs.db
 provisioning/
 
 .DS_Store
+node_modules

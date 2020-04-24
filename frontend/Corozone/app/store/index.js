@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 //import localStorage from 'nativescript-localstorage';
 import { SecureStorage } from "nativescript-secure-storage";
 
-import firebase from 'nativescript-plugin-firebase'
+//import firebase from 'nativescript-plugin-firebase'
 import { backendService } from '~/app';
 Vue.use(Vuex);
 
@@ -15,7 +15,8 @@ const state = {
        uid: "",
        crypto: "none",
       }],
-    notification_message: "Keine Nachrichten"
+    notification_message: "Keine Nachrichten",
+    friendListIDs: ["wMomJv0pOizSrc2ypeWg"]
 }
 //Load local storage after login
 // ---------------------
@@ -66,6 +67,9 @@ const getters = {
   },
   getNotificationMessage: state=> {
     return state.notification_message
+  },
+  getFriendListIDs: state=> {
+    return state.friendListIDs
   }
 }
 const mutations = {
@@ -99,6 +103,14 @@ const mutations = {
     console.log(item)
     state.shoppingList.push(item);
   },
+  addFriendID: (state, id) => {
+     console.log("Added Friend: " + id)
+     state.friendListIDs.push(id);
+   },
+  delFriendID: (state, id) => {
+    console.log("Deleted Friend: " + id)
+    state.friendListIDs.splice(state.friendListIDs.indexOf(id), 1);
+  },
   delItemFromShoppingList: (state, item) => {
     // state.shoppingList = shoppingList
     //const item = state.shoppingList.find(item => item.item_name === item.name)
@@ -113,6 +125,9 @@ const mutations = {
  },
  markItemAsOpen: (state, item) => {
   item.status = "open"
+},
+markItemAsHelperBought: (state, item) => {
+  item.status = "helperbought"
 },
 setNotificationMessage: (state, msg) => {
   state.notification_message = msg

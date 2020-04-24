@@ -2,6 +2,11 @@
     <Page>
         <ActionBar>
             <Label text="Corozone"></Label>
+            <GridLayout rows="*" columns="2*, *, *">
+                  <!-- <Label text="Groceries" column="0"></Label> -->
+                  <Button text="Freund Hinzufügen" @tap="alert()" column="1" />
+                   <!-- <Button :text="'Logout' | L" @tap="logoutApp()" column="2" /> -->
+             </GridLayout>
         </ActionBar>
       <FlexboxLayout class="page">
    
@@ -70,11 +75,14 @@
 					<Label ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="gitem.name+' '+gitem.status"
 					 returnKeyType="next" @returnPress="" @tap="onItemTap(gitem)" fontSize="18" /> 
            <Button
+              v-if="myUID === gitem.uid"
               col="1"
               row="0"
               :text="'delete' | L"
               @tap="onButtonTapDelete(gitem)"
             />
+         <Label v-if="myUID != gitem.uid" ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="'für: ' +gitem.uid"
+					 returnKeyType="next" @returnPress="" fontSize="9" row="1"/>  
             </GridLayout>
             </v-template>
           </ListView>
@@ -101,6 +109,7 @@ import axios from "axios/dist/axios"
 // A stub for a service that authenticates users
 import { backendService } from "../app";
 import { mapState, mapGetters } from "vuex";
+import * as dialogs from "tns-core-modules/ui/dialogs";
 
 import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
@@ -123,6 +132,7 @@ export default {
     return {
 	  isLoggingIn: true,
     itemField: "",
+    myUID: backendService.token,
     location: {
         street: "",
         street_nr: "",
@@ -148,22 +158,28 @@ export default {
        const db = firebase.firestore
       const groceriesCollection = db.collection("Groceries");
 
-      groceriesCollection.doc(backendService.token).get().then( doc => {
+// Get Groceries from Firebase by ID and if unable, create a List
+// TODO:Error in created hook (Promise/async) Possible here is an Error "TypeError: Cannot read property 'doc' of null"
+       db.collection("Groceries").doc(backendService.token).get().then( doc4 => {
         console.log("Firebase")
-       console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-       this.$store.commit("setShoppingList", Object.values(doc.data()) ) 
-    }).catch(() => {
+       console.log(`${doc4.id} => ${JSON.stringify(doc4.data())}`);
+       this.$store.commit("setShoppingList", Object.values(doc4.data()) ) 
+    }).catch(async () => {
       const shoppingObject = arrayToObject(this.shoppingList)
 console.log(shoppingObject)
-
-  groceriesCollection.doc(backendService.token).set(shoppingObject).then(doc => {
-  console.log(`Shopping List updated ${doc}`);
+// console.log("BackendToken:")
+// console.log("BackendToken1: " + backendService.token)
+ const db = firebase.firestore
+      const groceriesCollection = db.collection("Groceries");
+  groceriesCollection.doc(backendService.token).set(shoppingObject).then(doc3 => {
+  console.log(`Shopping List updated ${doc3}`);
 }); 
  
     });
     
 
-      //this read is actually not required. just push to local list and compare once and a while to save reads
+      // This read is actually not required. just push to local list and compare once and a while to save reads
+      // Actually it is require if you want to receive status updates in realtime
         const unsubscribe = groceriesCollection.doc(backendService.token).onSnapshot(doc => {
         
   console.log(doc.data())
@@ -173,19 +189,25 @@ console.log(shoppingObject)
  this.$store.commit("mergeShoppingList", Object.values(doc.data()) ) 
           
 });
-
-const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
-  console.log(doc2.data())
-  console.log("Subscribed2")
-  console.log(Object.values(doc2.data()))
-  this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
-});
+// Loop through firendIDs and add listeners
+//var friendID = ""
+console.log("Friend List IDS:" + this.$store.getters.getFriendListIDs)
+for(const friendID of this.$store.getters.getFriendListIDs) {
+  console.log("Friend ID:" + friendID)
+this.subscribeToShoppingList(friendID)
+}
+// const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
+//   console.log(doc2.data())
+//   console.log("Subscribed2")
+//   console.log(Object.values(doc2.data()))
+//   this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
+// });
 
 
     },
   computed: {
-    ...mapState(["shoppingList", "notification_message"]),
-    ...mapGetters(["getShoppingList", "getNotificationMessage"]),
+    ...mapState(["shoppingList", "notification_message", "friendListIDs"]),
+    ...mapGetters(["getShoppingList", "getNotificationMessage", "getFriendListIDs"]),
     showShoppingList() {
       return this.getShoppingList
     }
@@ -194,7 +216,18 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    async onButtonTapDelete(item) {
+   subscribeToShoppingList(uid) {
+const db = firebase.firestore
+const groceriesCollection = db.collection("Groceries");
+       const unsubscribe2 = groceriesCollection.doc(uid).onSnapshot(doc2 => {
+  console.log(doc2.data())
+  console.log("Subscribed2")
+  console.log(Object.values(doc2.data()))
+  this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
+});
+  return unsubscribe2
+    },
+    onButtonTapDelete(item) {
         console.log("Deleted Item")
         this.$store.commit("delItemFromShoppingList", item)
         //  this.requestedItems.splice(args.index, 1);
@@ -204,7 +237,7 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
 // console.log(shoppingObject)
   const db = firebase.firestore
       const groceriesCollection = db.collection("Groceries");
- await groceriesCollection.doc(backendService.token).update({
+ groceriesCollection.doc(backendService.token).update({
    [item.name]: db.FieldValue.delete()
  }).then(doc => {
  // console.log(`Shopping List updated ${doc}`);
@@ -385,7 +418,7 @@ const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(
 
      
       let item = {name: this.itemField, status: "open", crypto: "none", 
-      //uid: backendService.token, 
+      uid: backendService.token, 
       store_category: "none"}
       this.$store.commit("addItemToShoppingList", item);
       // Clear the text field
@@ -428,6 +461,7 @@ this.itemField = '';
 
   },
     onItemTap(item) {
+      if(backendService.token == item.uid) {
         if(item.status == "open" ) {
           console.log(item.name + " bought myself.")
            this.$store.commit("markItemAsSelfbought", item)}
@@ -435,15 +469,45 @@ this.itemField = '';
           console.log(item.name + " need again.")
           this.$store.commit("markItemAsOpen", item)
           }
+      }
+      else {
+       if(item.status == "open" ) {
+          console.log(item.name + " bought myself.")
+           this.$store.commit("markItemAsHelperBought", item)}
+        else if(item.status == "selfbought" || item.status == "helperbought" || item.status == "helpernotavailable") {
+          console.log(item.name + " need again.")
+          this.$store.commit("markItemAsOpen", item)
+          } 
+      }
 
   
     },
-    alert(message) {
-      return alert({
-        title: "Corozone",
-        okButtonText: "OK",
-        message: message
-      });
+    alert() {
+      // return alert({
+      //   title: "Corozone",
+      //   okButtonText: "OK",
+      //   message: message
+      // });
+    return dialogs.prompt({
+    title: "Your title",
+    message: "Your UserID is: " +backendService.token,
+    okButtonText: "Einen anderen Nutzer hinzufügen",
+    cancelButtonText: "Löschen",
+    neutralButtonText: "Nichts tun",
+    defaultText: "yW42Ufv3CLQAJGFq2glif30SdC82",
+    inputType: dialogs.inputType.text
+}).then(r => {
+    console.log("Dialog result: " + r.result + ", text: " + r.text);
+    if(r.result) {
+      // TODO: Don't loose the reference to the listener and unregister it when view is changed
+    const a = this.subscribeToShoppingList(r.text)
+    this.$store.commit("addFriendID", r.text ) 
+    }
+    else {
+     this.$store.commit("delFriendID", r.text )  
+    }    
+});
+      
     },
 }
 }
