@@ -16,7 +16,7 @@ const state = {
        crypto: "none",
       }],
     notification_message: "Keine Nachrichten",
-    friendListIDs: ["wMomJv0pOizSrc2ypeWg"]
+    friendListIDs: [{id: "wMomJv0pOizSrc2ypeWg", name:"test"}]
 }
 //Load local storage after login
 // ---------------------

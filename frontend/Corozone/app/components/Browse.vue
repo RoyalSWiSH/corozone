@@ -194,7 +194,7 @@ console.log(shoppingObject)
 console.log("Friend List IDS:" + this.$store.getters.getFriendListIDs)
 for(const friendID of this.$store.getters.getFriendListIDs) {
   console.log("Friend ID:" + friendID)
-this.subscribeToShoppingList(friendID)
+this.subscribeToShoppingList(friendID.id)
 }
 // const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
 //   console.log(doc2.data())
@@ -479,7 +479,13 @@ this.itemField = '';
           this.$store.commit("markItemAsOpen", item)
           } 
       }
-
+      const db = firebase.firestore
+      const groceriesCollection = db.collection("Groceries");
+ groceriesCollection.doc(item.uid).update({
+   [item.name]: item
+ }).then(doc => {
+ // console.log(`Shopping List updated ${doc}`);
+});
   
     },
     alert() {
@@ -501,10 +507,11 @@ this.itemField = '';
     if(r.result) {
       // TODO: Don't loose the reference to the listener and unregister it when view is changed
     const a = this.subscribeToShoppingList(r.text)
-    this.$store.commit("addFriendID", r.text ) 
+    const friend = {id: r.text, name: ""}
+    this.$store.commit("addFriendID", friend ) 
     }
     else {
-     this.$store.commit("delFriendID", r.text )  
+     this.$store.commit("delFriendID", friend )  
     }    
 });
       
