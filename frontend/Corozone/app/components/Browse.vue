@@ -81,7 +81,7 @@
               :text="'delete' | L"
               @tap="onButtonTapDelete(gitem)"
             />
-         <Label v-if="myUID != gitem.uid" ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="'für: ' +gitem.uid"
+         <Label v-if="myUID != gitem.uid" ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="'für: ' +nameFromUID(gitem.uid)"
 					 returnKeyType="next" @returnPress="" fontSize="9" row="1"/>  
             </GridLayout>
             </v-template>
@@ -208,13 +208,28 @@ this.subscribeToShoppingList(friendID.id)
   computed: {
     ...mapState(["shoppingList", "notification_message", "friendListIDs"]),
     ...mapGetters(["getShoppingList", "getNotificationMessage", "getFriendListIDs"]),
-    showShoppingList() {
+    showShoppingList: function() {
       return this.getShoppingList
     }
+    // nameFromUID(uid) {
+    //   return this.friendListIDs.find(x => x.uid === uid)
+    // }
+    // changeKundeStore: function()
+    //     {
+    //         return this.$store.state.changeKundeStore
+    //     }
    },
   methods: {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
+    },
+    nameFromUID(uid) {
+      console.log("Name from UID" + uid)
+      if(this.friendListIDs.find(x => x.uid === uid).name){
+      return this.friendListIDs.find(x => x.uid === uid).name}
+      else {
+        console.log("No Friend name found")
+        return }
     },
    subscribeToShoppingList(uid) {
 const db = firebase.firestore
@@ -458,7 +473,6 @@ this.itemField = '';
 
 //unsubscribe2();
 
-
   },
     onItemTap(item) {
       if(backendService.token == item.uid) {
@@ -507,7 +521,7 @@ this.itemField = '';
     if(r.result) {
       // TODO: Don't loose the reference to the listener and unregister it when view is changed
     const a = this.subscribeToShoppingList(r.text)
-    const friend = {id: r.text, name: ""}
+    const friend = {id: r.text, name: "TestName"}
     this.$store.commit("addFriendID", friend ) 
     }
     else {

@@ -16,7 +16,9 @@ const state = {
        crypto: "none",
       }],
     notification_message: "Keine Nachrichten",
-    friendListIDs: [{id: "wMomJv0pOizSrc2ypeWg", name:"test"}]
+    friendListIDs: [
+      //{id: "wMomJv0pOizSrc2ypeWg", name:"test"}
+    ]
 }
 //Load local storage after login
 // ---------------------
@@ -103,12 +105,13 @@ const mutations = {
     console.log(item)
     state.shoppingList.push(item);
   },
-  addFriendID: (state, id) => {
-     console.log("Added Friend: " + id)
-     state.friendListIDs.push(id);
+  addFriendID: (state, friend) => {
+     console.log("Added Friend: " + friend.name)
+     state.friendListIDs.push(friend);
    },
   delFriendID: (state, id) => {
     console.log("Deleted Friend: " + id)
+    // probably need to find here
     state.friendListIDs.splice(state.friendListIDs.indexOf(id), 1);
   },
   delItemFromShoppingList: (state, item) => {
