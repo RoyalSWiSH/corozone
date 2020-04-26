@@ -17,7 +17,7 @@ const state = {
       }],
     notification_message: "Keine Nachrichten",
     friendListIDs: [
-      //{id: "wMomJv0pOizSrc2ypeWg", name:"test"}
+     // {id: "D4YX72AVKrZp4cHONP23llO5omk2", name:"Sebastian"}
     ]
 }
 //Load local storage after login

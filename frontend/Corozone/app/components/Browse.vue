@@ -81,7 +81,7 @@
               :text="'delete' | L"
               @tap="onButtonTapDelete(gitem)"
             />
-         <Label v-if="myUID != gitem.uid" ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="'für: ' +nameFromUID(gitem.uid)"
+         <Label v-if="myUID != gitem.uid" ref="items" class="input" hint="items" keyboardType="street" autocorrect="false" autocapitalizationType="none" col="0" :text="'für: ' +nameFromUID(gitem)"
 					 returnKeyType="next" @returnPress="" fontSize="9" row="1"/>  
             </GridLayout>
             </v-template>
@@ -177,7 +177,6 @@ console.log(shoppingObject)
  
     });
     
-
       // This read is actually not required. just push to local list and compare once and a while to save reads
       // Actually it is require if you want to receive status updates in realtime
         const unsubscribe = groceriesCollection.doc(backendService.token).onSnapshot(doc => {
@@ -186,7 +185,7 @@ console.log(shoppingObject)
   console.log("Subscribed")
   console.log(Object.values(doc.data()))
   //this.shoppingList = Object.values(doc.data()) 
- this.$store.commit("mergeShoppingList", Object.values(doc.data()) ) 
+  this.$store.commit("mergeShoppingList", Object.values(doc.data()) ) 
           
 });
 // Loop through firendIDs and add listeners
@@ -223,17 +222,23 @@ this.subscribeToShoppingList(friendID.id)
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    nameFromUID(uid) {
-      console.log("Name from UID" + uid)
-      if(this.friendListIDs.find(x => x.uid === uid).name){
-      return this.friendListIDs.find(x => x.uid === uid).name}
+    nameFromUID(item) {
+      console.log("Name from UID" + item.name)
+      console.log(this.$store.getters.getFriendListIDs)
+      console.log(this.friendListIDs)
+      console.log(this.friendListIDs.find(x => x.uid === item.uid))
+      if(this.$store.getters.getFriendListIDs) {
+      if(this.friendListIDs.find(friend => friend.id === item.uid)){
+      return this.friendListIDs.find(friend => friend.id === item.uid).name}
       else {
         console.log("No Friend name found")
         return }
+      }
     },
    subscribeToShoppingList(uid) {
 const db = firebase.firestore
 const groceriesCollection = db.collection("Groceries");
+console.log(uid)
        const unsubscribe2 = groceriesCollection.doc(uid).onSnapshot(doc2 => {
   console.log(doc2.data())
   console.log("Subscribed2")
@@ -520,8 +525,10 @@ this.itemField = '';
     console.log("Dialog result: " + r.result + ", text: " + r.text);
     if(r.result) {
       // TODO: Don't loose the reference to the listener and unregister it when view is changed
-    const a = this.subscribeToShoppingList(r.text)
-    const friend = {id: r.text, name: "TestName"}
+    const id = r.text.split(":")[0]
+    const name = r.text.split(":")[1]
+    const a = this.subscribeToShoppingList(id)
+    const friend = {id: id, name: name}
     this.$store.commit("addFriendID", friend ) 
     }
     else {
