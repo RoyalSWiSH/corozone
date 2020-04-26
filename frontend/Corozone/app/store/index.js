@@ -19,33 +19,38 @@ const state = {
     friendListIDs: [
      // {id: "D4YX72AVKrZp4cHONP23llO5omk2", name:"Sebastian"}
     ]
-}
+};
 //Load local storage after login
-// ---------------------
-// let secureStorage = new SecureStorage();
-// const VuexPersistent = store => {
-//   // Init hook.
-// console.log("Vues Persistent")
-//  // let storageStr = localStorage.getItem('ns-vuex-persistent');
-//  //TODO: Also encrypt data
-//   var storageStr = secureStorage.getSync({
-//     key: "vuex-persistent-secure", //+ backendService.token
-//   });
-//   if (storageStr) {
-//    store.replaceState(JSON.parse(storageStr))
-//   }
+//---------------------
+let secureStorage = new SecureStorage();
+const VuexPersistent = store => {
+  // Init hook.
+console.log("Vues Persistent")
+ // let storageStr = localStorage.getItem('ns-vuex-persistent');
+ //TODO: Also encrypt data
+  var storageStr = secureStorage.getSync({
+    key: "vuex-persistent-secure", //+ backendService.token
+  });
+  if (storageStr) {
+    console.log("Files loaded from starage")
+    console.log(storageStr)
+    state.notification_message = storageStr.friendListIDs
+   store.replaceState(JSON.parse(storageStr))
+  }
 
-//   store.subscribe((mutation, state) => {
-//    // Suscribe hook.
-//   // localStorage.setItem('ns-vuex-persistent', JSON.stringify(state));
-//    secureStorage.setSync({
-//     key: "vuex-persistent-secure", //+ backendService.token,
-//     value: JSON.stringify(state) 
-//   });
-//   })
+  store.subscribe((mutation, state) => {
+   // Suscribe hook.
+  // localStorage.setItem('ns-vuex-persistent', JSON.stringify(state));
+   console.log("Save files to storage")
+   console.log(state)
+   secureStorage.setSync({
+    key: "vuex-persistent-secure", //+ backendService.token,
+    value: JSON.stringify(state) 
+  });
 
-  
-//  };
+  })
+
+ };
 
 //  secureStorage.set({
 //   key: "vuex-persistent-secure",
@@ -155,7 +160,7 @@ const storeConf = {
   state,
   getters,
   mutations,
-  actions
- // plugins:[VuexPersistent]
+  actions,
+  plugins:[VuexPersistent]
 }
 export default new Vuex.Store(storeConf)

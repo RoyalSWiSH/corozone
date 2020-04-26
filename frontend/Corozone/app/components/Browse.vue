@@ -192,7 +192,7 @@ console.log(shoppingObject)
 //var friendID = ""
 console.log("Friend List IDS:" + this.$store.getters.getFriendListIDs)
 for(const friendID of this.$store.getters.getFriendListIDs) {
-  console.log("Friend ID:" + friendID)
+  console.log("Friend ID:" + friendID.name)
 this.subscribeToShoppingList(friendID.id)
 }
 // const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
@@ -226,7 +226,7 @@ this.subscribeToShoppingList(friendID.id)
       console.log("Name from UID" + item.name)
       console.log(this.$store.getters.getFriendListIDs)
       console.log(this.friendListIDs)
-      console.log(this.friendListIDs.find(x => x.uid === item.uid))
+      console.log(this.friendListIDs.find(x => x.id === item.uid))
       if(this.$store.getters.getFriendListIDs) {
       if(this.friendListIDs.find(friend => friend.id === item.uid)){
       return this.friendListIDs.find(friend => friend.id === item.uid).name}
@@ -519,7 +519,7 @@ this.itemField = '';
     okButtonText: "Einen anderen Nutzer hinzufügen",
     cancelButtonText: "Löschen",
     neutralButtonText: "Nichts tun",
-    defaultText: "yW42Ufv3CLQAJGFq2glif30SdC82",
+    defaultText: "D4YX72AVKrZp4cHONP23llO5omk2:Sebastian",
     inputType: dialogs.inputType.text
 }).then(r => {
     console.log("Dialog result: " + r.result + ", text: " + r.text);

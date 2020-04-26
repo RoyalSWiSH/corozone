@@ -67,6 +67,7 @@ type location struct {
 type Items struct {
 	Name   string `json:"name"`
 	Status string `json:"status"`
+	UID    string `json:"uid"`
 	//  Market string `json:"status"`
 	//Brand string `json:"status"`
 	// Add quantity and Unit maybe later
