@@ -3,6 +3,7 @@
      <ActionBar>            
              <GridLayout rows="*" columns="2*, *, *">
                   <!-- <Label text="Groceries" column="0"></Label> -->
+                  <Label text="Helping" column="0"></Label>
                   <Button :text="'reload' | L" @tap="getGroceryRequests()" column="1" />
                    <Button :text="'Logout' | L" @tap="logoutApp()" column="2" />
              </GridLayout>

@@ -3,16 +3,32 @@
     <BottomNavigation>
         <TabStrip>
             <TabStripItem class="navigation__item">
-                <Label text="Home"></Label>
-                <Image src.decode="font://&#xf015;" class="fas t-36"></Image>
+                <Label text="Helping"></Label>
+                <Image src.decode="font://&#xf0c0;" class="fas t-36"></Image>
+            </TabStripItem>
+             <TabStripItem class="navigation__item">
+                <Label text="Groceries"></Label>
+                <Image src.decode="font://&#xf290;" class="fas t-36"></Image>
+            </TabStripItem>
+            <!-- <TabStripItem class="navigation__item">
+                <Label text="Groceries"></Label>
+                <Image src.decode="font://&#xf218;" class="far t-36"></Image>
+            </TabStripItem> -->
+            <TabStripItem class="navigation__item">
+                <Label text="Symptoms"></Label>
+                <Image src.decode="font://&#xf21e;" class="fas t-36"></Image>
             </TabStripItem>
             <TabStripItem class="navigation__item">
-                <Label text="Browse"></Label>
-                <Image src.decode="font://&#xf1ea;" class="far t-36"></Image>
+                <Label text="Contacts"></Label>
+                <Image src.decode="font://&#xf2a1;" class="fas t-36"></Image>
             </TabStripItem>
+            <!-- <TabStripItem class="navigation__item">
+                <Label text="Hospitals"></Label>
+                <Image src.decode="font://&#xf0f8;" class="fas t-36"></Image>
+            </TabStripItem> -->
             <TabStripItem class="navigation__item">
-                <Label text="Search"></Label>
-                <Image src.decode="font://&#xf002;" class="fas t-36"></Image>
+                <Label text="Privacy"></Label>
+                <Image src.decode="font://&#xf023;" class="fas t-36"></Image>
             </TabStripItem>
         </TabStrip>
 
@@ -30,7 +46,23 @@
 
         <TabContentItem>
             <Frame>
-                <Search />
+                <Symptoms />
+            </Frame>
+        </TabContentItem>
+
+        <TabContentItem>
+            <Frame>
+                <Contacts />
+            </Frame>
+        </TabContentItem>
+        <!-- <TabContentItem>
+            <Frame>
+                <Hospitals />
+            </Frame>
+        </TabContentItem> -->
+        <TabContentItem>
+            <Frame>
+                <Privacy />
             </Frame>
         </TabContentItem>
 
@@ -49,6 +81,11 @@ import Items from "./Items.vue";
 import Browse from "./Browse.vue";
 import Search from "./Search.vue";
 import LoginPage from "./LoginPage.vue";
+
+import Contacts from "./Contacts"
+import Hospitals from "./Hospitals"
+import Privacy from "./Privacy"
+import Symptoms from "./Symptoms"
 import { mapState } from "vuex";
 
 export default {
@@ -57,6 +94,10 @@ export default {
     Items,
     Browse,
     Search,
+    Privacy,
+    Symptoms,
+    Hospitals,
+    Contacts,
     LoginPage
   },
   computed: {
