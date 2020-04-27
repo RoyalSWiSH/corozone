@@ -5,7 +5,7 @@
             <GridLayout rows="*" columns="2*, *, *">
                   <!-- <Label text="Groceries" column="0"></Label> -->
                   <Label text="Groceries (data is public)" column="0"></Label>
-                  <Button text="Freund Hinzufügen" @tap="alert()" column="1" />
+                  <Button text="Add a friend" @tap="alert()" column="1" />
                    <!-- <Button :text="'Logout' | L" @tap="logoutApp()" column="2" /> -->
              </GridLayout>
         </ActionBar>
