@@ -118,8 +118,8 @@ var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
 var loader = new LoadingIndicator();
 
-const db = firebase.firestore
-const groceriesCollection = db.collection("Groceries");
+//const db = firebase.firestore
+//const groceriesCollection = db.collection("Groceries");
 
 
 const arrayToObject = (array) =>

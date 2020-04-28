@@ -50,6 +50,12 @@
 <script>
 import firebase from "nativescript-plugin-firebase"
 import App from "./App"
+
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+// import BackendService from '@/services/BackendService'
+// import AuthService from '@/services/AuthService'
+
 import { mapState } from "vuex"
 
 
@@ -110,7 +116,116 @@ export default {
     if(this.$store.state.isLoggedIn!=null){
       this.isInitialized = true;
     }
+ },
+ mounted() {
+firebase
+  .init({
+    // Authentication
+    onAuthStateChanged: data => { 
+      console.log((data.loggedIn ? "Logged in to firebase" : "Logged out from firebase") + " (firebase.init() onAuthStateChanged callback)");
+      if (data.loggedIn) {
+        this.$backendService.token = data.user.uid
+        console.log("uID: " + data.user.uid)
+        this.$store.commit('setIsLoggedIn', true)
+      }
+      else {     
+        this.$store.commit('setIsLoggedIn', false) 
+      }
+    },
+
+    // Push Notification
+      showNotifications: true,
+      showNotificationsWhenInForeground: true,
+
+      onPushTokenReceivedCallback: (token) => {
+        console.log('[Firebase] onPushTokenReceivedCallback:', { token });
+
+        axios({
+          method: 'post',
+          url: '/users/'+this.$backendService.token+'/pushtoken',
+          data: {
+            firebasePushtoken: token
+      }
+      }).then(function (response) {
+          console.log(response.data);  //Outputs API response in CL to verify functionality.
+  })
+  .catch((error) => {   if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.log(error.response.data);
+    console.log(error.response.status);
+    console.log(error.response.headers);
+  } else if (error.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.log(error.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.log(error.message);
+  }});
+      },
+      onMessageReceivedCallback: (message) => {
+        console.log('[Firebase] onMessageReceivedCallback:', { message });
+        this.$store.commit("setNotificationMessage", message.body)
+        if(message.data.acceptedItems){
+        store.commit("setAcceptedItems",message.data.acceptedItems)
+
+
+        var notFoundItems = JSON.parse(message.data.acceptedItems).filter(function (item) {
+          return item.status == "helpernotavailable" ||
+                 item.status == "helpernotfound";
+        });
+        if(notFoundItems.length>0){
+          var arr = new Array(notFoundItems.length);
+          for(var i=0; i<arr.length; i++) {
+           arr[i]=notFoundItems[i].name;
+          }
+
+          var itemsString;
+          if(arr.length == 2){
+            itemsString = arr.toString().replace(",", " und ") 
+          }
+          else {
+          itemsString = arr.toString().replace(",", ", ") 
+          }
+
+          var msg= message.body+ " " + itemsString + " hat er/sie leider nicht bekommen :(."
+          // TODO: Send firstname in data part to avoid splitting in message
+    axios.get("https://genderapi.io/api/?name=" +  message.body.split(" ")[0])
+  .then(function (genderrequest) {
+    // handle success
+    console.log(genderrequest);
+    if(genderrequest.data.gender == "male") {
+      msg = msg.replace("er/sie", "er")
+    }
+    else if(genderrequest.data.gender == "female") {
+      msg = msg.replace("er/sie", "sie")
+    }
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .then(function () {
+    // always executed
+        store.commit("setNotificationMessage", msg)
+  });
+     }
+      }
+       
+      }
+  })
+  .then(
+    function(instance) {
+      console.log("firebase.init done");
+    },
+    function(error) {
+      console.log("firebase.init error: " + error);
+    }
+  );
   },
+ 
   // VueX will synchronize the state of this variable to the page by adding this in the export default { object 
   // What does ... mean?
   computed: {
