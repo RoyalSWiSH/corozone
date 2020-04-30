@@ -165,7 +165,14 @@ export default {
         console.log("Firebase")
        console.log(`${doc4.id} => ${JSON.stringify(doc4.data())}`);
        this.$store.commit("setShoppingList", Object.values(doc4.data()) ) 
-    }).catch(async () => {
+    })
+    .then( () => {
+ 
+console.log("Friend List IDS:" + this.$store.getters.getFriendListIDs)
+for(const friendID of this.$store.getters.getFriendListIDs) {
+  console.log("Friend ID:" + friendID.name)
+this.subscribeToShoppingList(friendID.id)     
+    }}).catch( () => {
       const shoppingObject = arrayToObject(this.shoppingList)
 console.log(shoppingObject)
 // console.log("BackendToken:")
@@ -191,11 +198,9 @@ console.log(shoppingObject)
 });
 // Loop through firendIDs and add listeners
 //var friendID = ""
-console.log("Friend List IDS:" + this.$store.getters.getFriendListIDs)
-for(const friendID of this.$store.getters.getFriendListIDs) {
-  console.log("Friend ID:" + friendID.name)
-this.subscribeToShoppingList(friendID.id)
-}
+
+
+
 // const unsubscribe2 = groceriesCollection.doc("wMomJv0pOizSrc2ypeWg").onSnapshot(doc2 => {
 //   console.log(doc2.data())
 //   console.log("Subscribed2")
@@ -204,6 +209,13 @@ this.subscribeToShoppingList(friendID.id)
 // });
 
 
+  //  },
+//   async  mounted() {
+//       console.log("Friend List IDS:" + this.$store.getters.getFriendListIDs)
+// for(const friendID of this.$store.getters.getFriendListIDs) {
+//   console.log("Friend ID:" + friendID.name)
+// await this.subscribeToShoppingList(friendID.id)
+// }
     },
   computed: {
     ...mapState(["shoppingList", "notification_message", "friendListIDs"]),
@@ -239,7 +251,7 @@ this.subscribeToShoppingList(friendID.id)
    subscribeToShoppingList(uid) {
 const db = firebase.firestore
 const groceriesCollection = db.collection("Groceries");
-console.log(uid)
+console.log("Substibe to shopping list: " + uid)
        const unsubscribe2 = groceriesCollection.doc(uid).onSnapshot(doc2 => {
   console.log(doc2.data())
   console.log("Subscribed2")
