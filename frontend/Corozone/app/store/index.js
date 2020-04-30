@@ -86,7 +86,7 @@ const mutations = {
   setShoppingList: (state, shoppingList) => {
     state.shoppingList = shoppingList
   },
-  mergeShoppingList: (state,shoppingList) => {
+  mergeShoppingList: (state,friendsShoppingList) => {
 
     // Merge two arrays without duplicates
     // https://stackoverflow.com/questions/1584370/how-to-merge-two-arrays-in-javascript-and-de-duplicate-items
@@ -95,11 +95,27 @@ const mutations = {
     }
     //let newShoppingList = mergeDedupe(state.shoppingList, shoppingList) 
     //let newShoppingList =  _.unionBy(shoppingList, state.shoppingList, 'name'); 
-    const newShoppingList = state.shoppingList.concat(shoppingList).filter(function(o) {  
+
+//https://stackoverflow.com/questions/22844560/check-if-object-value-exists-within-a-javascript-array-of-objects-and-if-not-add
+
+for(let item of friendsShoppingList) {
+    // console.log(item)
+       let b = state.shoppingList.find(o => o.name ===item.name)
+       //TODO: Change to version with .some instead of undefined
+       // https://stackoverflow.com/questions/22844560/check-if-object-value-exists-within-a-javascript-array-of-obje#
+       if(b!=undefined){
+      console.log(b.name)
+       state.shoppingList[state.shoppingList.findIndex(o => o.name ===item.name)].status = item.status
+       }
+    // console.log(i)
+  }
+  
+
+    const newShoppingList = state.shoppingList.concat(friendsShoppingList).filter(function(o) {  
       console.log(o)
       return this.has(o.name) ? false : this.add(o.name);
     }, new Set());
-    console.log("New Shopping LIst")
+    console.log("New Shopping List")
     console.log(newShoppingList)
     state.shoppingList = newShoppingList
     //state.shoppingList = state.shoppingList.concat(shoppingList)

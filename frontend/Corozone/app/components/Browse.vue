@@ -243,6 +243,7 @@ console.log(uid)
        const unsubscribe2 = groceriesCollection.doc(uid).onSnapshot(doc2 => {
   console.log(doc2.data())
   console.log("Subscribed2")
+
   console.log(Object.values(doc2.data()))
   this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
 });
@@ -499,6 +500,8 @@ this.itemField = '';
           this.$store.commit("markItemAsOpen", item)
           } 
       }
+
+      // Update the status of the item according to whom the item belongs (item.uid)
       const db = firebase.firestore
       const groceriesCollection = db.collection("Groceries");
  groceriesCollection.doc(item.uid).update({
@@ -517,9 +520,9 @@ this.itemField = '';
     return dialogs.prompt({
     title: "Your title",
     message: "Your UserID is: " +backendService.token,
-    okButtonText: "Einen anderen Nutzer hinzufügen",
+    okButtonText: "Nutzer hinzufügen",
     cancelButtonText: "Löschen",
-    neutralButtonText: "Nichts tun",
+    neutralButtonText: "Zurück",
     defaultText: "D4YX72AVKrZp4cHONP23llO5omk2:Sebastian",
     inputType: dialogs.inputType.text
 }).then(r => {

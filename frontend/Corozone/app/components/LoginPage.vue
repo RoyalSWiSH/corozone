@@ -118,6 +118,8 @@ export default {
     }
  },
  mounted() {
+
+   //TODO: Check if this can belong into created()
 firebase
   .init({
     // Authentication
@@ -176,6 +178,8 @@ firebase
           return item.status == "helpernotavailable" ||
                  item.status == "helpernotfound";
         });
+
+        // Check if some items were not found and create a message
         if(notFoundItems.length>0){
           var arr = new Array(notFoundItems.length);
           for(var i=0; i<arr.length; i++) {
