@@ -407,7 +407,7 @@ console.log("Substibe to shopping list: " + uid)
 				inQuarantine: false,
 				minimumSupply: false,
 				elderly: false,
-			 	requestedItems: this.shoppingList,
+			 	requestedItems: this.shoppingList.filter(x => x.id === backendService.token),  //Don't request groceries from list of friends 
 				location: {
 					city: this.location.city,
           street: this.location.street,

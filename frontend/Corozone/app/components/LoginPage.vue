@@ -23,7 +23,7 @@
 
 				<StackLayout class="input-field" marginBottom="25">
 					<TextField ref="password" class="input" hint="Password" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'"
-					 @returnPress="focusConfirmPassword" fontSize="18" />
+					 @returnPress="focusConfirmPassword" fontSize="18"  @loaded="onLoadedEmail"/>
 					<TextField ref="confirmPassword" v-show="!isLoggingIn"  class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done"
 					 fontSize="18" />
 					<StackLayout class="hr-light" />
@@ -248,6 +248,12 @@ firebase
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
+    onLoaded: function(args) {
+  const textField = args.object;
+  if (textField.ios) {
+     textField.ios.textContentType = UITextContentTypeEmailAddress;
+  }
+},
     async postUserProfile(uid) {
 
         // Send a POST request
