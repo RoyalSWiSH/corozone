@@ -79,6 +79,9 @@
 <script>
 import ItemDetails from "./ItemDetails";
 import LoginPage from "./LoginPage";
+
+import { Frame } from 'tns-core-modules/ui/frame'
+
 import {
   Accuracy
 } from "ui/enums";
@@ -156,12 +159,18 @@ export default {
   //     }
   //   }
   // },
+  components: {
+    LoginPage
+  },
   methods: {
     logout() {
       this.$authService.logout()
+      console.log("Logout Items")
+      console.log("Frame: " + Frame.topmost().id)
+       Frame.frameById("itemsFrame").navigate({pageModuleName: "~/LoginPage"})
     },
     getGroceryRequests() {
-      console.log("Get Grocery Reqests...")
+      console.log("Get Grocery Requests...")
       loader.show()
       let that = this
       this.axios({
@@ -218,6 +227,11 @@ export default {
     // Logout leads to strange behaviour like details page not working
     logoutApp() {
       this.$authService.logout()
+      console.log("Logout Items")
+      console.log("Frame: " + Frame.topmost().id)
+      // Frame.getFrameById("itemsFrame").navigate({pageModuleName: "@/components/LoginPage"})
+       // this.$navigateTo(LoginPage, {  clearHistory: true, frame: "mainFrame" });
+
       //.then(() => {
       //  this.$navigateTo(LoginPage, {  clearHistory: true });
       // });

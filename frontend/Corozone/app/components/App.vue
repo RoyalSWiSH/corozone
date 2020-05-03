@@ -1,7 +1,8 @@
  <template lang="html">
  <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
-    <BottomNavigation>
-        <TabStrip>
+    <BottomNavigation selectedIndex="1">
+
+        <TabStrip selectedItemColor="#3d99ff" unSelectedItemColor="#5c5c5c">
             <TabStripItem class="navigation__item">
                 <Label text="Helping"></Label>
                 <Image src.decode="font://&#xf0c0;" class="fas t-36"></Image>
@@ -77,6 +78,8 @@
 </template>-->
 
 <script>
+import { Frame } from 'tns-core-modules/ui/frame'
+import { mapState } from "vuex";
 import Items from "./Items.vue";
 import Browse from "./Browse.vue";
 import Search from "./Search.vue";
@@ -86,7 +89,7 @@ import Contacts from "./Contacts"
 import Hospitals from "./Hospitals"
 import Privacy from "./Privacy"
 import Symptoms from "./Symptoms"
-import { mapState } from "vuex";
+
 
 export default {
   name: "app",
@@ -107,10 +110,14 @@ export default {
      // Logout leads to strange behaviour like details page not working
     isLoggedIn(val) {
       if (!val) {
-        this.$navigateTo(LoginPage, {   
-            // frame: "itemsFrame", 
-        //clearHistory: true 
-        });
+          console.log("Watch is LoggedIn")
+            this.$navigateTo(LoginPage, {  clearHistory: true, frame: "mainFrame" });
+         // Frame.topmost().currentPage.$navigateTo(LoginPage)
+       //   Frame.topmost().navigate(LoginPage)
+        // this.$navigateTo(LoginPage, {   
+        //      frame: "mainFrame" 
+        // //clearHistory: true 
+        // });
       }
     }
   } 

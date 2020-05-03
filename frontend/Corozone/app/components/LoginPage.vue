@@ -17,13 +17,13 @@
 				</StackLayout>
 				<StackLayout class="input-field" marginBottom="25">
 					<TextField class="input" hint="Email" keyboardType="email" autocorrect="false" autocapitalizationType="none" v-model="user.email"
-					 returnKeyType="next" @returnPress="focusPassword" fontSize="18" />
+					 returnKeyType="next" @returnPress="focusPassword" fontSize="18" @loaded="onLoadedEmail" />
 					<StackLayout class="hr-light" />
 				</StackLayout>
 
 				<StackLayout class="input-field" marginBottom="25">
 					<TextField ref="password" class="input" hint="Password" secure="true" v-model="user.password" :returnKeyType="isLoggingIn ? 'done' : 'next'"
-					 @returnPress="focusConfirmPassword" fontSize="18"  @loaded="onLoadedEmail"/>
+					 @returnPress="focusConfirmPassword" fontSize="18"  @loaded="onLoadedPassword"/>
 					<TextField ref="confirmPassword" v-show="!isLoggingIn"  class="input" hint="Confirm password" secure="true" v-model="user.confirmPassword" returnKeyType="done"
 					 fontSize="18" />
 					<StackLayout class="hr-light" />
@@ -50,6 +50,7 @@
 <script>
 import firebase from "nativescript-plugin-firebase"
 import App from "./App"
+import { Frame } from 'tns-core-modules/ui/frame'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -118,7 +119,6 @@ export default {
     }
  },
  mounted() {
-
    //TODO: Check if this can belong into created()
 firebase
   .init({
@@ -129,6 +129,9 @@ firebase
         this.$backendService.token = data.user.uid
         console.log("uID: " + data.user.uid)
         this.$store.commit('setIsLoggedIn', true)
+
+        // Workaround: This navigateTo should not be necessary here, but for some reason watch for isLoggedIn does not trigger
+        this.$navigateTo(App, {frame: "mainFrame"})
       }
       else {     
         this.$store.commit('setIsLoggedIn', false) 
@@ -237,10 +240,15 @@ firebase
   },
   watch: {   
     isLoggedIn(val) {
-      if (!val) {        
+
+        console.log("isLoggedIn Is triggered")   
+      if (!val) {     
+        console.log("isLoggedIn Is initialized")   
         this.isInitialized = true;        
       }else{
-        this.$navigateTo(App, { clearHistory: true });
+        console.log("isLoggedIn Is changed, navigate to App")   
+      // Frame.fameById("mainFrame").navigate(App)
+       this.$navigateTo(App, { clearHistory: true, frame: "mainFrame"});
       }
     }
   },
@@ -248,10 +256,19 @@ firebase
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    onLoaded: function(args) {
+    onLoadedEmail: function(args) {
+      // Only for >iOS11
   const textField = args.object;
   if (textField.ios) {
-     textField.ios.textContentType = UITextContentTypeEmailAddress;
+     textField.ios.textContentType = UITextContentTypeUsername;
+  }
+  },
+   onLoadedPassword: function(args) {
+      // Only for >iOS11
+      // https://stackoverflow.com/questions/56712037/keychain-not-firing-on-ios
+  const textField = args.object;
+  if (textField.ios) {
+     textField.ios.textContentType = UITextContentTypePassword;
   }
 },
     async postUserProfile(uid) {
@@ -303,7 +320,8 @@ firebase
         .login(this.user)
         .then(() => {
           loader.hide();
-          this.$navigateTo(App);
+          //this.$navigateTo(App, {frame: "mainFrame"});
+          this.$store.commit('setIsLoggedIn', true)
         })
         .catch(err => {
           console.error(err);

@@ -507,6 +507,7 @@ this.itemField = '';
        if(item.status == "open" ) {
           console.log(item.name + " bought myself.")
            this.$store.commit("markItemAsHelperBought", item)}
+           // TODO: Maybe remove "selfbought", since should not buy items another person already bought himself
         else if(item.status == "selfbought" || item.status == "helperbought" || item.status == "helpernotavailable") {
           console.log(item.name + " need again.")
           this.$store.commit("markItemAsOpen", item)

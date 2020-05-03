@@ -43,6 +43,7 @@ export const authService = new AuthService()
 
 Vue.prototype.$authService = authService
 Vue.prototype.$backendService = backendService
+Vue.prototype.$store = store;
 // What does this import? Everything? Just index.js?
 
 //import App from "./components/App";
@@ -189,7 +190,7 @@ Vue.filter("L", localize);
 new Vue({
     store,
     template: `
-    <Frame>
+    <Frame id="mainFrame" defaultPage="components/LoginPage">
       <LoginPage />
     </Frame>`,
     components: {

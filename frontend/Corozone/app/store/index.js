@@ -9,12 +9,14 @@ Vue.use(Vuex);
 
 const state = {
   isLoggedIn:null,
-    shoppingList: [{
-       name: "Klopapier",
-       status: "open",     // requested, selfbought, requestbought, requestunavailable, selfunavailable
-       uid: "",
-       crypto: "none",
-      }],
+    shoppingList: [
+      // {
+      //  name: "Klopapier",
+      //  status: "open",     // requested, selfbought, requestbought, requestunavailable, selfunavailable
+      //  uid: "",
+      //  crypto: "none",
+      // }
+    ],
     notification_message: "Keine Nachrichten",
     friendListIDs: [
      // {id: "D4YX72AVKrZp4cHONP23llO5omk2", name:"Sebastian"}
@@ -36,6 +38,9 @@ console.log("Vues Persistent")
     console.log(storageStr)
     state.notification_message = storageStr.friendListIDs
    store.replaceState(JSON.parse(storageStr))
+   
+  //  this.setIsLoggedIn(null)
+    console.log(state)
   }
 
   store.subscribe((mutation, state) => {
