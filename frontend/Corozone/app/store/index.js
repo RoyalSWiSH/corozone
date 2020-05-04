@@ -129,7 +129,8 @@ for(let item of friendsShoppingList) {
    // state.shoppingList = shoppingList
     //item.uid = backendService.token
     console.log(item)
-    state.shoppingList.push(item);
+    state.shoppingList = [item].concat(state.shoppingList)
+    //state.shoppingList.push(item);
   },
   addFriendID: (state, friend) => {
      console.log("Added Friend: " + friend.name)

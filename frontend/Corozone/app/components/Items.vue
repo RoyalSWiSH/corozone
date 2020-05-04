@@ -244,6 +244,7 @@ export default {
       this.$navigateTo(ItemDetails, {
         props: {
           context: tappedItem,
+          frame: "itemsFrame",
           animated: true,
           transition: {
             name: "slide",

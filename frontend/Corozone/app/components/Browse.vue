@@ -21,7 +21,7 @@
             columns="2*,*"
             rows="*,*"
             width="100%"
-            height="25%"
+            height="20%"
           >
             <TextField
               v-model="itemField"
@@ -57,7 +57,7 @@
 					<ListView
             class="list-group"
             for="gitem in shoppingList"
-            style="height:75%"
+            style="height:80%"
             separator-color="transparent"
 			>
             <v-template>
@@ -92,7 +92,7 @@
             columns="2*,*"
             rows="*,*"
             width="100%"
-            height="25%"
+            height="20%"
           >
 			<Button :text="'groceries.requestgroceries' | L" row="0" colSpan="2" @tap="onTapRequestGroceries" class="btn" /><
           </GridLayout>

@@ -1,5 +1,6 @@
  <template lang="html">
  <Page actionBarHidden="true" backgroundSpanUnderStatusBar="true">
+     <!--TODO Return to last selected index -->
     <BottomNavigation selectedIndex="1">
 
         <TabStrip selectedItemColor="#3d99ff" unSelectedItemColor="#5c5c5c">
