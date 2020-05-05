@@ -699,8 +699,9 @@ WHERE user_id=$2;
 
 func getUser(c echo.Context) error {
 	// User ID from path `users/:id`
-	queryid := c.QueryParam("id")
+	queryid := c.Param("id")
 	sqlStatement := `SELECT user_id, first_name, last_name, email FROM user_profile WHERE user_id=$1;`
+	//	fmt.Println(queryid)
 	var u user
 	//var lastname string
 	//var user_id int
@@ -712,7 +713,7 @@ func getUser(c echo.Context) error {
 		fmt.Println("No rows were returned!")
 		return c.String(http.StatusOK, fmt.Sprintf("No user found"))
 	case nil:
-		fmt.Println(u.UserID, u.FirstName)
+		//	fmt.Println(u.UserID, u.FirstName)
 		//return c.String(http.StatusOK,
 		//fmt.Sprintf("ID: %d \n User: %s \n Last Name: %s", u.UserID, u.FirstName, u.LastName))
 		return c.JSON(http.StatusOK, u)

@@ -5,7 +5,7 @@
             <GridLayout rows="*" columns="2*, *, *">
                   <!-- <Label text="Groceries" column="0"></Label> -->
                   <Label text="Groceries (data is public)" column="0"></Label>
-                  <Button text="Add a friend" @tap="alert()" column="1" />
+                  <Button text="Add a friend" @tap="showModal" column="1" />
                    <!-- <Button :text="'Logout' | L" @tap="logoutApp()" column="2" /> -->
              </GridLayout>
         </ActionBar>
@@ -94,7 +94,7 @@
             width="100%"
             height="20%"
           >
-			<Button :text="'groceries.requestgroceries' | L" row="0" colSpan="2" @tap="onTapRequestGroceries" class="btn" /><
+			<Button automationText="Tap on this button to request groceries" :text="'groceries.requestgroceries' | L" row="0" colSpan="2" @tap="onTapRequestGroceries" class="btn" /><
           </GridLayout>
 	
 			</StackLayout>
@@ -114,6 +114,7 @@ import * as dialogs from "tns-core-modules/ui/dialogs";
 
 import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
+import ModalComponent from "./ModalAddFriends";
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
 var loader = new LoadingIndicator();
@@ -235,6 +236,9 @@ console.log(shoppingObject)
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
+    showModal() {
+            this.$showModal(ModalComponent);
+        },
     nameFromUID(item) {
       console.log("Name from UID" + item.name)
       console.log(this.$store.getters.getFriendListIDs)

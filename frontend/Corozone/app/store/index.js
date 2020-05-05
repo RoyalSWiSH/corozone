@@ -20,7 +20,12 @@ const state = {
     notification_message: "Keine Nachrichten",
     friendListIDs: [
      // {id: "D4YX72AVKrZp4cHONP23llO5omk2", name:"Sebastian"}
-    ]
+    ],
+    me: {
+      firstName: "", 
+      lastName: "", 
+      uid: ""
+    }
 };
 //Load local storage after login
 //---------------------
@@ -82,6 +87,9 @@ const getters = {
   },
   getFriendListIDs: state=> {
     return state.friendListIDs
+  },
+  getMyFirstName: state=> {
+    return state.me.firstName
   }
 }
 const mutations = {
@@ -115,7 +123,6 @@ for(let item of friendsShoppingList) {
     // console.log(i)
   }
   
-
     const newShoppingList = state.shoppingList.concat(friendsShoppingList).filter(function(o) {  
       console.log(o)
       return this.has(o.name) ? false : this.add(o.name);
@@ -129,7 +136,10 @@ for(let item of friendsShoppingList) {
    // state.shoppingList = shoppingList
     //item.uid = backendService.token
     console.log(item)
+    //Add item at first position of the list
     state.shoppingList = [item].concat(state.shoppingList)
+
+    // Add item ad last position of the list
     //state.shoppingList.push(item);
   },
   addFriendID: (state, friend) => {
@@ -166,6 +176,9 @@ setAcceptedItems: (state, items) => {
   //TODO Just change some items, dont override
  state.shoppingList = JSON.parse(items)
  console.log(items)
+},
+setMyUserProfile: (state, me) => {
+  state.me = me
 }
 }
 

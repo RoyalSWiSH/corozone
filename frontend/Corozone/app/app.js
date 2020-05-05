@@ -12,6 +12,7 @@ import firebase from "nativescript-plugin-firebase"
 import BackendService from './services/BackendService'
 import AuthService from './services/AuthService'
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
+import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 
 
 import { localize } from "nativescript-localize";
@@ -167,6 +168,24 @@ Vue.filter("L", localize);
   //   }
   // );
 
+
+  // Handle URL to add friends UIDs transfered via QR-CODE
+  handleOpenURL(function(appURL) {
+    console.log('Got the following appURL', appURL.path);
+    //store.commit("setNotificationMessage", "App URL:" + appURL)
+    let friend = {}
+    friend.id = appURL.path.split("/")[1].split(":")[0]
+    friend.name = appURL.path.split("/")[1].split(":")[1]
+    // check if uid already exists
+    if(store.getters.getFriendListIDs.some(e => e.uid === friend.uid)) {
+      store.commit("setNotificationMessage", "Friend already exists") 
+    }
+    else {
+    store.commit("addFriendID", friend)
+      store.commit("setNotificationMessage", "Friend" + friend.name + "added") 
+    }
+
+  });
 
 // Used for loading indicator
   global.loaderOptions = {
