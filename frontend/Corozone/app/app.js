@@ -39,6 +39,9 @@ Vue.registerElement(
 )
 Vue.registerElement("Mapbox", () => require("nativescript-mapbox").MapboxView);
 
+Vue.registerElement('BarcodeScanner', () => require('nativescript-barcodescanner').BarcodeScannerView)
+
+
 export const backendService = new BackendService()
 export const authService = new AuthService()
 

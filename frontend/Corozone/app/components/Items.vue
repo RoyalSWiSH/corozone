@@ -171,7 +171,7 @@ export default {
     },
     getGroceryRequests() {
       console.log("Get Grocery Requests...")
-      loader.show()
+      //this.loader.show()
       let that = this
       this.axios({
         method: 'get',
@@ -186,6 +186,7 @@ export default {
         //  console.log(resp.data);
         loader.hide()
       }).catch((error) => {
+          loader.hide()
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx

@@ -115,6 +115,7 @@ import * as dialogs from "tns-core-modules/ui/dialogs";
 import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
 import ModalComponent from "./ModalAddFriends";
+import {Page, View, ShowModalOptions} from "tns-core-modules/ui/page"
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
 var loader = new LoadingIndicator();
@@ -236,8 +237,22 @@ console.log(shoppingObject)
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
     },
-    showModal() {
-            this.$showModal(ModalComponent);
+    showModal(args) {
+            const view = args.object // as View
+            // const opts = new ShowModalOptions()
+            // opts = {
+            //   context: null,
+            //   closeCallBack: () => console.log("Modal closed"),
+            //   ios: {
+            //     presentationStyle: 5
+            //   }
+            // }
+            this.$showModal(ModalComponent,{
+              context: null,
+              closeCallBack: () => console.log("Modal closed"),
+              ios: {
+                presentationStyle: 5
+              }});
         },
     nameFromUID(item) {
       console.log("Name from UID" + item.name)

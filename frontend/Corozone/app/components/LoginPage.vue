@@ -63,7 +63,9 @@ import { mapState } from "vuex"
 const timerModule = require("tns-core-modules/timer")
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
-var loader = new LoadingIndicator();
+//var loader = new LoadingIndicator();
+
+
 // A stub for a service that authenticates users.
 // const userService = {
 //   async register(user) {
@@ -114,6 +116,7 @@ export default {
     // setTimeout(() => {
     //   this.isInitialized = true;
     // }, 1500);
+   // this.loader.hide()
     if(this.$store.state.isLoggedIn!=null){
       this.isInitialized = true;
     }
@@ -247,8 +250,7 @@ firebase
         this.isInitialized = true;        
       }else{
         console.log("isLoggedIn Is changed, navigate to App")   
-      // Frame.fameById("mainFrame").navigate(App)
-       this.$navigateTo(App, { clearHistory: true, frame: "mainFrame"});
+        this.$navigateTo(App, { clearHistory: true, frame: "mainFrame"});
       }
     }
   },
@@ -308,7 +310,8 @@ firebase
         return;
       }
 
-      loader.show()
+     
+    loader.show()
       if (this.isLoggingIn) {
         this.login();
       } else {
@@ -350,7 +353,7 @@ firebase
       this.$authService
         .register(this.user)
         .then(uid => {
-          //loader.hide();
+          loader.hide();
          // this.alert("Your account was successfully created.");
           this.isLoggingIn = true;
           //console.log(uid)
