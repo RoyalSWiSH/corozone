@@ -116,6 +116,28 @@ import * as geolocation from "nativescript-geolocation";
 import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at what accuracy the location should be get
 import ModalComponent from "./ModalAddFriends";
 import {Page, View, ShowModalOptions} from "tns-core-modules/ui/page"
+
+import { ApolloClient } from 'apollo-client'
+import { createHttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+
+// HTTP connection to the API
+const httpLink = createHttpLink({
+  // You should use an absolute URL here
+  uri: 'https://hasura.sebastian-roy.de/v1/graphql',
+})
+
+// Cache implementation
+const cache = new InMemoryCache()
+
+// Create the apollo client
+const apolloClient = new ApolloClient({
+  link: httpLink,
+  cache,
+})
+
+
+
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
     .LoadingIndicator;
 var loader = new LoadingIndicator();
@@ -254,6 +276,7 @@ console.log(shoppingObject)
                 presentationStyle: 5
               }});
         },
+    // TODO: Potential Privacy issue. Don't let every users see all uid's with names    
     nameFromUID(item) {
       console.log("Name from UID" + item.name)
       console.log(this.$store.getters.getFriendListIDs)
@@ -267,7 +290,9 @@ console.log(shoppingObject)
         return }
       }
     },
+    // Move this somewhere else where it can be accessed by this component and ModalAddFriends.vue
    subscribeToShoppingList(uid) {
+ if(uid){    
 const db = firebase.firestore
 const groceriesCollection = db.collection("Groceries");
 console.log("Substibe to shopping list: " + uid)
@@ -279,6 +304,10 @@ console.log("Substibe to shopping list: " + uid)
   this.$store.commit("mergeShoppingList", Object.values(doc2.data()) )
 });
   return unsubscribe2
+  }
+  else {
+    console.log("Unable to subscribe. Probably no or wrong uid set")
+  }
     },
     onButtonTapDelete(item) {
         console.log("Deleted Item")
@@ -426,7 +455,7 @@ console.log("Substibe to shopping list: " + uid)
 				inQuarantine: false,
 				minimumSupply: false,
 				elderly: false,
-			 	requestedItems: this.shoppingList.filter(x => x.id === backendService.token),  //Don't request groceries from list of friends 
+			 	requestedItems: this.getshoppingList,  //Don't request groceries from list of friends 
 				location: {
 					city: this.location.city,
           street: this.location.street,

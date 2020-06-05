@@ -81,6 +81,8 @@
 
 import { Directions } from "nativescript-directions";
 import { backendService } from "../app";
+import ModalComponent from "./ModalPayment";
+import {Page, View, ShowModalOptions} from "tns-core-modules/ui/page"
 
 // instantiate the plugin
 let directions = new Directions();
@@ -171,8 +173,12 @@ export default {
         },
         paidGroceries() {
             console.log("Paid Groceries")
+            this.showModal()
+
             let url = 'http://corozone.sebastian-roy.de/api/v1/groceries/' + this.groceryRequest.order_id + '/paid'
             this.groceryRequest.status = "paid"
+            
+            // Alert Modal
             this.axios({
             method: 'post',
             url: url,
@@ -202,6 +208,24 @@ export default {
       console.log(error.message);
     }});
 
+        },
+         showModal(args) {
+          //  const view = args.object // as View
+            // const opts = new ShowModalOptions()
+            // opts = {
+            //   context: null,
+            //   closeCallBack: () => console.log("Modal closed"),
+            //   ios: {
+            //     presentationStyle: 5
+            //   }
+            // }
+            this.$showModal(ModalComponent,{
+              context: null,
+              closeCallBack: () => console.log("Modal closed"),
+              ios: {
+                presentationStyle: 5
+              }
+              });
         },
         acceptGroceries() {
             let url = 'http://corozone.sebastian-roy.de/api/v1/groceries/' + this.groceryRequest.order_id + '/accept' 

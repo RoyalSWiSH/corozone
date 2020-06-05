@@ -78,6 +78,7 @@ const getters = {
     return state.isLoggedIn
   },
   getShoppingList: state =>{
+    // TODO: This should return all items where uid is me.uid or friends.uid
     return state.shoppingList.filter(item => item.uid === backendService.token)
     //return state.shoppingList
     //return shoppingList

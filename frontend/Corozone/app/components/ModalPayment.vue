@@ -3,45 +3,20 @@
         
 		<Label class="h2 text-center" text="Scan this Code to add a Friend." />
 
-<BarcodeScanner
-    row="1"
-    height="200"
-    width="200"
-    formats="QR_CODE, EAN_13, UPC_A"
-    beepOnScan="true"
-    reportDuplicates="true"
-    preferFrontCamera="false"
-    :pause="pause"
-    @scanResult="onScanResult"
-    v-if="this.$isIOS">
-</BarcodeScanner>
     
-		<Button class="btn btn-outline" text="Open Camera" @tap="scan(false)" v-if="this.$isAndroid"/>
-        <Image :src="friendQRCodeURL" height="200"></Image>
-		<Label class="h4 text-center" :text="this.generateCode" textWrap="true" v-if="addUserIDByHand"/>
-		<!-- <Label class="h2 text-center" :text="me.firstName"/> -->
+		<Button class="btn btn-outline" text="Open Camera" @tap="scan(false)" />
+      
 
-        <!-- <TextField
-              v-model="me.firstName"
+        <TextField
+              v-model="receiptCosts"
               col="0"
               row="0"
-              hint="First Name"
+              hint="z.B. 34"
               editable="true"
               @returnPress="onNameTap"
-            />-->
-        
-            <Button class="btn btn-outline" text="Copy Code to Clipboard" @tap=""  v-if="addUserIDByHand"/>
-               <TextField
-              col="0"
-              row="0"
-              hint="Paste code to add friend"
-              editable="false"
-              @returnPress="onNameTap"
-              v-if="addUserIDByHand"
             />
-            <Label class="h4 text-center" text="Why do we use QR Codes? We don't want other people have access to your personalized information
-            without your permission and avoid using our servers if we don't have to. We constantly balance privacy, security and convenience so this may change in the future." textWrap="true"/>
-             <Button class="btn btn-outline" text="Add friend" @tap="" v-if="addUserIDByHand" />
+                     
+            <Button class="btn btn-outline" text="Send" @tap="onTapSend"  />
 		<Button class="btn btn-outline" text="Close" @tap="$modal.close()" />
 	</StackLayout>
 </template>
@@ -55,7 +30,8 @@ export default {
     data() {
         return {
             friendQRCodeURL: "",
-            addUserIDByHand: false
+            addUserIDByHand: false,
+            receiptCosts: 0
         };
     },
     created(){
@@ -79,14 +55,16 @@ export default {
          generateCode: function () {return this.$backendService.token+":"+this.me.firstName  }
     },
     methods: {
+      onTapSend(args) {
+          console.log(args)
+      },
         getFriendQRCode() {
             return "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=app://corozone/"+this.generateCode
         },
         onScanResult(scanEvent) {
             //TODO Check if format is QR Code
             console.log(`Scan Result: ${scanEvent.text} (${scanEvent.format})`)
-              this.addFriend(scanEvent) 
-           
+              this.addFriend(scanEvent)            
         },
          subscribeToShoppingList(id) {
  if(id){    
