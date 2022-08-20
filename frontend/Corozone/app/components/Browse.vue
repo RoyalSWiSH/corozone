@@ -117,25 +117,19 @@ import { Accuracy } from "tns-core-modules/ui/enums"; // used to describe at wha
 import ModalComponent from "./ModalAddFriends";
 import {Page, View, ShowModalOptions} from "tns-core-modules/ui/page"
 
-import { ApolloClient } from 'apollo-client'
-import { createHttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import gql from "graphql-tag";
 
-// HTTP connection to the API
-const httpLink = createHttpLink({
-  // You should use an absolute URL here
-  uri: 'https://hasura.sebastian-roy.de/v1/graphql',
-})
-
-// Cache implementation
-const cache = new InMemoryCache()
-
-// Create the apollo client
-const apolloClient = new ApolloClient({
-  link: httpLink,
-  cache,
-})
-
+const LoginQuery = gql`
+ query MyQuery {
+  delivery_status {
+    closed_at
+    created_at
+    helper_user_id
+    receipt_amount
+    status
+  }
+}
+`;
 
 
 var LoadingIndicator = require("@nstudio/nativescript-loading-indicator")
@@ -178,7 +172,6 @@ export default {
   async created() {
      //  this.requestedItems = O(bject.assign({}, this.$store.state.shoppingList)
 
-     
        this.getAddressFromCoord()
        const db = firebase.firestore
       const groceriesCollection = db.collection("Groceries");
@@ -205,6 +198,7 @@ console.log(shoppingObject)
       const groceriesCollection = db.collection("Groceries");
   groceriesCollection.doc(backendService.token).set(shoppingObject).then(doc3 => {
   console.log(`Shopping List updated ${doc3}`);
+       // this.apolloRequest() 
 }); 
  
     });
@@ -258,6 +252,23 @@ console.log(shoppingObject)
   methods: {
     toggleForm() {
       this.isLoggingIn = !this.isLoggingIn;
+    },
+    apolloRequest() {
+      console.log("Apollo Query")
+      try {
+        this.$apollo
+          .queries({
+            document: LoginQuery,
+            variables: {  }
+          })
+          .then(({ data: { signinUser } }) => {
+            console.log("Apollo Answer")
+            console.log(signinUser);
+            
+          });
+      } catch (e) {
+        console.error("mutation error", e);
+      }
     },
     showModal(args) {
             const view = args.object // as View

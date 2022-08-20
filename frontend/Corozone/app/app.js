@@ -14,6 +14,8 @@ import AuthService from './services/AuthService'
 import { isAndroid, isIOS } from 'tns-core-modules/platform';
 import { handleOpenURL, AppURL } from 'nativescript-urlhandler';
 
+import apolloProvider from "./services/ApolloProvider"
+
 
 import { localize } from "nativescript-localize";
 
@@ -211,6 +213,7 @@ Vue.filter("L", localize);
 //  }).$start();
 new Vue({
     store,
+    apolloProvider,
     template: `
     <Frame id="mainFrame" defaultPage="components/LoginPage">
       <LoginPage />

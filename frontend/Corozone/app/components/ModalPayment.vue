@@ -3,7 +3,7 @@
         
 		<Label class="h2 text-center" text="Scan this Code to add a Friend." />
 
-    
+  
 		<Button class="btn btn-outline" text="Open Camera" @tap="scan(false)" />
       
 
