@@ -7,7 +7,7 @@ file_blobs:
   backend/coronaapp_server.go: 58fd91ffff6c9431eb2f87564b9ae640e445b7ae
 ---
 
-This is how a `user`[<sup id="zUJ63">↓</sup>](#f-zUJ63) is defined.
+This is how a `user`[<sup id="zUJ63">↓</sup>](#f-zUJ63) is defined
 
 <br/>
 
