@@ -7,7 +7,27 @@ file_blobs:
   backend/coronaapp_server.go: 58fd91ffff6c9431eb2f87564b9ae640e445b7ae
 ---
 
-This is how a user is defined.
+This is how a `user`[<sup id="zUJ63">↓</sup>](#f-zUJ63) is defined.
+
+<br/>
+
+
+
+<!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
+### 📄 backend/coronaapp_server.go
+```go
+⬜ 4      // Date: 19. March 2020
+⬜ 5      
+⬜ 6      
+🟩 7      import (
+🟩 8      	"database/sql"
+🟩 9          "database/sql/driver"
+🟩 10     	"fmt"
+🟩 11         "time"
+⬜ 12         "errors"
+⬜ 13     	"github.com/labstack/echo/v4"
+⬜ 14         "github.com/labstack/echo/v4/middleware"
+```
 
 <br/>
 
@@ -60,6 +80,11 @@ Definition of user struct with fields `UserID`[<sup id="ZIaoHm">↓</sup>](#f-ZI
 <span id="f-26z3Qi">Password</span>[^](#26z3Qi) - "backend/coronaapp_server.go" L108
 ```go
     Password string`json:"password"`
+```
+
+<span id="f-zUJ63">user</span>[^](#zUJ63) - "backend/coronaapp_server.go" L35
+```go
+type user struct {
 ```
 
 <span id="f-ZIaoHm">UserID</span>[^](#ZIaoHm) - "backend/coronaapp_server.go" L36
