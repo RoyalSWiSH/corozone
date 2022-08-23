@@ -30,6 +30,7 @@ This is how a `user`[<sup id="zUJ63">↓</sup>](#f-zUJ63) is defined
 ```
 
 <br/>
+This is some added information.
 
 Definition of user struct with fields `UserID`[<sup id="ZIaoHm">↓</sup>](#f-ZIaoHm) , `FirstName`[<sup id="133YjJ">↓</sup>](#f-133YjJ) , `LastName`[<sup id="Z25mdAy">↓</sup>](#f-Z25mdAy) , `Email`[<sup id="MnRJ3">↓</sup>](#f-MnRJ3) , `Password`[<sup id="26z3Qi">↓</sup>](#f-26z3Qi) and `Mobile`[<sup id="ZQR9Ur">↓</sup>](#f-ZQR9Ur) number
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
