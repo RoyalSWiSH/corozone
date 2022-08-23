@@ -2,7 +2,7 @@
 id: cpxem
 name: User Documentation
 file_version: 1.0.2
-app_version: 0.9.4-2
+app_version: 0.9.4-6
 file_blobs:
   backend/coronaapp_server.go: 58fd91ffff6c9431eb2f87564b9ae640e445b7ae
 ---
@@ -35,10 +35,9 @@ Definition of user struct with fields `UserID`[<sup id="ZIaoHm">↓</sup>](#f-ZI
 <!-- NOTE-swimm-snippet: the lines below link your snippet to Swimm -->
 ### 📄 backend/coronaapp_server.go
 ```go
-⬜ 31     type JwtClaims struct {
 ⬜ 32         Name string `json:"name"`
 ⬜ 33         jwt.StandardClaims
-🟩 34     }
+⬜ 34     }
 🟩 35     type user struct {
 🟩 36             UserID   int    `json:"id"`
 🟩 37             FirstName string `json:"firstName"`
