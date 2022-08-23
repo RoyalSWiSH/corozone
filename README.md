@@ -1,5 +1,8 @@
 #supermarktstatus #krankenhausstatus #hotlinestatus #nachbarschaftshilfe #mini-diagnose #kontakt-tracking 
 
+Download Apk (Devpost had a 35 MB limit): https://github.com/RoyalSWiSH/corozone/blob/pushmessage/frontend/Corozone/app-debug.apk
+
+
 ### Was ist die Herausforderung / das Problem? Was ist das Bedürfnis dahinter?
 Beispiel: Problem: Häufung von Anrufen, Dringlichkeit | Bedürfnis: Effiziente Informationsvermittlung an Bürger:innen
 
