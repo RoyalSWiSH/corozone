@@ -8,10 +8,9 @@ require (
 	github.com/cesanta/validate-json v0.0.0-20150603122804-2f16017c76fc // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/eduardbcom/gonfig v0.0.0-20190424113650-c516a7ddbf41
+	github.com/fatih/color v1.13.0 // indirect
 	github.com/google/uuid v1.1.1
-	github.com/labstack/echo v3.3.10+incompatible
-	github.com/labstack/echo/v4 v4.1.15
+	github.com/labstack/echo/v4 v4.9.0
 	github.com/lib/pq v1.3.0
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/twinj/uuid v1.0.0
 )
